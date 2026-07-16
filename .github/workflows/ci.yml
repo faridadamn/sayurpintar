@@ -50,9 +50,6 @@ jobs:
       - name: Download dependencies
         working-directory: backend
         run: go mod download
-      - name: Check formatting
-        working-directory: backend
-        run: test -z "$(gofmt -l .)"
       - name: Vet
         working-directory: backend
         run: go vet ./...
@@ -71,6 +68,15 @@ jobs:
           REDIS_HOST: localhost
           REDIS_PORT: 6379
         run: go test ./... -race -coverprofile=coverage.out
+      - name: Check formatting
+        working-directory: backend
+        run: |
+          files="$(gofmt -l .)"
+          if [ -n "$files" ]; then
+            echo "Go files requiring gofmt:"
+            echo "$files"
+            exit 1
+          fi
       - name: Upload coverage
         if: always() && hashFiles('backend/coverage.out') != ''
         uses: codecov/codecov-action@v4
@@ -93,15 +99,15 @@ jobs:
       - name: Install dependencies
         working-directory: mobile
         run: flutter pub get
-      - name: Check formatting
-        working-directory: mobile
-        run: dart format --output=none --set-exit-if-changed lib test
       - name: Analyze
         working-directory: mobile
         run: flutter analyze
       - name: Test
         working-directory: mobile
         run: flutter test --coverage
+      - name: Check formatting
+        working-directory: mobile
+        run: dart format --output=none --set-exit-if-changed lib test
 
   docker:
     name: Build backend image
