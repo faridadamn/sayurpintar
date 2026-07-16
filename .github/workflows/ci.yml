@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -49,7 +49,21 @@ jobs:
           cache-dependency-path: backend/go.sum
       - name: Generate dependency checksums
         working-directory: backend
-        run: go mod tidy
+        run: |
+          rm -f go.sum
+          go mod tidy
+      - name: Commit generated go.sum
+        if: github.event_name == 'push'
+        run: |
+          if git diff --quiet -- backend/go.sum; then
+            echo "go.sum is already up to date"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add backend/go.sum
+          git commit -m "chore: refresh Go dependency checksums"
+          git push
       - name: Upload generated go.sum
         uses: actions/upload-artifact@v4
         with:
