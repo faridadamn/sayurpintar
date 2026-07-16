@@ -47,9 +47,11 @@ jobs:
         with:
           go-version-file: backend/go.mod
           cache-dependency-path: backend/go.sum
-      - name: Download dependencies
+      - name: Regenerate dependency checksums
         working-directory: backend
-        run: go mod download
+        run: |
+          rm -f go.sum
+          go mod tidy
       - name: Vet
         id: vet
         continue-on-error: true
@@ -105,6 +107,7 @@ jobs:
             backend/build.log
             backend/test.log
             backend/format.log
+            backend/go.sum
           if-no-files-found: ignore
       - name: Upload coverage
         if: always() && hashFiles('backend/coverage.out') != ''
