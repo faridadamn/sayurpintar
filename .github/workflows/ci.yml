@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -43,195 +43,22 @@ jobs:
           --health-retries 5
     steps:
       - uses: actions/checkout@v4
-      - name: Apply repository contract fixes
-        if: github.event_name == 'push'
-        run: |
-          python3 <<'PY'
-          from pathlib import Path
-
-          def replace_once(path, old, new):
-              p = Path(path)
-              text = p.read_text()
-              if new in text:
-                  return
-              if old not in text:
-                  raise SystemExit(f"Expected source block not found in {path}")
-              p.write_text(text.replace(old, new, 1))
-
-          replace_once(
-              'backend/internal/repository/route_repository.go',
-              '\tDelete(ctx context.Context, id string) error\n}',
-              '\tDelete(ctx context.Context, id string) error\n\tGetRouteStats(ctx context.Context, pedagangID string, days int) (*RouteStats, error)\n}',
-          )
-
-          replace_once(
-              'backend/internal/repository/debt_repository.go',
-              '\tGetByOrderID(ctx context.Context, orderID string) (*models.Debt, error)\n}',
-              '\tGetByOrderID(ctx context.Context, orderID string) (*models.Debt, error)\n\tSumOutstanding(ctx context.Context, pedagangID string) (float64, error)\n\tSumSettled(ctx context.Context, pedagangID string) (float64, error)\n}',
-          )
-
-          debt = Path('backend/internal/repository/debt_repository.go')
-          debt_text = debt.read_text()
-          if 'func (r *debtRepo) SumOutstanding' not in debt_text:
-              debt.write_text(debt_text + '''
-
-// SumOutstanding returns the remaining amount of active debts for a pedagang.
-func (r *debtRepo) SumOutstanding(ctx context.Context, pedagangID string) (float64, error) {
-	const query = `SELECT COALESCE(SUM(remaining), 0) FROM debts WHERE pedagang_id = $1 AND status IN ('outstanding', 'partial')`
-	var total float64
-	if err := r.pool.QueryRow(ctx, query, pedagangID).Scan(&total); err != nil {
-		return 0, fmt.Errorf("sum outstanding debts: %w", err)
-	}
-	return total, nil
-}
-
-// SumSettled returns the original amount of settled debts for a pedagang.
-func (r *debtRepo) SumSettled(ctx context.Context, pedagangID string) (float64, error) {
-	const query = `SELECT COALESCE(SUM(amount), 0) FROM debts WHERE pedagang_id = $1 AND status = 'settled'`
-	var total float64
-	if err := r.pool.QueryRow(ctx, query, pedagangID).Scan(&total); err != nil {
-		return 0, fmt.Errorf("sum settled debts: %w", err)
-	}
-	return total, nil
-}
-''')
-
-          price = Path('backend/internal/repository/price_repository.go')
-          price_text = price.read_text()
-          if 'func (r *PriceRepository) GetDistinctProductIDs' not in price_text:
-              price.write_text(price_text + '''
-
-// GetDistinctProductIDs returns product IDs that have submissions in an area.
-func (r *PriceRepository) GetDistinctProductIDs(ctx context.Context, area string) ([]string, error) {
-	values, err := r.col.Distinct(ctx, "product_id", bson.M{"area": area})
-	if err != nil {
-		return nil, fmt.Errorf("get distinct product ids: %w", err)
-	}
-	ids := make([]string, 0, len(values))
-	for _, value := range values {
-		if id, ok := value.(string); ok && id != "" {
-			ids = append(ids, id)
-		}
-	}
-	return ids, nil
-}
-
-// GetPricesForProductArea returns submissions from a date onward, newest first.
-func (r *PriceRepository) GetPricesForProductArea(ctx context.Context, productID, area, fromDate string) ([]models.PriceSubmission, error) {
-	filter := bson.M{"product_id": productID, "area": area}
-	if fromDate != "" {
-		filter["date"] = bson.M{"$gte": fromDate}
-	}
-	cursor, err := r.col.Find(ctx, filter, options.Find().SetSort(bson.D{{Key: "date", Value: -1}, {Key: "created_at", Value: -1}}))
-	if err != nil {
-		return nil, fmt.Errorf("get product area prices: %w", err)
-	}
-	defer cursor.Close(ctx)
-	var submissions []models.PriceSubmission
-	if err := cursor.All(ctx, &submissions); err != nil {
-		return nil, fmt.Errorf("decode product area prices: %w", err)
-	}
-	if submissions == nil {
-		submissions = []models.PriceSubmission{}
-	}
-	return submissions, nil
-}
-
-// GetProductName returns the latest known product name from price submissions.
-func (r *PriceRepository) GetProductName(ctx context.Context, productID string) (string, error) {
-	var result struct {
-		ProductName string `bson:"product_name"`
-	}
-	err := r.col.FindOne(
-		ctx,
-		bson.M{"product_id": productID},
-		options.FindOne().SetSort(bson.D{{Key: "created_at", Value: -1}}).SetProjection(bson.M{"product_name": 1}),
-	).Decode(&result)
-	if err != nil {
-		if errors.Is(err, mongo.ErrNoDocuments) {
-			return "", ErrPriceNotFound
-		}
-		return "", fmt.Errorf("get product name: %w", err)
-	}
-	return result.ProductName, nil
-}
-''')
-
-          replace_once(
-              'backend/internal/services/reward_service.go',
-              '&redis.ZRangeByScore{',
-              '&redis.ZRangeBy{',
-          )
-          PY
-          gofmt -w backend/internal/repository/route_repository.go \
-            backend/internal/repository/debt_repository.go \
-            backend/internal/repository/price_repository.go \
-            backend/internal/services/reward_service.go
-          if git diff --quiet; then
-            echo "Repository fixes already applied"
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add backend/internal/repository backend/internal/services/reward_service.go
-          git commit -m "fix: complete repository contracts"
-          git push
       - uses: actions/setup-go@v5
         with:
           go-version-file: backend/go.mod
           cache-dependency-path: backend/go.sum
-      - name: Generate dependency checksums
+      - name: Download dependencies
         working-directory: backend
-        run: |
-          rm -f go.sum
-          go mod tidy
-      - name: Commit generated go.sum
-        if: github.event_name == 'push'
-        run: |
-          if git diff --quiet -- backend/go.sum; then
-            echo "go.sum is already up to date"
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add backend/go.sum
-          git commit -m "chore: refresh Go dependency checksums"
-          git push
-      - name: Upload generated go.sum
-        uses: actions/upload-artifact@v4
-        with:
-          name: backend-go-sum
-          path: backend/go.sum
-          if-no-files-found: error
-      - name: Report formatting
-        continue-on-error: true
+        run: go mod download
+      - name: Check formatting
         working-directory: backend
-        run: |
-          files="$(gofmt -l .)"
-          if [ -n "$files" ]; then
-            echo "Go files requiring gofmt:"
-            echo "$files"
-            exit 1
-          fi
-      - name: Vet diagnostics
-        continue-on-error: true
+        run: test -z "$(gofmt -l .)"
+      - name: Vet
         working-directory: backend
-        run: go vet ./... 2>&1 | tee vet.log
+        run: go vet ./...
       - name: Build
         working-directory: backend
-        shell: bash
-        run: |
-          set -o pipefail
-          go build ./... 2>&1 | tee build.log
-      - name: Upload backend diagnostics
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: backend-diagnostics
-          path: |
-            backend/vet.log
-            backend/build.log
-          if-no-files-found: ignore
+        run: go build ./...
       - name: Test
         working-directory: backend
         env:
@@ -266,24 +93,12 @@ func (r *PriceRepository) GetProductName(ctx context.Context, productID string) 
       - name: Install dependencies
         working-directory: mobile
         run: flutter pub get
-      - name: Report formatting
-        continue-on-error: true
+      - name: Check formatting
         working-directory: mobile
         run: dart format --output=none --set-exit-if-changed lib test
-      - name: Analyze diagnostics
-        continue-on-error: true
+      - name: Analyze
         working-directory: mobile
-        shell: bash
-        run: |
-          set -o pipefail
-          flutter analyze --no-fatal-infos 2>&1 | tee analyze.log
-      - name: Upload mobile diagnostics
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: mobile-diagnostics
-          path: mobile/analyze.log
-          if-no-files-found: ignore
+        run: flutter analyze
       - name: Test
         working-directory: mobile
         run: flutter test --coverage
