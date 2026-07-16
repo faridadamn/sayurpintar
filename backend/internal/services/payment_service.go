@@ -306,15 +306,14 @@ func (s *PaymentService) createMidtransQRIS(ctx context.Context, orderID string,
 	}
 
 	if httpResp.StatusCode < 200 || httpResp.StatusCode >= 300 {
-		return nil, fmt.Errorf("midtrans error (status %d): %s", httpResp.StatusCode, string(respBody))
 		var errResp struct {
 			Message string `json:"error_message"`
 		}
-		json.Unmarshal(respBody, &errResp)
+		_ = json.Unmarshal(respBody, &errResp)
 		if errResp.Message != "" {
 			return nil, fmt.Errorf("midtrans: %s", errResp.Message)
 		}
-		return nil, fmt.Errorf("midtrans returned status %d", httpResp.StatusCode)
+		return nil, fmt.Errorf("midtrans error (status %d): %s", httpResp.StatusCode, string(respBody))
 	}
 
 	var chargeResp midtransChargeResponse

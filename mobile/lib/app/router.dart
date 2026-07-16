@@ -21,7 +21,8 @@ import 'package:sayurpintar/features/route/presentation/add_waypoint_screen.dart
 import 'package:sayurpintar/features/route/presentation/route_optimized_screen.dart';
 import 'package:sayurpintar/features/route/presentation/navigation_screen.dart';
 import 'package:sayurpintar/features/route/presentation/visit_completion_screen.dart';
-import 'package:sayurpintar/features/route/providers/tracking_provider.dart' as tracking;
+import 'package:sayurpintar/features/route/providers/tracking_provider.dart'
+    as tracking;
 import 'package:sayurpintar/features/subscription/presentation/create_package_screen.dart';
 import 'package:sayurpintar/features/subscription/presentation/package_list_screen.dart';
 import 'package:sayurpintar/features/subscription/data/subscription_repository.dart';

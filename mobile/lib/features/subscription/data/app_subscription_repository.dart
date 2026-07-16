@@ -31,7 +31,8 @@ class AppSubscriptionRepository extends SubscriptionRepository {
   }
 
   Future<List<Subscription>> getMyActiveSubscriptions() async {
-    final response = await _client.get('${ApiEndpoints.base}/subscriptions/active');
+    final response =
+        await _client.get('${ApiEndpoints.base}/subscriptions/active');
     return _listData(response)
         .map((item) => Subscription.fromJson(item as Map<String, dynamic>))
         .where((subscription) => subscription.status == 'active')
@@ -39,7 +40,8 @@ class AppSubscriptionRepository extends SubscriptionRepository {
   }
 
   Future<List<Subscription>> getMyPausedSubscriptions() async {
-    final response = await _client.get('${ApiEndpoints.base}/subscriptions/active');
+    final response =
+        await _client.get('${ApiEndpoints.base}/subscriptions/active');
     return _listData(response)
         .map((item) => Subscription.fromJson(item as Map<String, dynamic>))
         .where((subscription) => subscription.status == 'paused')
@@ -52,7 +54,8 @@ class AppSubscriptionRepository extends SubscriptionRepository {
     return SubscriptionDetail.fromJson(_mapData(response));
   }
 
-  Future<List<SubscriptionPackage>> getAvailablePackages({String? query}) async {
+  Future<List<SubscriptionPackage>> getAvailablePackages(
+      {String? query}) async {
     final response = await _client.get(
       '${ApiEndpoints.base}/subscriptions/packages',
       queryParameters: {
@@ -128,7 +131,9 @@ class AppSubscriptionRepository extends SubscriptionRepository {
   Future<List<Order>> getOrderHistory({String? status}) async {
     final response = await _client.get(
       '${ApiEndpoints.orders}/my',
-      queryParameters: {if (status != null && status.isNotEmpty) 'status': status},
+      queryParameters: {
+        if (status != null && status.isNotEmpty) 'status': status
+      },
     );
     return _listData(response)
         .map((item) => Order.fromJson(item as Map<String, dynamic>))
