@@ -51,12 +51,24 @@ jobs:
         working-directory: backend
         run: go mod download
       - name: Vet
+        id: vet
+        continue-on-error: true
         working-directory: backend
-        run: go vet ./...
+        shell: bash
+        run: |
+          set -o pipefail
+          go vet ./... 2>&1 | tee vet.log
       - name: Build
+        id: build
+        continue-on-error: true
         working-directory: backend
-        run: go build ./...
+        shell: bash
+        run: |
+          set -o pipefail
+          go build ./... 2>&1 | tee build.log
       - name: Test
+        id: test
+        continue-on-error: true
         working-directory: backend
         env:
           APP_ENV: test
@@ -67,22 +79,46 @@ jobs:
           POSTGRES_PASSWORD: test_password
           REDIS_HOST: localhost
           REDIS_PORT: 6379
-        run: go test ./... -race -coverprofile=coverage.out
+        shell: bash
+        run: |
+          set -o pipefail
+          go test ./... -race -coverprofile=coverage.out 2>&1 | tee test.log
       - name: Check formatting
+        id: format
+        continue-on-error: true
         working-directory: backend
         run: |
           files="$(gofmt -l .)"
           if [ -n "$files" ]; then
-            echo "Go files requiring gofmt:"
-            echo "$files"
+            echo "Go files requiring gofmt:" | tee format.log
+            echo "$files" | tee -a format.log
             exit 1
           fi
+          : > format.log
+      - name: Upload backend diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-diagnostics
+          path: |
+            backend/vet.log
+            backend/build.log
+            backend/test.log
+            backend/format.log
+          if-no-files-found: ignore
       - name: Upload coverage
         if: always() && hashFiles('backend/coverage.out') != ''
         uses: codecov/codecov-action@v4
         with:
           files: backend/coverage.out
           fail_ci_if_error: false
+      - name: Enforce backend quality gate
+        if: always()
+        run: |
+          test "${{ steps.vet.outcome }}" = success
+          test "${{ steps.build.outcome }}" = success
+          test "${{ steps.test.outcome }}" = success
+          test "${{ steps.format.outcome }}" = success
 
   mobile:
     name: Mobile checks (Flutter)
@@ -100,14 +136,45 @@ jobs:
         working-directory: mobile
         run: flutter pub get
       - name: Analyze
+        id: analyze
+        continue-on-error: true
         working-directory: mobile
-        run: flutter analyze
+        shell: bash
+        run: |
+          set -o pipefail
+          flutter analyze 2>&1 | tee analyze.log
       - name: Test
+        id: test
+        continue-on-error: true
         working-directory: mobile
-        run: flutter test --coverage
+        shell: bash
+        run: |
+          set -o pipefail
+          flutter test --coverage 2>&1 | tee test.log
       - name: Check formatting
+        id: format
+        continue-on-error: true
         working-directory: mobile
-        run: dart format --output=none --set-exit-if-changed lib test
+        shell: bash
+        run: |
+          set -o pipefail
+          dart format --output=none --set-exit-if-changed lib test 2>&1 | tee format.log
+      - name: Upload mobile diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-diagnostics
+          path: |
+            mobile/analyze.log
+            mobile/test.log
+            mobile/format.log
+          if-no-files-found: ignore
+      - name: Enforce mobile quality gate
+        if: always()
+        run: |
+          test "${{ steps.analyze.outcome }}" = success
+          test "${{ steps.test.outcome }}" = success
+          test "${{ steps.format.outcome }}" = success
 
   docker:
     name: Build backend image
