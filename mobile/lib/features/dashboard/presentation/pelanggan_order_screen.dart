@@ -318,8 +318,8 @@ class _OrderCard extends StatelessWidget {
   }
 
   String _formatPrice(dynamic price) {
-    final num = price is int ? price : (price as num?)?.toInt() ?? 0;
-    final str = num.toString();
+    final amount = price is int ? price : (price as num?)?.toInt() ?? 0;
+    final str = amount.toString();
     final buffer = StringBuffer('Rp ');
     for (int i = 0; i < str.length; i++) {
       if (i > 0 && (str.length - i) % 3 == 0) buffer.write('.');

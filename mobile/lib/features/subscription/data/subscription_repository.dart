@@ -350,6 +350,24 @@ class Order {
     }
   }
 
+  bool get isRated => rating != null;
+
+  String get paymentMethodText {
+    switch (paymentMethod) {
+      case 'cash':
+        return 'Tunai';
+      case 'transfer':
+      case 'bank_transfer':
+        return 'Transfer Bank';
+      case 'ewallet':
+        return 'E-Wallet';
+      case 'qris':
+        return 'QRIS';
+      default:
+        return paymentMethod;
+    }
+  }
+
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
       id: json['id'] ?? '',
