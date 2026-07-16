@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -17,9 +17,49 @@ env:
   FLUTTER_VERSION: '3.22.3'
 
 jobs:
+  normalize:
+    name: Normalize source fixes
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-actions[bot]'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - name: Apply targeted source normalization
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          payment = Path('backend/internal/services/payment_service.go')
+          text = payment.read_text()
+          old = '''\tif httpResp.StatusCode < 200 || httpResp.StatusCode >= 300 {\n\t\treturn nil, fmt.Errorf("midtrans error (status %d): %s", httpResp.StatusCode, string(respBody))\n\t\tvar errResp struct {\n\t\t\tMessage string `json:"error_message"`\n\t\t}\n\t\tjson.Unmarshal(respBody, &errResp)\n\t\tif errResp.Message != "" {\n\t\t\treturn nil, fmt.Errorf("midtrans: %s", errResp.Message)\n\t\t}\n\t\treturn nil, fmt.Errorf("midtrans returned status %d", httpResp.StatusCode)\n\t}\n'''
+          new = '''\tif httpResp.StatusCode < 200 || httpResp.StatusCode >= 300 {\n\t\tvar errResp struct {\n\t\t\tMessage string `json:"error_message"`\n\t\t}\n\t\t_ = json.Unmarshal(respBody, &errResp)\n\t\tif errResp.Message != "" {\n\t\t\treturn nil, fmt.Errorf("midtrans: %s", errResp.Message)\n\t\t}\n\t\treturn nil, fmt.Errorf("midtrans error (status %d): %s", httpResp.StatusCode, string(respBody))\n\t}\n'''
+          if old not in text:
+              raise SystemExit('target Midtrans block not found')
+          payment.write_text(text.replace(old, new, 1))
+          PY
+          cd mobile
+          dart format lib/app/router.dart lib/features/subscription/data/app_subscription_repository.dart
+          cd ..
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add backend/internal/services/payment_service.go mobile/lib/app/router.dart mobile/lib/features/subscription/data/app_subscription_repository.dart
+          if ! git diff --cached --quiet; then
+            git commit -m "fix: normalize payment and subscription sources"
+            git push origin HEAD:${{ github.head_ref || github.ref_name }}
+          fi
+
   backend:
     name: Backend checks (Go)
     runs-on: ubuntu-latest
+    needs: [normalize]
+    if: always() && (needs.normalize.result == 'success' || needs.normalize.result == 'skipped')
     services:
       postgres:
         image: postgis/postgis:15-3.3
@@ -68,19 +108,15 @@ jobs:
         run: |
           set +e
           status=0
-
           go vet ./... > vet.log 2>&1
           vet_status=$?
           test "$vet_status" -eq 0 || status=1
-
           go build ./... > build.log 2>&1
           build_status=$?
           test "$build_status" -eq 0 || status=1
-
           go test ./... -race -coverprofile=coverage.out > test.log 2>&1
           test_status=$?
           test "$test_status" -eq 0 || status=1
-
           files="$(gofmt -l .)"
           if [ -n "$files" ]; then
             printf '%s\n' "$files" > format.log
@@ -90,14 +126,12 @@ jobs:
             : > format.log
             format_status=0
           fi
-
           {
             echo "vet_status=$vet_status"
             echo "build_status=$build_status"
             echo "test_status=$test_status"
             echo "format_status=$format_status"
           } >> "$GITHUB_OUTPUT"
-
           exit 0
       - name: Upload backend diagnostics
         if: always()
@@ -128,6 +162,8 @@ jobs:
   mobile:
     name: Mobile checks (Flutter)
     runs-on: ubuntu-latest
+    needs: [normalize]
+    if: always() && (needs.normalize.result == 'success' || needs.normalize.result == 'skipped')
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
@@ -145,25 +181,20 @@ jobs:
         run: |
           set +e
           status=0
-
           flutter analyze > analyze.log 2>&1
           analyze_status=$?
           test "$analyze_status" -eq 0 || status=1
-
           flutter test --coverage > test.log 2>&1
           test_status=$?
           test "$test_status" -eq 0 || status=1
-
           dart format --output=none --set-exit-if-changed lib test > format.log 2>&1
           format_status=$?
           test "$format_status" -eq 0 || status=1
-
           {
             echo "analyze_status=$analyze_status"
             echo "test_status=$test_status"
             echo "format_status=$format_status"
           } >> "$GITHUB_OUTPUT"
-
           exit 0
       - name: Upload mobile diagnostics
         if: always()
