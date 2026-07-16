@@ -109,7 +109,7 @@ func main() {
 	notifService := services.NewNotificationService(notifRepo, notifDispatcher, redisClient, logger)
 	debtService := services.NewDebtService(debtRepo, orderRepo, txnRepo, userRepo, notifService, notifDispatcher, logger)
 
-	analyticsService := services.NewAnalyticsService(orderRepo, txnRepo, subRepo, routeRepo, visitRepo, priceRepo, userRepo, redisClient, logger)
+	analyticsService := services.NewAnalyticsService(pgPool, orderRepo, subRepo, routeRepo, visitRepo, priceRepo, userRepo, redisClient, logger)
 	insightService := services.NewInsightService(orderRepo, subRepo, routeRepo, visitRepo, priceRepo, userRepo, logger)
 	rewardService := services.NewRewardService(userRepo, redisClient, logger)
 	groupOrderService := services.NewGroupOrderService(groupOrderRepo, notifService, logger)
@@ -128,7 +128,7 @@ func main() {
 	orderHandler := order.NewHandler(orderService)
 	txnHandler := transaction.NewHandler()
 	analyticsHandler := analytics.NewAnalyticsHandler(analyticsService)
-	notifHandler := notification.NewNotificationHandler(notifService)
+	notifHandler := notification.NewNotificationHandler(notifRepo)
 	insightHandler := analytics.NewInsightHandler(insightService)
 	rewardHandler := analytics.NewRewardHandler(rewardService)
 	payHandler := paymentHandler.NewHandler(paymentGW, invoiceSvc)
