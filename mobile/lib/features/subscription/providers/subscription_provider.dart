@@ -1,11 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sayurpintar/core/network/api_client.dart';
+import 'package:sayurpintar/features/subscription/data/app_subscription_repository.dart';
 import 'package:sayurpintar/features/subscription/data/subscription_repository.dart';
 
 // ── Repository ───────────────────────────────────────────────────────────────
 
-final subscriptionRepositoryProvider = Provider<SubscriptionRepository>((ref) {
-  return SubscriptionRepository(ApiClient().dio);
+final subscriptionRepositoryProvider =
+    Provider<AppSubscriptionRepository>((ref) {
+  return AppSubscriptionRepository(ApiClient().dio);
 });
 
 // ── Packages ────────────────────────────────────────────────────────────────
