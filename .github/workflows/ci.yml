@@ -47,9 +47,15 @@ jobs:
         with:
           go-version-file: backend/go.mod
           cache-dependency-path: backend/go.sum
-      - name: Download dependencies
+      - name: Generate dependency checksums
         working-directory: backend
-        run: go mod download
+        run: go mod tidy
+      - name: Upload generated go.sum
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-go-sum
+          path: backend/go.sum
+          if-no-files-found: error
       - name: Report formatting
         continue-on-error: true
         working-directory: backend
