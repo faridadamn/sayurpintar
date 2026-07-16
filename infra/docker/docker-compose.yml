@@ -1,0 +1,75 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgis/postgis:15-3.4-alpine
+    container_name: sayurpintar-postgres
+    restart: unless-stopped
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-sayurpintar}
+      POSTGRES_USER: ${POSTGRES_USER:-sp_dev}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sp_dev_password}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sp_dev} -d ${POSTGRES_DB:-sayurpintar}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: sayurpintar-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongodb:
+    image: mongo:7
+    container_name: sayurpintar-mongodb
+    restart: unless-stopped
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-sp_dev}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-sp_dev_password}
+      MONGO_INITDB_DATABASE: ${MONGO_DB:-sayurpintar}
+    volumes:
+      - mongodata:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.5
+    container_name: sayurpintar-meilisearch
+    restart: unless-stopped
+    ports:
+      - "${MEILI_PORT:-7700}:7700"
+    environment:
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY:-sp_meili_dev_key}
+      MEILI_ENV: development
+    volumes:
+      - msdata:/meili_data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7700/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
+  redisdata:
+  mongodata:
+  msdata:

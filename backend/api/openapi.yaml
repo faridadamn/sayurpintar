@@ -1,0 +1,1387 @@
+openapi: 3.0.3
+info:
+  title: SayurPintar API
+  description: API for SayurPintar - helping street vegetable vendors optimize their daily operations
+  version: 1.0.0
+  contact:
+    name: SayurPintar Team
+  license:
+    name: MIT
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development
+  - url: https://api.sayurpintar.com/api/v1
+    description: Production
+
+security:
+  - BearerAuth: []
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          properties:
+            code:
+              type: integer
+            message:
+              type: string
+            details:
+              type: object
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        phone:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+          enum: [pedagang, pelanggan, admin]
+        avatar_url:
+          type: string
+        address:
+          type: string
+        area:
+          type: string
+        is_verified:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+
+    Waypoint:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        address:
+          type: string
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        type:
+          type: string
+          enum: [home, market, regular, custom]
+        notes:
+          type: string
+
+    SubscriptionPackage:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+          format: double
+        items:
+          type: array
+          items: {}
+        delivery_days:
+          type: array
+          items:
+            type: integer
+        is_active:
+          type: boolean
+
+    Subscription:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        package_id:
+          type: string
+          format: uuid
+        customer_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [active, paused, cancelled, expired]
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [pending, confirmed, delivering, delivered, cancelled]
+        total_price:
+          type: number
+          format: double
+        delivery_date:
+          type: string
+          format: date
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        review:
+          type: string
+
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [income, expense]
+        amount:
+          type: number
+          format: double
+        description:
+          type: string
+        category:
+          type: string
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        category:
+          type: string
+          enum: [sayur_hijau, sayur_akar, sayur_buah, bumbu, buah, lainnya]
+        default_unit:
+          type: string
+          example: kg
+        image_url:
+          type: string
+          nullable: true
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ProductCategory:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        count:
+          type: integer
+
+    PriceSubmission:
+      type: object
+      properties:
+        id:
+          type: string
+        product_id:
+          type: string
+        product_name:
+          type: string
+        area:
+          type: string
+        market:
+          type: string
+        price:
+          type: number
+          format: double
+        unit:
+          type: string
+        submitted_by:
+          type: string
+        is_verified:
+          type: boolean
+        date:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    AggregatedPrice:
+      type: object
+      properties:
+        product_id:
+          type: string
+        product_name:
+          type: string
+        area:
+          type: string
+        median_price:
+          type: number
+          format: double
+        min_price:
+          type: number
+          format: double
+        max_price:
+          type: number
+          format: double
+        sample_size:
+          type: integer
+        unit:
+          type: string
+        trend:
+          type: string
+          enum: [up, down, stable]
+        change_pct:
+          type: number
+          format: double
+        date:
+          type: string
+
+    PriceTrend:
+      type: object
+      properties:
+        product_id:
+          type: string
+        product_name:
+          type: string
+        area:
+          type: string
+        data_points:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+              price:
+                type: number
+                format: double
+              samples:
+                type: integer
+
+    PriceAlert:
+      type: object
+      properties:
+        id:
+          type: string
+        user_id:
+          type: string
+        product_id:
+          type: string
+        product_name:
+          type: string
+        area:
+          type: string
+        threshold:
+          type: number
+          format: double
+        direction:
+          type: string
+          enum: [up, down, both]
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+
+    RecommendedPrice:
+      type: object
+      properties:
+        product_id:
+          type: string
+        product_name:
+          type: string
+        market_price:
+          type: number
+          format: double
+        suggested_price:
+          type: number
+          format: double
+        margin_pct:
+          type: number
+          format: double
+        unit:
+          type: string
+
+    Route:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        status:
+          type: string
+          enum: [planned, active, completed, cancelled]
+        waypoints:
+          type: array
+          items: {}
+        total_distance:
+          type: number
+          format: double
+        estimated_time:
+          type: integer
+
+    PaymentTransaction:
+      type: object
+      properties:
+        token:
+          type: string
+        redirect_url:
+          type: string
+        qr_code:
+          type: string
+          nullable: true
+        order_id:
+          type: string
+          format: uuid
+        amount:
+          type: number
+          format: double
+
+    PaymentStatus:
+      type: object
+      properties:
+        order_id:
+          type: string
+          format: uuid
+        payment_status:
+          type: string
+          enum: [pending, paid, partial, deferred]
+        payment_method:
+          type: string
+        total_price:
+          type: number
+          format: double
+        paid_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    Invoice:
+      type: object
+      properties:
+        invoice_number:
+          type: string
+        date:
+          type: string
+        order_id:
+          type: string
+          format: uuid
+        pelanggan_name:
+          type: string
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              qty:
+                type: number
+                format: double
+              unit:
+                type: string
+              price:
+                type: number
+                format: double
+              subtotal:
+                type: number
+                format: double
+        total:
+          type: number
+          format: double
+        payment_status:
+          type: string
+
+paths:
+  /health:
+    get:
+      summary: Liveness check
+      security: []
+      responses:
+        "200":
+          description: Server is alive
+
+  /ready:
+    get:
+      summary: Readiness check
+      security: []
+      responses:
+        "200":
+          description: All services ready
+        "503":
+          description: One or more services unhealthy
+
+  /auth/send-otp:
+    post:
+      summary: Send OTP to phone number
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone]
+              properties:
+                phone:
+                  type: string
+      responses:
+        "200":
+          description: OTP sent
+        "429":
+          description: Too many requests
+
+  /auth/verify-otp:
+    post:
+      summary: Verify OTP and get tokens
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone, otp]
+              properties:
+                phone:
+                  type: string
+                otp:
+                  type: string
+      responses:
+        "200":
+          description: Tokens returned
+        "401":
+          description: Invalid OTP
+
+  /profile:
+    get:
+      summary: Get user profile
+      responses:
+        "200":
+          description: User profile
+    put:
+      summary: Update user profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                address:
+                  type: string
+                area:
+                  type: string
+      responses:
+        "200":
+          description: Profile updated
+
+  # ── Price Endpoints ──
+
+  /prices/submit:
+    post:
+      summary: Submit a crowdsourced price data point
+      tags: [Prices]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [price, area, market]
+              properties:
+                product_id:
+                  type: string
+                product_name:
+                  type: string
+                price:
+                  type: number
+                  format: double
+                market:
+                  type: string
+                area:
+                  type: string
+                unit:
+                  type: string
+      responses:
+        "201":
+          description: Price submitted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                      submission_id:
+                        type: string
+        "400":
+          description: Validation error
+        "401":
+          description: Authentication required
+        "429":
+          description: Submission limit reached
+
+  /prices/current:
+    get:
+      summary: Get current aggregated prices by area
+      tags: [Prices]
+      parameters:
+        - name: area
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Area identifier (e.g. jakarta_selatan)
+        - name: date
+          in: query
+          schema:
+            type: string
+          description: Date in YYYY-MM-DD format (defaults to today)
+      responses:
+        "200":
+          description: Aggregated prices
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/AggregatedPrice"
+        "400":
+          description: Missing area parameter
+
+  /prices/trend/{product_id}:
+    get:
+      summary: Get price trend for a product over N days
+      tags: [Prices]
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: area
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: days
+          in: query
+          schema:
+            type: integer
+            default: 7
+            maximum: 365
+      responses:
+        "200":
+          description: Price trend data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: "#/components/schemas/PriceTrend"
+
+  /prices/recommend/{product_id}:
+    get:
+      summary: Get recommended selling price for a product
+      tags: [Prices]
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: area
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: margin_pct
+          in: query
+          schema:
+            type: number
+            default: 30
+          description: Desired margin percentage
+      responses:
+        "200":
+          description: Recommended price
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: "#/components/schemas/RecommendedPrice"
+        "404":
+          description: No price data available
+
+  /prices/alerts:
+    post:
+      summary: Create a price alert
+      tags: [Prices]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [product_id, area, threshold]
+              properties:
+                product_id:
+                  type: string
+                product_name:
+                  type: string
+                area:
+                  type: string
+                threshold:
+                  type: number
+                  format: double
+                direction:
+                  type: string
+                  enum: [up, down, both]
+                  default: both
+      responses:
+        "201":
+          description: Alert created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: "#/components/schemas/PriceAlert"
+    get:
+      summary: Get authenticated user's price alerts
+      tags: [Prices]
+      responses:
+        "200":
+          description: List of alerts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/PriceAlert"
+
+  /prices/alerts/{id}:
+    delete:
+      summary: Delete a price alert
+      tags: [Prices]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Alert deleted
+        "404":
+          description: Alert not found
+
+  /prices/stats/area:
+    get:
+      summary: Get price statistics for all products in an area
+      tags: [Prices]
+      parameters:
+        - name: area
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: date
+          in: query
+          schema:
+            type: string
+          description: Date in YYYY-MM-DD format (defaults to today)
+      responses:
+        "200":
+          description: Area price statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/AggregatedPrice"
+
+  /prices/top-movers:
+    get:
+      summary: Get products with the biggest price changes
+      tags: [Prices]
+      parameters:
+        - name: area
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: date
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+            maximum: 100
+      responses:
+        "200":
+          description: Top movers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/AggregatedPrice"
+
+  # ── Product Endpoints ──
+
+  /products:
+    get:
+      summary: List products in the catalog
+      tags: [Products]
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+            enum: [sayur_hijau, sayur_akar, sayur_buah, bumbu, buah, lainnya]
+          description: Filter by category
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search by product name
+        - name: active_only
+          in: query
+          schema:
+            type: boolean
+            default: true
+          description: Only return active products
+      responses:
+        "200":
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Product"
+    post:
+      summary: Create a new product (admin only)
+      tags: [Products]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, category]
+              properties:
+                name:
+                  type: string
+                category:
+                  type: string
+                  enum: [sayur_hijau, sayur_akar, sayur_buah, bumbu, buah, lainnya]
+                default_unit:
+                  type: string
+                  default: kg
+                image_url:
+                  type: string
+                  nullable: true
+      responses:
+        "201":
+          description: Product created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: "#/components/schemas/Product"
+        "403":
+          description: Admin access required
+
+  /products/categories:
+    get:
+      summary: List all product categories with counts
+      tags: [Products]
+      responses:
+        "200":
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ProductCategory"
+
+  /products/{id}:
+    get:
+      summary: Get product detail
+      tags: [Products]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Product detail
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: "#/components/schemas/Product"
+        "404":
+          description: Product not found
+    put:
+      summary: Update a product (admin only)
+      tags: [Products]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                category:
+                  type: string
+                  enum: [sayur_hijau, sayur_akar, sayur_buah, bumbu, buah, lainnya]
+                default_unit:
+                  type: string
+                image_url:
+                  type: string
+                  nullable: true
+                is_active:
+                  type: boolean
+      responses:
+        "200":
+          description: Product updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: "#/components/schemas/Product"
+        "403":
+          description: Admin access required
+        "404":
+          description: Product not found
+
+  # ── Route Endpoints ──
+
+  /routes:
+    get:
+      summary: List routes
+      responses:
+        "200":
+          description: List of routes
+    post:
+      summary: Create route
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                waypoints:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+      responses:
+        "201":
+          description: Route created
+
+  /routes/{id}:
+    get:
+      summary: Get route detail
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Route detail
+    put:
+      summary: Update route
+      responses:
+        "200":
+          description: Route updated
+    delete:
+      summary: Delete route
+      responses:
+        "200":
+          description: Route deleted
+
+  /routes/{id}/optimize:
+    post:
+      summary: Optimize route order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Optimized route
+
+  /routes/{id}/visits:
+    post:
+      summary: Complete a visit
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Visit completed
+
+  /waypoints:
+    get:
+      summary: List waypoints
+      responses:
+        "200":
+          description: List of waypoints
+    post:
+      summary: Create waypoint
+      responses:
+        "201":
+          description: Waypoint created
+
+  /waypoints/{id}:
+    put:
+      summary: Update waypoint
+      responses:
+        "200":
+          description: Waypoint updated
+    delete:
+      summary: Delete waypoint
+      responses:
+        "200":
+          description: Waypoint deleted
+
+  # ── Subscription Endpoints ──
+
+  /subscriptions/packages:
+    get:
+      summary: List subscription packages
+      responses:
+        "200":
+          description: List of packages
+    post:
+      summary: Create subscription package
+      responses:
+        "201":
+          description: Package created
+
+  /subscriptions/packages/{id}:
+    get:
+      summary: Get package detail
+      responses:
+        "200":
+          description: Package detail
+    put:
+      summary: Update package
+      responses:
+        "200":
+          description: Package updated
+    delete:
+      summary: Delete package
+      responses:
+        "200":
+          description: Package deleted
+
+  /subscriptions/subscribe:
+    post:
+      summary: Subscribe to a package
+      responses:
+        "201":
+          description: Subscribed
+
+  /subscriptions/my:
+    get:
+      summary: Get my subscriptions
+      responses:
+        "200":
+          description: List of subscriptions
+
+  /subscriptions/{id}/cancel:
+    post:
+      summary: Cancel subscription
+      responses:
+        "200":
+          description: Subscription cancelled
+
+  /subscriptions/today-orders:
+    get:
+      summary: Get today's orders
+      responses:
+        "200":
+          description: Today's orders
+
+  /subscriptions/orders/{id}/status:
+    patch:
+      summary: Update order status
+      responses:
+        "200":
+          description: Order status updated
+
+  # ── Order Endpoints ──
+
+  /orders:
+    get:
+      summary: List orders
+      responses:
+        "200":
+          description: Order list
+
+  /orders/{id}:
+    get:
+      summary: Get order detail
+      responses:
+        "200":
+          description: Order detail
+
+  /orders/{id}/status:
+    patch:
+      summary: Update order status
+      responses:
+        "200":
+          description: Order status updated
+
+  /orders/{id}/rate:
+    post:
+      summary: Rate an order
+      responses:
+        "200":
+          description: Order rated
+
+  # ── Transaction Endpoints ──
+
+  /transactions:
+    get:
+      summary: List transactions
+      responses:
+        "200":
+          description: Transaction list
+    post:
+      summary: Create transaction
+      responses:
+        "201":
+          description: Transaction created
+
+  /transactions/summary:
+    get:
+      summary: Get transaction summary (P&L)
+      responses:
+        "200":
+          description: Summary with omset, modal, untung, margin
+
+  # ── Payment Endpoints ──
+
+  /payments/create:
+    post:
+      summary: Create a payment transaction (QRIS/online)
+      tags: [Payments]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [order_id]
+              properties:
+                order_id:
+                  type: string
+                  format: uuid
+                payment_type:
+                  type: string
+                  enum: [qris, gopay, bank_transfer, credit_card]
+                  default: qris
+      responses:
+        "201":
+          description: Payment transaction created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                      redirect_url:
+                        type: string
+                      qr_code:
+                        type: string
+                      order_id:
+                        type: string
+                      amount:
+                        type: number
+                        format: double
+        "400":
+          description: Order already paid or invalid request
+        "404":
+          description: Order not found
+
+  /payments/webhook/midtrans:
+    post:
+      summary: Midtrans payment notification webhook
+      tags: [Payments]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                transaction_time:
+                  type: string
+                transaction_status:
+                  type: string
+                transaction_id:
+                  type: string
+                status_code:
+                  type: string
+                signature_key:
+                  type: string
+                payment_type:
+                  type: string
+                order_id:
+                  type: string
+                gross_amount:
+                  type: string
+                fraud_status:
+                  type: string
+      responses:
+        "200":
+          description: Notification processed
+        "400":
+          description: Invalid notification
+
+  /payments/{id}/status:
+    get:
+      summary: Check payment status for an order
+      tags: [Payments]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Payment status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      order_id:
+                        type: string
+                      payment_status:
+                        type: string
+                        enum: [pending, paid, partial, deferred]
+                      payment_method:
+                        type: string
+                      total_price:
+                        type: number
+                        format: double
+                      paid_at:
+                        type: string
+                        format: date-time
+                        nullable: true
+        "404":
+          description: Order not found
+
+  /payments/{id}/invoice:
+    get:
+      summary: Download PDF invoice for an order
+      tags: [Payments]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: PDF invoice file
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: Order not found
+
+  /payments/confirm:
+    post:
+      summary: Manual payment confirmation (cash)
+      tags: [Payments]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [order_id]
+              properties:
+                order_id:
+                  type: string
+                  format: uuid
+                amount:
+                  type: number
+                  format: double
+                  description: Amount paid (defaults to order total)
+                payment_method:
+                  type: string
+                  enum: [cash, transfer, qris]
+                  default: cash
+      responses:
+        "200":
+          description: Payment confirmed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                      order_id:
+                        type: string
+                      payment_method:
+                        type: string
+                      amount:
+                        type: number
+                        format: double
+        "400":
+          description: Order already paid
+        "403":
+          description: Only pedagang can confirm payments
+        "404":
+          description: Order not found

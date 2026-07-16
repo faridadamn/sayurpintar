@@ -1,0 +1,28 @@
+# Root docker-compose shortcut
+# Usage: docker-compose -f docker-compose.yml up -d
+# This is a convenience wrapper around the infra compose file.
+version: "3.9"
+
+services:
+  postgres:
+    extends:
+      file: infra/docker/docker-compose.yml
+      service: postgres
+  redis:
+    extends:
+      file: infra/docker/docker-compose.yml
+      service: redis
+  mongodb:
+    extends:
+      file: infra/docker/docker-compose.yml
+      service: mongodb
+  meilisearch:
+    extends:
+      file: infra/docker/docker-compose.yml
+      service: meilisearch
+
+volumes:
+  pgdata:
+  redisdata:
+  mongodata:
+  msdata:

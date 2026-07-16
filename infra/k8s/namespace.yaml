@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sayurpintar
+  labels:
+    app.kubernetes.io/name: sayurpintar
+    app.kubernetes.io/part-of: sayurpintar

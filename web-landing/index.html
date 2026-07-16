@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SayurPintar — Aplikasi untuk Tukang Sayur Keliling</title>
+    <meta name="description" content="SayurPintar membantu tukang sayur keliling mengelola rute, langganan, dan harga pasar secara digital. Naikin penghasilan, kurangi waste.">
+    <meta name="keywords" content="tukang sayur, sayur keliling, aplikasi pedagang, optimasi rute, langganan sayur">
+    <meta property="og:title" content="SayurPintar — Aplikasi untuk Tukang Sayur Keliling">
+    <meta property="og:description" content="Dari rute, sampai harga, sampai pelanggan — semua terhubung dalam satu aplikasi.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sayurpintar.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="landing.css">
+</head>
+<body>
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="#" class="nav-logo">
+                <span class="logo-icon">🥬</span>
+                <span class="logo-text">SayurPintar</span>
+            </a>
+            <div class="nav-links" id="navLinks">
+                <a href="#features">Fitur</a>
+                <a href="#how-it-works">Cara Kerja</a>
+                <a href="#testimoni">Testimoni</a>
+                <a href="#pricing">Harga</a>
+                <a href="#faq">FAQ</a>
+            </div>
+            <div class="nav-actions">
+                <a href="#download" class="btn btn-primary btn-sm">Download Gratis</a>
+                <button class="nav-toggle" id="navToggle" aria-label="Menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero" id="hero">
+        <div class="hero-bg">
+            <div class="hero-shape shape-1"></div>
+            <div class="hero-shape shape-2"></div>
+            <div class="hero-shape shape-3"></div>
+        </div>
+        <div class="container hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="badge-dot"></span>
+                    Gratis untuk semua tukang sayur 🎉
+                </div>
+                <h1 class="hero-title">
+                    Tukang Sayur<br>
+                    <span class="text-gradient">Jadi Lebih Pintar</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Kelola rute jualan, atur pelanggan langganan, dan tahu harga pasar — 
+                    semua dalam satu aplikasi. <strong>Naikin penghasilan sampai 30%.</strong>
+                </p>
+                <div class="hero-cta">
+                    <a href="#download" class="btn btn-primary btn-lg">
+                        <span>📱</span> Download Sekarang
+                    </a>
+                    <a href="#how-it-works" class="btn btn-outline btn-lg">
+                        <span>▶</span> Lihat Cara Kerja
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number" data-count="1200">0</span><span class="stat-plus">+</span>
+                        <span class="stat-label">Tukang Sayur</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat">
+                        <span class="stat-number" data-count="50000">0</span><span class="stat-plus">+</span>
+                        <span class="stat-label">Transaksi/bulan</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat">
+                        <span class="stat-number" data-count="30">0</span><span class="stat-plus">%</span>
+                        <span class="stat-label">Penghasilan Naik</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="phone-mockup">
+                    <div class="phone-screen">
+                        <div class="mock-header">
+                            <span class="mock-greeting">Selamat Pagi, Bu Sari! ☀️</span>
+                        </div>
+                        <div class="mock-card mock-revenue">
+                            <span class="mock-label">Omset Hari Ini</span>
+                            <span class="mock-value">Rp 285.000</span>
+                            <span class="mock-change up">↑ 12% dari kemarin</span>
+                        </div>
+                        <div class="mock-card mock-orders">
+                            <div class="mock-row">
+                                <span>📦 Pesanan</span><span class="mock-badge">7</span>
+                            </div>
+                            <div class="mock-row">
+                                <span>👥 Langganan</span><span class="mock-badge">5</span>
+                            </div>
+                            <div class="mock-row">
+                                <span>💰 Untung</span><span class="mock-badge green">Rp 105.000</span>
+                            </div>
+                        </div>
+                        <div class="mock-card mock-route">
+                            <span class="mock-label">🗺️ Rute Hari Ini</span>
+                            <div class="mock-route-dots">
+                                <span class="dot active"></span>
+                                <span class="dot-line"></span>
+                                <span class="dot"></span>
+                                <span class="dot-line"></span>
+                                <span class="dot"></span>
+                                <span class="dot-line"></span>
+                                <span class="dot"></span>
+                            </div>
+                            <span class="mock-sub">6 stop · 4.2 km · 2.5 jam</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-wave">
+            <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="white"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- ===== PAIN POINTS ===== -->
+    <section class="pain-points">
+        <div class="container">
+            <div class="section-header">
+                <h2>Kenapa Tukang Sayur Butuh <span class="text-green">SayurPintar?</span></h2>
+                <p>Ini masalah nyata yang dihadapi tukang sayur setiap hari</p>
+            </div>
+            <div class="pain-grid">
+                <div class="pain-card">
+                    <span class="pain-icon">😤</span>
+                    <h3>Nggak Tahu Untung atau Rugi</h3>
+                    <p>Uang masuk-keluar dicampur. Pulang jualan nggak tahu hari ini beneran cuan atau boncos.</p>
+                </div>
+                <div class="pain-card">
+                    <span class="pain-icon">🗺️</span>
+                    <h3>Rute Jualan Asal-Asalan</h3>
+                    <p>Jalan ke mana aja, buang bensin & tenaga. Kadang ke area sepi, kadang balik arah.</p>
+                </div>
+                <div class="pain-card">
+                    <span class="pain-icon">🥬</span>
+                    <h3>Sayur Sisa Busuk</h3>
+                    <p>Beli pagi, sore sisa. Nggak ada data berapa yang laku vs yang terbuang sia-sia.</p>
+                </div>
+                <div class="pain-card">
+                    <span class="pain-icon">💸</span>
+                    <h3>Piutang Nggak Ketagih</h3>
+                    <p>Tetangga bilang "nanti ya bayarnya" — uang macet, cash flow mati.</p>
+                </div>
+                <div class="pain-card">
+                    <span class="pain-icon">📊</span>
+                    <h3>Harga Naik Turun</h3>
+                    <p>Pasar naik, harga jual belum adjust. Pasar turun, masih jual mahal — pelanggan kabur.</p>
+                </div>
+                <div class="pain-card">
+                    <span class="pain-icon">🏪</span>
+                    <h3>Kalah Saing</h3>
+                    <p>Supermarket & online makin banyak. Tukang sayur nggak punya cara buat bedain diri.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FEATURES ===== -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">✨ Fitur Utama</span>
+                <h2>Satu Aplikasi, <span class="text-green">Semua Masalah Selesai</span></h2>
+                <p>SayurPintar bukan cuma aplikasi — ini otak digital buat tukang sayur</p>
+            </div>
+
+            <!-- Feature 1: RuteSayur -->
+            <div class="feature-row">
+                <div class="feature-content">
+                    <span class="feature-badge">🗺️ RuteSayur</span>
+                    <h3>Rute Paling Efisien, Otomatis</h3>
+                    <p>App hitung rute terbaik dari semua pelanggan. Nggak perlu mikir mau ke mana — tinggal ikutin GPS.</p>
+                    <ul class="feature-list">
+                        <li>✅ Optimasi rute otomatis (hemat bensin 40%)</li>
+                        <li>✅ Navigasi GPS turn-by-turn</li>
+                        <li>✅ Deteksi otomatis kalau udah sampai</li>
+                        <li>✅ Jalan tanpa internet (offline mode)</li>
+                    </ul>
+                </div>
+                <div class="feature-visual">
+                    <div class="feature-card-mock">
+                        <div class="mock-map">
+                            <div class="mock-route-line"></div>
+                            <div class="mock-pin" style="top:20%;left:30%">1</div>
+                            <div class="mock-pin" style="top:40%;left:60%">2</div>
+                            <div class="mock-pin" style="top:60%;left:45%">3</div>
+                            <div class="mock-pin" style="top:75%;left:75%">4</div>
+                        </div>
+                        <div class="mock-info-bar">
+                            <span>📍 4.2 km</span>
+                            <span>⏱️ 2.5 jam</span>
+                            <span>⛽ Rp 8.000</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature 2: Langgan -->
+            <div class="feature-row reverse">
+                <div class="feature-content">
+                    <span class="feature-badge">📦 Langgan</span>
+                    <h3>Pelanggan Tetap, Penghasilan Pasti</h3>
+                    <p>Buat paket langganan, pelanggan auto-order setiap hari. Nggak perlu tunggu lewat depan rumah.</p>
+                    <ul class="feature-list">
+                        <li>✅ Buat paket langganan (harian/mingguan)</li>
+                        <li>✅ Pesanan auto-generate tiap hari</li>
+                        <li>✅ Pelanggan bisa ubah pesanan via app</li>
+                        <li>✅ Pembayaran otomatis (QRIS/cash)</li>
+                    </ul>
+                </div>
+                <div class="feature-visual">
+                    <div class="feature-card-mock subscription-mock">
+                        <div class="mock-sub-header">
+                            <span class="mock-sub-title">Paket Hemat Keluarga</span>
+                            <span class="mock-sub-price">Rp 45.000/kirim</span>
+                        </div>
+                        <div class="mock-sub-items">
+                            <span>🥬 Kangkung 2 ikat</span>
+                            <span>🍅 Tomat 1 kg</span>
+                            <span>🥕 Wortel 0.5 kg</span>
+                            <span>🌶️ Cabai 0.25 kg</span>
+                        </div>
+                        <div class="mock-sub-schedule">
+                            Setiap Senin, Rabu, Jumat
+                        </div>
+                        <div class="mock-sub-subs">
+                            <span>👥 12 pelanggan langganan</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature 3: HargaPasar -->
+            <div class="feature-row">
+                <div class="feature-content">
+                    <span class="feature-badge">💰 HargaPasar</span>
+                    <h3>Harga Pasar Real-Time</h3>
+                    <p>Tahu harga sayur hari ini dari kontribusi sesama pedagang. Nggak lagi asal tebak harga jual.</p>
+                    <ul class="feature-list">
+                        <li>✅ Harga update setiap hari</li>
+                        <li>✅ Trend naik/turun minggu ini</li>
+                        <li>✅ Rekomendasi harga jual otomatis</li>
+                        <li>✅ Alert kalau harga berubah signifikan</li>
+                    </ul>
+                </div>
+                <div class="feature-visual">
+                    <div class="feature-card-mock price-mock">
+                        <div class="mock-price-row">
+                            <span>🥬 Kangkung</span>
+                            <span class="mock-price">Rp 3.500</span>
+                            <span class="mock-trend up">↑ 6%</span>
+                        </div>
+                        <div class="mock-price-row">
+                            <span>🍅 Tomat</span>
+                            <span class="mock-price">Rp 8.000</span>
+                            <span class="mock-trend down">↓ 3%</span>
+                        </div>
+                        <div class="mock-price-row">
+                            <span>🌶️ Cabai Merah</span>
+                            <span class="mock-price">Rp 35.000</span>
+                            <span class="mock-trend up">↑ 12%</span>
+                        </div>
+                        <div class="mock-price-row">
+                            <span>🧅 Bawang Merah</span>
+                            <span class="mock-price">Rp 28.000</span>
+                            <span class="mock-trend stable">→ 0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- More Features Grid -->
+            <div class="more-features">
+                <div class="more-feature-card">
+                    <span class="mf-icon">📊</span>
+                    <h4>Dashboard Keuangan</h4>
+                    <p>Omset, untung, margin — semua terlihat jelas setiap hari.</p>
+                </div>
+                <div class="more-feature-card">
+                    <span class="mf-icon">🔔</span>
+                    <h4>Notifikasi WhatsApp</h4>
+                    <p>Pelanggan dapat reminder otomatis sebelum sayur diantar.</p>
+                </div>
+                <div class="more-feature-card">
+                    <span class="mf-icon">💳</span>
+                    <h4>QRIS & Cash</h4>
+                    <p>Terima pembayaran apa aja. QRIS, transfer, atau tunai.</p>
+                </div>
+                <div class="more-feature-card">
+                    <span class="mf-icon">📈</span>
+                    <h4>Insight Cerdas</h4>
+                    <p>App kasih saran: "Bu Ani cocok ditawarin langganan."</p>
+                </div>
+                <div class="more-feature-card">
+                    <span class="mf-icon">🏆</span>
+                    <h4>Reward Points</h4>
+                    <p>Kumpulin poin dari jualan & kontribusi harga. Naik level!</p>
+                </div>
+                <div class="more-feature-card">
+                    <span class="mf-icon">🛒</span>
+                    <h4>Grosir Bareng</h4>
+                    <p>Beli bareng sama pedagang lain, harga grosir, hemat 20%.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== HOW IT WORKS ===== -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">🚀 Cara Kerja</span>
+                <h2>Mulai dalam <span class="text-green">3 Langkah</span></h2>
+                <p>Nggak ribet, nggak butuh laptop, nggak butuh keahlian teknis</p>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-icon">📱</div>
+                    <h3>Download & Daftar</h3>
+                    <p>Download app dari Play Store. Daftar pakai nomor HP. Masukkan kode OTP. Selesai dalam 1 menit.</p>
+                </div>
+                <div class="step-connector">
+                    <svg viewBox="0 0 100 20"><path d="M0 10 H100" stroke="#22c55e" stroke-width="2" stroke-dasharray="6 4"/></svg>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-icon">📍</div>
+                    <h3>Tambah Pelanggan</h3>
+                    <p>Tandai lokasi pelanggan di peta. Buat paket langganan. App otomatis bikin rute terbaik.</p>
+                </div>
+                <div class="step-connector">
+                    <svg viewBox="0 0 100 20"><path d="M0 10 H100" stroke="#22c55e" stroke-width="2" stroke-dasharray="6 4"/></svg>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-icon">💰</div>
+                    <h3>Jualan & Cuan</h3>
+                    <p>Ikutin rute, antar sayur, catat pembayaran. Lihat penghasilan naik setiap hari!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== IMPACT / RESULTS ===== -->
+    <section class="impact">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">📊 Hasil Nyata</span>
+                <h2>Angka yang <span class="text-green">Bicara Sendiri</span></h2>
+            </div>
+            <div class="impact-grid">
+                <div class="impact-card">
+                    <div class="impact-icon">📈</div>
+                    <div class="impact-number">30%</div>
+                    <div class="impact-label">Penghasilan Naik</div>
+                    <p>Rata-rata pedagang naikin penghasilan 30% dalam 2 bulan pertama.</p>
+                </div>
+                <div class="impact-card">
+                    <div class="impact-icon">🗑️</div>
+                    <div class="impact-number">-50%</div>
+                    <div class="impact-label">Food Waste Turun</div>
+                    <p>Dari 30% sayur terbuang jadi cuma 15%. Lebih sedikit rugi.</p>
+                </div>
+                <div class="impact-card">
+                    <div class="impact-icon">⏱️</div>
+                    <div class="impact-number">2 jam</div>
+                    <div class="impact-label">Waktu Hemat</div>
+                    <p>Rute optimal = hemat 2 jam per hari. Bisa istirat lebih awal.</p>
+                </div>
+                <div class="impact-card">
+                    <div class="impact-icon">🔄</div>
+                    <div class="impact-number">85%</div>
+                    <div class="impact-label">Piutang Ketagih</div>
+                    <p>Reminder otomatis bikin piutang tertagih naik dari 50% ke 85%.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TESTIMONIALS ===== -->
+    <section class="testimonials" id="testimoni">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">💬 Testimoni</span>
+                <h2>Kata Mereka yang <span class="text-green">Udah Pakai</span></h2>
+            </div>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">"Dulu saya jualan asal jalan, sekarang ada rute yang bener. Hemat bensin, lebih banyak pelanggan yang ketemu. Omset naik Rp 50rb sehari!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">S</div>
+                        <div>
+                            <strong>Bu Sari</strong>
+                            <span>Tukang Sayur · Jakarta Selatan</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">"Fitur langganan itu game-changer. Sekarang saya punya 15 pelanggan tetap. Nggak perlu lagi teriak 'sayuuur' dari pagi sampai siang."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">B</div>
+                        <div>
+                            <strong>Pak Budi</strong>
+                            <span>Tukang Sayur · Depok</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">"Sebagai pelanggan, saya suka karena sayur segar diantar ke rumah. Nggak perlu ke pasar. Harganya juga lebih murah dari supermarket!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">R</div>
+                        <div>
+                            <strong>Ibu Rina</strong>
+                            <span>Pelanggan · Tangerang</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PRICING ===== -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">💸 Harga</span>
+                <h2>Gratis untuk <span class="text-green">Memulai</span></h2>
+                <p>Tanpa biaya pendaftaran. Tanpa kartu kredit. Bayar hanya saat Anda sudah untung.</p>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-badge">Paling Populer</div>
+                    <h3>Dasar</h3>
+                    <div class="pricing-price">
+                        <span class="price-amount">Gratis</span>
+                        <span class="price-period">selamanya</span>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>✅ Optimasi rute harian</li>
+                        <li>✅ Sampai 20 pelanggan</li>
+                        <li>✅ Harga pasar real-time</li>
+                        <li>✅ Catat keuangan harian</li>
+                        <li>✅ 5 paket langganan</li>
+                        <li>✅ Dashboard dasar</li>
+                    </ul>
+                    <a href="#download" class="btn btn-outline btn-block">Mulai Gratis</a>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">Paling Untung</div>
+                    <h3>Pro</h3>
+                    <div class="pricing-price">
+                        <span class="price-amount">Rp 25.000</span>
+                        <span class="price-period">/bulan</span>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>✅ Semua fitur Dasar</li>
+                        <li>✅ Pelanggan unlimited</li>
+                        <li>✅ Paket langganan unlimited</li>
+                        <li>✅ Pembayaran QRIS</li>
+                        <li>✅ Insight & rekomendasi AI</li>
+                        <li>✅ Reminder WhatsApp otomatis</li>
+                        <li>✅ Credit score & pinjaman</li>
+                        <li>✅ Prioritas support</li>
+                    </ul>
+                    <a href="#download" class="btn btn-primary btn-block">Coba 30 Hari Gratis</a>
+                </div>
+                <div class="pricing-card">
+                    <div class="pricing-badge">Untuk Komunitas</div>
+                    <h3>Komunitas</h3>
+                    <div class="pricing-price">
+                        <span class="price-amount">Rp 15.000</span>
+                        <span class="price-period">/bulan/pedagang</span>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>✅ Semua fitur Pro</li>
+                        <li>✅ Beli grosir bareng (GrosirKu)</li>
+                        <li>✅ Supplier marketplace</li>
+                        <li>✅ Dashboard komunitas</li>
+                        <li>✅ Training onboarding</li>
+                        <li>✅ Dedicated support</li>
+                    </ul>
+                    <a href="#download" class="btn btn-outline btn-block">Hubungi Kami</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section class="faq" id="faq">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">❓ FAQ</span>
+                <h2>Pertanyaan yang <span class="text-green">Sering Ditanyakan</span></h2>
+            </div>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Apa SayurPintar benar-benar gratis?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Ya! Paket Dasar gratis selamanya. Tidak ada biaya pendaftaran, tidak ada kartu kredit. Anda hanya mulai bayar kalau mau fitur Pro (Rp 25rb/bulan) dan itu juga ada trial 30 hari gratis.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Saya nggak paham teknologi, bisa pakai?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Bisa! App dirancang khusus untuk orang yang nggak biasa pakai smartphone. Tombol besar, tulisan jelas, bahasa Indonesia. Kalau bingung, tim kami bantu onboarding via WhatsApp.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Butuh HP mahal nggak?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Nggak! SayurPintar jalan di HP Android Rp 1 jutaan. Ukuran app cuma 50MB. Jalan di jaringan 3G juga bisa, bahkan bisa dipake offline.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Data saya aman?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Sangat aman. Data dienkripsi, disimpan di server Indonesia. Kami tidak jual data Anda ke siapapun. Privasi adalah prioritas utama kami.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Bisa dipake untuk pelanggan?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Bisa! Pelanggan bisa download app juga buat pesan sayur, lihat harga pasar, dan atur langganan. Atau cukup lewat WhatsApp aja — pedagang yang kelola semuanya.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Gimana cara terima pembayaran QRIS?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Di paket Pro, Anda bisa terima pembayaran QRIS langsung dari app. Pelanggan scan QR code, uang masuk ke rekening Anda. Proses cuma 2 detik!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CTA / DOWNLOAD ===== -->
+    <section class="cta" id="download">
+        <div class="container">
+            <div class="cta-card">
+                <div class="cta-content">
+                    <h2>Siap Jadi Tukang Sayur <span class="text-gradient">Pintar?</span></h2>
+                    <p>Download sekarang dan rasakan bedanya. Gratis. Tanpa ribet. Langsung cuan.</p>
+                    <div class="cta-buttons">
+                        <a href="#" class="btn btn-primary btn-lg">
+                            <span>🤖</span> Download untuk Android
+                        </a>
+                        <a href="#" class="btn btn-outline btn-lg btn-white">
+                            <span>🍎</span> Download untuk iOS
+                        </a>
+                    </div>
+                    <div class="cta-trust">
+                        <span>🔒 Aman & Privasi Terjaga</span>
+                        <span>⭐ 4.8/5 dari 1200+ pengguna</span>
+                        <span>🇮🇩 Buatan Indonesia</span>
+                    </div>
+                </div>
+                <div class="cta-visual">
+                    <div class="cta-phone">
+                        <div class="cta-phone-screen">
+                            <div class="cta-emoji">🥬</div>
+                            <div class="cta-app-name">SayurPintar</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="footer-logo">
+                        <span class="logo-icon">🥬</span>
+                        <span class="logo-text">SayurPintar</span>
+                    </a>
+                    <p>Aplikasi untuk tukang sayur keliling yang mau jualan lebih pintar, lebih efisien, dan lebih cuan.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Instagram">📷</a>
+                        <a href="#" aria-label="TikTok">🎵</a>
+                        <a href="#" aria-label="WhatsApp">💬</a>
+                        <a href="#" aria-label="YouTube">▶️</a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Produk</h4>
+                    <a href="#features">Fitur</a>
+                    <a href="#pricing">Harga</a>
+                    <a href="#download">Download</a>
+                    <a href="#">Update Terbaru</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Untuk Pedagang</h4>
+                    <a href="#">Cara Mulai</a>
+                    <a href="#">Tutorial</a>
+                    <a href="#">Tips & Trik</a>
+                    <a href="#">Komunitas</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Perusahaan</h4>
+                    <a href="#">Tentang Kami</a>
+                    <a href="#">Blog</a>
+                    <a href="#">Karir</a>
+                    <a href="#">Kontak</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Legal</h4>
+                    <a href="#">Kebijakan Privasi</a>
+                    <a href="#">Syarat & Ketentuan</a>
+                    <a href="#">Kebijakan Cookie</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 SayurPintar. Buatan Indonesia 🇮🇩 untuk Tukang Sayur Indonesia.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="landing.js"></script>
+</body>
+</html>
