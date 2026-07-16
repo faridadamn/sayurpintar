@@ -52,14 +52,10 @@ jobs:
         run: |
           rm -f go.sum
           go mod tidy
-      - name: Vet
+      - name: Run backend checks
+        id: checks
         working-directory: backend
-        run: go vet ./...
-      - name: Build
-        working-directory: backend
-        run: go build ./...
-      - name: Test
-        working-directory: backend
+        shell: bash
         env:
           APP_ENV: test
           POSTGRES_HOST: localhost
@@ -69,16 +65,65 @@ jobs:
           POSTGRES_PASSWORD: test_password
           REDIS_HOST: localhost
           REDIS_PORT: 6379
-        run: go test ./... -race -coverprofile=coverage.out
-      - name: Check formatting
-        working-directory: backend
-        run: test -z "$(gofmt -l .)"
+        run: |
+          set +e
+          status=0
+
+          go vet ./... > vet.log 2>&1
+          vet_status=$?
+          test "$vet_status" -eq 0 || status=1
+
+          go build ./... > build.log 2>&1
+          build_status=$?
+          test "$build_status" -eq 0 || status=1
+
+          go test ./... -race -coverprofile=coverage.out > test.log 2>&1
+          test_status=$?
+          test "$test_status" -eq 0 || status=1
+
+          files="$(gofmt -l .)"
+          if [ -n "$files" ]; then
+            printf '%s\n' "$files" > format.log
+            format_status=1
+            status=1
+          else
+            : > format.log
+            format_status=0
+          fi
+
+          {
+            echo "vet_status=$vet_status"
+            echo "build_status=$build_status"
+            echo "test_status=$test_status"
+            echo "format_status=$format_status"
+          } >> "$GITHUB_OUTPUT"
+
+          exit 0
+      - name: Upload backend diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-diagnostics
+          path: |
+            backend/vet.log
+            backend/build.log
+            backend/test.log
+            backend/format.log
+            backend/go.sum
+          if-no-files-found: ignore
       - name: Upload coverage
         if: always() && hashFiles('backend/coverage.out') != ''
         uses: codecov/codecov-action@v4
         with:
           files: backend/coverage.out
           fail_ci_if_error: false
+      - name: Enforce backend quality gate
+        shell: bash
+        run: |
+          test "${{ steps.checks.outputs.vet_status }}" = 0
+          test "${{ steps.checks.outputs.build_status }}" = 0
+          test "${{ steps.checks.outputs.test_status }}" = 0
+          test "${{ steps.checks.outputs.format_status }}" = 0
 
   mobile:
     name: Mobile checks (Flutter)
@@ -93,15 +138,49 @@ jobs:
       - name: Install dependencies
         working-directory: mobile
         run: flutter pub get
-      - name: Analyze
+      - name: Run mobile checks
+        id: checks
         working-directory: mobile
-        run: flutter analyze
-      - name: Test
-        working-directory: mobile
-        run: flutter test --coverage
-      - name: Check formatting
-        working-directory: mobile
-        run: dart format --output=none --set-exit-if-changed lib test
+        shell: bash
+        run: |
+          set +e
+          status=0
+
+          flutter analyze > analyze.log 2>&1
+          analyze_status=$?
+          test "$analyze_status" -eq 0 || status=1
+
+          flutter test --coverage > test.log 2>&1
+          test_status=$?
+          test "$test_status" -eq 0 || status=1
+
+          dart format --output=none --set-exit-if-changed lib test > format.log 2>&1
+          format_status=$?
+          test "$format_status" -eq 0 || status=1
+
+          {
+            echo "analyze_status=$analyze_status"
+            echo "test_status=$test_status"
+            echo "format_status=$format_status"
+          } >> "$GITHUB_OUTPUT"
+
+          exit 0
+      - name: Upload mobile diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-diagnostics
+          path: |
+            mobile/analyze.log
+            mobile/test.log
+            mobile/format.log
+          if-no-files-found: ignore
+      - name: Enforce mobile quality gate
+        shell: bash
+        run: |
+          test "${{ steps.checks.outputs.analyze_status }}" = 0
+          test "${{ steps.checks.outputs.test_status }}" = 0
+          test "${{ steps.checks.outputs.format_status }}" = 0
 
   docker:
     name: Build backend image
