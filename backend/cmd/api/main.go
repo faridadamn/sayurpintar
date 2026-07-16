@@ -131,7 +131,7 @@ func main() {
 	notifHandler := notification.NewNotificationHandler(notifService)
 	insightHandler := analytics.NewInsightHandler(insightService)
 	rewardHandler := analytics.NewRewardHandler(rewardService)
-	payHandler := paymentHandler.NewHandler(paymentGW, invoiceSvc, notifService, orderRepo, userRepo, txnRepo, logger)
+	payHandler := paymentHandler.NewHandler(paymentGW, invoiceSvc)
 	debtH := debtHandler.NewHandler(debtService)
 	groupOrderHandler := group_order.NewHandler(groupOrderService, logger)
 
