@@ -63,12 +63,12 @@ func NewJWTService(cfg *config.Config) *JWTService {
 func (s *JWTService) GenerateAccessToken(user *models.User) (string, error) {
 	now := time.Now()
 	claims := &Claims{
-		UserID: user.ID.String(),
+		UserID: user.ID,
 		Phone:  user.Phone,
 		Role:   string(user.Role),
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    s.issuer,
-			Subject:   user.ID.String(),
+			Subject:   user.ID,
 			IssuedAt:  jwt.NewNumericDate(now),
 			ExpiresAt: jwt.NewNumericDate(now.Add(s.accessExpiry)),
 			NotBefore: jwt.NewNumericDate(now),
@@ -89,12 +89,12 @@ func (s *JWTService) GenerateAccessToken(user *models.User) (string, error) {
 func (s *JWTService) GenerateRefreshToken(user *models.User) (string, error) {
 	now := time.Now()
 	claims := &Claims{
-		UserID: user.ID.String(),
+		UserID: user.ID,
 		Phone:  user.Phone,
 		Role:   string(user.Role),
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    s.issuer,
-			Subject:   user.ID.String(),
+			Subject:   user.ID,
 			IssuedAt:  jwt.NewNumericDate(now),
 			ExpiresAt: jwt.NewNumericDate(now.Add(s.refreshExpiry)),
 			NotBefore: jwt.NewNumericDate(now),
