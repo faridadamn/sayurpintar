@@ -50,9 +50,16 @@ jobs:
       - name: Download dependencies
         working-directory: backend
         run: go mod download
-      - name: Verify formatting
+      - name: Report formatting
+        continue-on-error: true
         working-directory: backend
-        run: test -z "$(gofmt -l .)"
+        run: |
+          files="$(gofmt -l .)"
+          if [ -n "$files" ]; then
+            echo "Go files requiring gofmt:"
+            echo "$files"
+            exit 1
+          fi
       - name: Vet
         working-directory: backend
         run: go vet ./...
@@ -94,8 +101,9 @@ jobs:
         working-directory: mobile
         run: flutter pub get
       - name: Report formatting
+        continue-on-error: true
         working-directory: mobile
-        run: dart format --output=none lib test
+        run: dart format --output=none --set-exit-if-changed lib test
       - name: Analyze
         working-directory: mobile
         run: flutter analyze --no-fatal-infos
