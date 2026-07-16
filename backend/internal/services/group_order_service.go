@@ -19,8 +19,8 @@ type CreateGroupRequest struct {
 	GroupPrice    float64 `json:"group_price"`
 	RegularPrice  float64 `json:"regular_price"`
 	Unit          string  `json:"unit"`
-	Deadline      string  `json:"deadline"`       // RFC3339 or YYYY-MM-DD HH:MM
-	DeliveryDate  string  `json:"delivery_date"`  // YYYY-MM-DD
+	Deadline      string  `json:"deadline"`      // RFC3339 or YYYY-MM-DD HH:MM
+	DeliveryDate  string  `json:"delivery_date"` // YYYY-MM-DD
 	DeliveryPoint string  `json:"delivery_point"`
 }
 

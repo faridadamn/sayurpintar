@@ -11,8 +11,9 @@ final pelangganRepositoryProvider = Provider<PelangganRepository>((ref) {
 
 // ── Merchant Search ──────────────────────────────────────────────────────
 
-final searchMerchantsProvider = FutureProvider.family<
-    List<MerchantWithPackages>, MerchantSearchParams>((ref, params) async {
+final searchMerchantsProvider =
+    FutureProvider.family<List<MerchantWithPackages>, MerchantSearchParams>(
+        (ref, params) async {
   final repo = ref.read(pelangganRepositoryProvider);
   return await repo.searchMerchants(
     area: params.area,
@@ -40,8 +41,7 @@ final merchantPackagesProvider =
 
 // ── Order History ────────────────────────────────────────────────────────
 
-final pelangganOrderHistoryProvider =
-    FutureProvider<List<Order>>((ref) async {
+final pelangganOrderHistoryProvider = FutureProvider<List<Order>>((ref) async {
   final repo = ref.read(pelangganRepositoryProvider);
   return await repo.getOrderHistory();
 });

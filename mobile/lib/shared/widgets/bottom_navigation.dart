@@ -115,8 +115,8 @@ class _PedagangNav extends StatelessWidget {
                           color: isActive
                               ? AppTheme.primaryGreen.withOpacity(0.12)
                               : Colors.transparent,
-                          borderRadius: BorderRadius.circular(
-                              AppTheme.radiusFull),
+                          borderRadius:
+                              BorderRadius.circular(AppTheme.radiusFull),
                         ),
                         child: Icon(
                           isActive ? item.activeIcon : item.icon,
@@ -131,9 +131,8 @@ class _PedagangNav extends StatelessWidget {
                         item.label,
                         style: TextStyle(
                           fontSize: 10,
-                          fontWeight: isActive
-                              ? FontWeight.w700
-                              : FontWeight.w500,
+                          fontWeight:
+                              isActive ? FontWeight.w700 : FontWeight.w500,
                           color: isActive
                               ? AppTheme.primaryGreen
                               : AppTheme.textSecondary,
@@ -236,8 +235,8 @@ class _PelangganNav extends StatelessWidget {
                           color: isActive
                               ? AppTheme.primaryGreen.withOpacity(0.12)
                               : Colors.transparent,
-                          borderRadius: BorderRadius.circular(
-                              AppTheme.radiusFull),
+                          borderRadius:
+                              BorderRadius.circular(AppTheme.radiusFull),
                         ),
                         child: Icon(
                           isActive ? item.activeIcon : item.icon,
@@ -252,9 +251,8 @@ class _PelangganNav extends StatelessWidget {
                         item.label,
                         style: TextStyle(
                           fontSize: 10,
-                          fontWeight: isActive
-                              ? FontWeight.w700
-                              : FontWeight.w500,
+                          fontWeight:
+                              isActive ? FontWeight.w700 : FontWeight.w500,
                           color: isActive
                               ? AppTheme.primaryGreen
                               : AppTheme.textSecondary,

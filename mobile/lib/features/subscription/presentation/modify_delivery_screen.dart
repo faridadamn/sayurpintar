@@ -148,8 +148,7 @@ class _ModifyDeliveryScreenState extends ConsumerState<ModifyDeliveryScreen> {
                     value: selectedUnit,
                     decoration: const InputDecoration(labelText: 'Satuan'),
                     items: ['kg', 'ikat', 'pcs', 'liter', 'pack']
-                        .map((u) =>
-                            DropdownMenuItem(value: u, child: Text(u)))
+                        .map((u) => DropdownMenuItem(value: u, child: Text(u)))
                         .toList(),
                     onChanged: (v) => selectedUnit = v ?? 'kg',
                   ),
@@ -184,8 +183,7 @@ class _ModifyDeliveryScreenState extends ConsumerState<ModifyDeliveryScreen> {
                     name: nameController.text,
                     qty: double.tryParse(qtyController.text) ?? 1,
                     unit: selectedUnit,
-                    pricePerUnit:
-                        double.tryParse(priceController.text) ?? 0,
+                    pricePerUnit: double.tryParse(priceController.text) ?? 0,
                   ));
                   _hasChanges = true;
                 });
@@ -395,7 +393,8 @@ class _ModifyDeliveryScreenState extends ConsumerState<ModifyDeliveryScreen> {
                       itemBuilder: (context, index) {
                         final item = _items[index];
                         return SPCard(
-                          margin: const EdgeInsets.only(bottom: AppTheme.space8),
+                          margin:
+                              const EdgeInsets.only(bottom: AppTheme.space8),
                           child: Row(
                             children: [
                               // Product emoji
@@ -403,8 +402,7 @@ class _ModifyDeliveryScreenState extends ConsumerState<ModifyDeliveryScreen> {
                                 width: 40,
                                 height: 40,
                                 decoration: BoxDecoration(
-                                  color:
-                                      AppTheme.primaryGreen.withOpacity(0.1),
+                                  color: AppTheme.primaryGreen.withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(
                                       AppTheme.radiusSmall),
                                 ),

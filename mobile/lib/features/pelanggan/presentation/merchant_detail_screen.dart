@@ -25,8 +25,7 @@ class MerchantDetailScreen extends ConsumerStatefulWidget {
 class _MerchantDetailScreenState extends ConsumerState<MerchantDetailScreen> {
   @override
   Widget build(BuildContext context) {
-    final merchantAsync =
-        ref.watch(merchantDetailProvider(widget.merchantId));
+    final merchantAsync = ref.watch(merchantDetailProvider(widget.merchantId));
 
     return Scaffold(
       body: merchantAsync.when(
@@ -145,7 +144,8 @@ class _MerchantContent extends StatelessWidget {
                   icon: Icons.shopping_bag_outlined,
                   onPressed: () {
                     if (merchant.packages.isNotEmpty) {
-                      context.push('/subscribe', extra: merchant.packages.first);
+                      context.push('/subscribe',
+                          extra: merchant.packages.first);
                     }
                   },
                 ),
@@ -161,8 +161,7 @@ class _MerchantContent extends StatelessWidget {
                   ...merchant.packages.map(
                     (pkg) => _PackageCard(
                       package: pkg,
-                      onTap: () =>
-                          context.push('/subscribe', extra: pkg),
+                      onTap: () => context.push('/subscribe', extra: pkg),
                     ),
                   ),
                   const SizedBox(height: AppTheme.space24),

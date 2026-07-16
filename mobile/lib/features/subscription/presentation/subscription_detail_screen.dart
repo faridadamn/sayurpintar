@@ -521,7 +521,8 @@ class _SubscriptionDetailScreenState
       return const SPEmptyState(
         icon: Icons.history,
         title: 'Belum Ada Riwayat',
-        message: 'Riwayat pengiriman akan muncul di sini setelah pengiriman pertama',
+        message:
+            'Riwayat pengiriman akan muncul di sini setelah pengiriman pertama',
       );
     }
 
@@ -537,9 +538,7 @@ class _SubscriptionDetailScreenState
               Row(
                 children: [
                   Icon(
-                    mod.skipDelivery
-                        ? Icons.skip_next
-                        : Icons.local_shipping,
+                    mod.skipDelivery ? Icons.skip_next : Icons.local_shipping,
                     size: 18,
                     color: mod.skipDelivery
                         ? AppTheme.accent

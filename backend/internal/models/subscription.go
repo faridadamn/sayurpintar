@@ -7,18 +7,18 @@ import (
 
 // SubscriptionPackage represents a subscription package created by a pedagang.
 type SubscriptionPackage struct {
-	ID              string          `json:"id" db:"id"`
-	PedagangID      string          `json:"pedagang_id" db:"pedagang_id"`
-	Name            string          `json:"name" db:"name"`
-	Description     *string         `json:"description" db:"description"`
-	Items           json.RawMessage `json:"items" db:"items"`
-	Price           float64         `json:"price" db:"price"`
-	Frequency       string          `json:"frequency" db:"frequency"`
-	DeliveryDays    []int           `json:"delivery_days" db:"delivery_days"`
-	MaxSubscribers  int             `json:"max_subscribers" db:"max_subscribers"`
-	IsActive        bool            `json:"is_active" db:"is_active"`
-	CreatedAt       time.Time       `json:"created_at" db:"created_at"`
-	UpdatedAt       time.Time       `json:"updated_at" db:"updated_at"`
+	ID             string          `json:"id" db:"id"`
+	PedagangID     string          `json:"pedagang_id" db:"pedagang_id"`
+	Name           string          `json:"name" db:"name"`
+	Description    *string         `json:"description" db:"description"`
+	Items          json.RawMessage `json:"items" db:"items"`
+	Price          float64         `json:"price" db:"price"`
+	Frequency      string          `json:"frequency" db:"frequency"`
+	DeliveryDays   []int           `json:"delivery_days" db:"delivery_days"`
+	MaxSubscribers int             `json:"max_subscribers" db:"max_subscribers"`
+	IsActive       bool            `json:"is_active" db:"is_active"`
+	CreatedAt      time.Time       `json:"created_at" db:"created_at"`
+	UpdatedAt      time.Time       `json:"updated_at" db:"updated_at"`
 	// Computed fields (populated by JOIN queries)
 	PedagangName    string `json:"pedagang_name,omitempty" db:"pedagang_name"`
 	SubscriberCount int    `json:"subscriber_count,omitempty" db:"subscriber_count"`

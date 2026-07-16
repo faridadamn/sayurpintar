@@ -47,7 +47,7 @@ func NewGeocodingService(redis *redis.Client, logger *zap.Logger) *GeocodingServ
 		httpClient: &http.Client{
 			Timeout: 10 * time.Second,
 		},
-		cache: redis,
+		cache:  redis,
 		logger: logger,
 	}
 }
@@ -91,10 +91,10 @@ func (s *GeocodingService) Geocode(ctx context.Context, address string) (*GeoRes
 
 	// Build request
 	params := url.Values{
-		"q":           {address},
-		"format":      {"json"},
-		"countrycodes": {"id"},
-		"limit":       {"1"},
+		"q":              {address},
+		"format":         {"json"},
+		"countrycodes":   {"id"},
+		"limit":          {"1"},
 		"addressdetails": {"1"},
 	}
 
@@ -169,9 +169,9 @@ func (s *GeocodingService) ReverseGeocode(ctx context.Context, lat, lng float64)
 
 	// Build request
 	params := url.Values{
-		"lat":    {fmt.Sprintf("%.6f", lat)},
-		"lon":    {fmt.Sprintf("%.6f", lng)},
-		"format": {"json"},
+		"lat":            {fmt.Sprintf("%.6f", lat)},
+		"lon":            {fmt.Sprintf("%.6f", lng)},
+		"format":         {"json"},
 		"addressdetails": {"1"},
 	}
 

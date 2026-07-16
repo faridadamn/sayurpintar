@@ -3,8 +3,8 @@ package route
 import (
 	"time"
 
-	"github.com/gofiber/fiber/v2"
 	"github.com/go-playground/validator/v10"
+	"github.com/gofiber/fiber/v2"
 	"github.com/sayurpintar/api/internal/middleware"
 	"github.com/sayurpintar/api/internal/services"
 	"github.com/sayurpintar/api/internal/utils"
@@ -36,7 +36,7 @@ func (h *VisitHandler) MarkVisitArrived(c *fiber.Ctx) error {
 	}
 
 	return utils.SuccessResponse(c, fiber.StatusOK, fiber.Map{
-		"message": "Visit marked as arrived",
+		"message":  "Visit marked as arrived",
 		"visit_id": visitID,
 	}, nil)
 }
@@ -62,7 +62,7 @@ func (h *VisitHandler) MarkVisitCompleted(c *fiber.Ctx) error {
 	}
 
 	return utils.SuccessResponse(c, fiber.StatusOK, fiber.Map{
-		"message": "Visit marked as completed",
+		"message":  "Visit marked as completed",
 		"visit_id": visitID,
 	}, nil)
 }
@@ -90,7 +90,7 @@ func (h *VisitHandler) MarkVisitSkipped(c *fiber.Ctx) error {
 	}
 
 	return utils.SuccessResponse(c, fiber.StatusOK, fiber.Map{
-		"message": "Visit marked as skipped",
+		"message":  "Visit marked as skipped",
 		"visit_id": visitID,
 	}, nil)
 }

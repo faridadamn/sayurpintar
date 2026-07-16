@@ -63,8 +63,7 @@ class PackageDetailScreen extends ConsumerWidget {
     for (final item in pkg.items) {
       text.writeln('  • ${item.name} ${item.qty}${item.unit}');
     }
-    text.writeln()
-      ..writeln('Langganan di SayurPintar! 🥬');
+    text.writeln()..writeln('Langganan di SayurPintar! 🥬');
 
     Clipboard.setData(ClipboardData(text: text.toString()));
     ScaffoldMessenger.of(context).showSnackBar(
@@ -132,8 +131,7 @@ class PackageDetailScreen extends ConsumerWidget {
                 }
               }
             },
-            style:
-                TextButton.styleFrom(foregroundColor: AppTheme.error),
+            style: TextButton.styleFrom(foregroundColor: AppTheme.error),
             child: const Text('Hapus'),
           ),
         ],
@@ -169,9 +167,8 @@ class _PackageDetailBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final estimatedMonthly = package.price *
-        package.deliveryDays.length *
-        4; // approx 4 weeks
+    final estimatedMonthly =
+        package.price * package.deliveryDays.length * 4; // approx 4 weeks
 
     return ListView(
       padding: const EdgeInsets.all(AppTheme.space16),
@@ -222,15 +219,12 @@ class _PackageDetailBody extends StatelessWidget {
                       color: package.isActive
                           ? Colors.white.withOpacity(0.2)
                           : Colors.red.withOpacity(0.3),
-                      borderRadius:
-                          BorderRadius.circular(AppTheme.radiusFull),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusFull),
                     ),
                     child: Text(
                       package.isActive ? 'Aktif' : 'Nonaktif',
                       style: TextStyle(
-                        color: package.isActive
-                            ? Colors.white
-                            : Colors.white70,
+                        color: package.isActive ? Colors.white : Colors.white70,
                         fontWeight: FontWeight.w600,
                         fontSize: 12,
                       ),
@@ -330,8 +324,7 @@ class _PackageDetailBody extends StatelessWidget {
                         child: LinearProgressIndicator(
                           value: (package.subscriberCount ?? 0) /
                               package.maxSubscribers,
-                          backgroundColor:
-                              AppTheme.divider.withOpacity(0.3),
+                          backgroundColor: AppTheme.divider.withOpacity(0.3),
                           valueColor: AlwaysStoppedAnimation<Color>(
                             (package.subscriberCount ?? 0) >=
                                     package.maxSubscribers
@@ -385,8 +378,8 @@ class _PackageDetailBody extends StatelessWidget {
                 return Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: AppTheme.space8),
+                      padding:
+                          const EdgeInsets.symmetric(vertical: AppTheme.space8),
                       child: Row(
                         children: [
                           Container(
@@ -394,8 +387,8 @@ class _PackageDetailBody extends StatelessWidget {
                             height: 36,
                             decoration: BoxDecoration(
                               color: AppTheme.primaryGreen.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(
-                                  AppTheme.radiusSmall),
+                              borderRadius:
+                                  BorderRadius.circular(AppTheme.radiusSmall),
                             ),
                             child: const Icon(
                               Icons.eco,
@@ -457,8 +450,7 @@ class _PackageDetailBody extends StatelessWidget {
           ),
           child: Row(
             children: [
-              const Icon(Icons.trending_up,
-                  color: AppTheme.accent, size: 28),
+              const Icon(Icons.trending_up, color: AppTheme.accent, size: 28),
               const SizedBox(width: AppTheme.space12),
               Expanded(
                 child: Column(
@@ -524,18 +516,15 @@ class _PackageDetailBody extends StatelessWidget {
           onPressed: () {
             final text = StringBuffer()
               ..writeln('📦 ${package.name}')
-              ..writeln(
-                  '💰 ${_formatCurrency(package.price)} / pengiriman')
+              ..writeln('💰 ${_formatCurrency(package.price)} / pengiriman')
               ..writeln(
                   '📅 ${package.frequencyText} — ${package.deliveryDaysText}')
               ..writeln()
               ..writeln('Isi paket:');
             for (final item in package.items) {
-              text.writeln(
-                  '  • ${item.name} ${item.qty}${item.unit}');
+              text.writeln('  • ${item.name} ${item.qty}${item.unit}');
             }
-            text.writeln()
-              ..writeln('Langganan di SayurPintar! 🥬');
+            text.writeln()..writeln('Langganan di SayurPintar! 🥬');
 
             Clipboard.setData(ClipboardData(text: text.toString()));
             ScaffoldMessenger.of(context).showSnackBar(

@@ -23,6 +23,8 @@ type DebtRepository interface {
 	GetOverdue(ctx context.Context, pedagangID string, days int) ([]models.Debt, error)
 	GetTotalOutstanding(ctx context.Context, pedagangID string) (float64, int, error)
 	GetByOrderID(ctx context.Context, orderID string) (*models.Debt, error)
+	SumOutstanding(ctx context.Context, pedagangID string) (float64, error)
+	SumSettled(ctx context.Context, pedagangID string) (float64, error)
 }
 
 // debtRepo implements DebtRepository backed by pgxpool.

@@ -76,8 +76,7 @@ class _SubscribersScreenState extends ConsumerState<SubscribersScreen> {
                   label: 'Dibatalkan',
                   value: 'cancelled',
                   selected: _statusFilter == 'cancelled',
-                  onTap: () =>
-                      setState(() => _statusFilter = 'cancelled'),
+                  onTap: () => setState(() => _statusFilter = 'cancelled'),
                   color: AppTheme.error,
                 ),
               ],
@@ -87,8 +86,7 @@ class _SubscribersScreenState extends ConsumerState<SubscribersScreen> {
           // ── Subscriber List ────────────────────────────────────────
           Expanded(
             child: subscribersAsync.when(
-              loading: () =>
-                  const SPLoading(message: 'Memuat pelanggan...'),
+              loading: () => const SPLoading(message: 'Memuat pelanggan...'),
               error: (error, _) => SPErrorWidget(
                 message: 'Gagal memuat pelanggan: $error',
                 onRetry: () => ref.invalidate(subscribersProvider),
@@ -140,8 +138,7 @@ class _SubscribersScreenState extends ConsumerState<SubscribersScreen> {
     );
   }
 
-  void _showSubscriberDetail(
-      BuildContext context, Subscription subscription) {
+  void _showSubscriberDetail(BuildContext context, Subscription subscription) {
     SPBottomSheet.show(
       context,
       title: 'Detail Pelanggan',
@@ -381,8 +378,7 @@ class _SubscriberCard extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   color: AppTheme.primaryGreen.withOpacity(0.1),
-                  borderRadius:
-                      BorderRadius.circular(AppTheme.radiusSmall),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
                 ),
                 child: Text(
                   subscription.paymentMethodText,

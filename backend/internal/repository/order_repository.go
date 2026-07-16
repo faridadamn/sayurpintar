@@ -14,15 +14,15 @@ import (
 
 // OrderSummary holds aggregate statistics for a day's orders.
 type OrderSummary struct {
-	Date          string  `json:"date"`
-	TotalOrders   int     `json:"total_orders"`
-	Delivered     int     `json:"delivered"`
-	Cancelled     int     `json:"cancelled"`
-	Pending       int     `json:"pending"`
-	TotalRevenue  float64 `json:"total_revenue"`
-	PaidAmount    float64 `json:"paid_amount"`
-	UnpaidAmount  float64 `json:"unpaid_amount"`
-	AvgRating     float64 `json:"avg_rating"`
+	Date         string  `json:"date"`
+	TotalOrders  int     `json:"total_orders"`
+	Delivered    int     `json:"delivered"`
+	Cancelled    int     `json:"cancelled"`
+	Pending      int     `json:"pending"`
+	TotalRevenue float64 `json:"total_revenue"`
+	PaidAmount   float64 `json:"paid_amount"`
+	UnpaidAmount float64 `json:"unpaid_amount"`
+	AvgRating    float64 `json:"avg_rating"`
 }
 
 // OrderRepository defines the data access contract for orders.
@@ -40,6 +40,10 @@ type OrderRepository interface {
 	GetTodayOrders(ctx context.Context, pedagangID string) ([]models.Order, error)
 	GetOrderSummary(ctx context.Context, pedagangID string, date string) (*OrderSummary, error)
 	ExistsForSubscriptionAndDate(ctx context.Context, subscriptionID string, date string) (bool, error)
+	CancelPendingBySubscription(ctx context.Context, subscriptionID string, from time.Time) (int, error)
+	CountDeliveredBySubscription(ctx context.Context, subscriptionID string) (int, error)
+	SumSpentBySubscription(ctx context.Context, subscriptionID string) (float64, error)
+	GetNextDeliveryDate(ctx context.Context, subscriptionID string) (*string, error)
 }
 
 // orderRepo implements OrderRepository backed by pgxpool.

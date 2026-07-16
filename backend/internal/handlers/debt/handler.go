@@ -80,10 +80,10 @@ func (h *Handler) CreateDebt(c *fiber.Ctx) error {
 	pedagangID := middleware.GetUserID(c)
 
 	var body struct {
-		PelangganID string   `json:"pelanggan_id"`
-		OrderID     string   `json:"order_id,omitempty"`
-		Amount      float64  `json:"amount"`
-		DueDate     string   `json:"due_date,omitempty"`
+		PelangganID string  `json:"pelanggan_id"`
+		OrderID     string  `json:"order_id,omitempty"`
+		Amount      float64 `json:"amount"`
+		DueDate     string  `json:"due_date,omitempty"`
 	}
 	if err := c.BodyParser(&body); err != nil {
 		return utils.ErrorResponse(c, fiber.StatusBadRequest, "Invalid request body", err.Error())

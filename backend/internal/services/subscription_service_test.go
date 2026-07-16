@@ -16,13 +16,13 @@ import (
 // --- Mock repositories --------------------------------------------------------
 
 type mockSubscriptionRepo struct {
-	subs           map[string]*models.Subscription
-	pkgSubCounts   map[string]int
-	nextID         int
-	pauseErr       error
-	resumeErr      error
-	cancelErr      error
-	createErr      error
+	subs         map[string]*models.Subscription
+	pkgSubCounts map[string]int
+	nextID       int
+	pauseErr     error
+	resumeErr    error
+	cancelErr    error
+	createErr    error
 }
 
 func newMockSubscriptionRepo() *mockSubscriptionRepo {
@@ -216,35 +216,35 @@ func (m *mockModificationRepo) ListBySubscription(ctx context.Context, subscript
 
 // --- Mock order repo ---
 
-type mockOrderRepo struct {
+type subscriptionMockOrderRepo struct {
 	cancelledSubIDs []string
 	nextDelivery    *string
 	deliveryCount   int
 	totalSpent      float64
 }
 
-func newMockOrderRepo() *mockOrderRepo {
-	return &mockOrderRepo{}
+func newMockOrderRepo() *subscriptionMockOrderRepo {
+	return &subscriptionMockOrderRepo{}
 }
 
-func (m *mockOrderRepo) CancelPendingBySubscription(ctx context.Context, subscriptionID string, fromDate time.Time) (int, error) {
+func (m *subscriptionMockOrderRepo) CancelPendingBySubscription(ctx context.Context, subscriptionID string, fromDate time.Time) (int, error) {
 	m.cancelledSubIDs = append(m.cancelledSubIDs, subscriptionID)
 	return 3, nil
 }
 
-func (m *mockOrderRepo) ListBySubscriptionAndDateRange(ctx context.Context, subscriptionID string, from, to time.Time) ([]models.Order, error) {
+func (m *subscriptionMockOrderRepo) ListBySubscriptionAndDateRange(ctx context.Context, subscriptionID string, from, to time.Time) ([]models.Order, error) {
 	return nil, nil
 }
 
-func (m *mockOrderRepo) CountDeliveredBySubscription(ctx context.Context, subscriptionID string) (int, error) {
+func (m *subscriptionMockOrderRepo) CountDeliveredBySubscription(ctx context.Context, subscriptionID string) (int, error) {
 	return m.deliveryCount, nil
 }
 
-func (m *mockOrderRepo) SumSpentBySubscription(ctx context.Context, subscriptionID string) (float64, error) {
+func (m *subscriptionMockOrderRepo) SumSpentBySubscription(ctx context.Context, subscriptionID string) (float64, error) {
 	return m.totalSpent, nil
 }
 
-func (m *mockOrderRepo) GetNextDeliveryDate(ctx context.Context, subscriptionID string) (*string, error) {
+func (m *subscriptionMockOrderRepo) GetNextDeliveryDate(ctx context.Context, subscriptionID string) (*string, error) {
 	return m.nextDelivery, nil
 }
 
@@ -255,7 +255,7 @@ func testLogger() *zap.Logger {
 	return logger
 }
 
-func setupTestService() (*SubscriptionService, *mockSubscriptionRepo, *mockPackageRepo, *mockModificationRepo, *mockOrderRepo) {
+func setupTestService() (*SubscriptionService, *mockSubscriptionRepo, *mockPackageRepo, *mockModificationRepo, *subscriptionMockOrderRepo) {
 	subRepo := newMockSubscriptionRepo()
 	pkgRepo := newMockPackageRepo()
 	modRepo := newMockModificationRepo()

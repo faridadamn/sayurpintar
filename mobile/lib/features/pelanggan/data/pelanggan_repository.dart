@@ -43,8 +43,8 @@ class MerchantWithPackages {
       distanceKm: (json['distance_km'] as num?)?.toDouble() ?? 0,
       packageCount: json['package_count'] ?? 0,
       packages: (json['packages'] as List<dynamic>?)
-              ?.map(
-                  (e) => SubscriptionPackage.fromJson(e as Map<String, dynamic>))
+              ?.map((e) =>
+                  SubscriptionPackage.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
     );
@@ -103,13 +103,12 @@ class MerchantDetail {
       totalOrders: json['total_orders'] ?? 0,
       subscriberCount: json['subscriber_count'] ?? 0,
       packages: (json['packages'] as List<dynamic>?)
-              ?.map(
-                  (e) => SubscriptionPackage.fromJson(e as Map<String, dynamic>))
+              ?.map((e) =>
+                  SubscriptionPackage.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
       topProducts: (json['top_products'] as List<dynamic>?)
-              ?.map((e) =>
-                  MerchantProduct.fromJson(e as Map<String, dynamic>))
+              ?.map((e) => MerchantProduct.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
       isVerified: json['is_verified'] ?? false,
@@ -300,8 +299,7 @@ class PelangganRepository {
     );
     final data = response.data['data'] as List<dynamic>? ?? [];
     return data
-        .map(
-            (e) => MerchantWithPackages.fromJson(e as Map<String, dynamic>))
+        .map((e) => MerchantWithPackages.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 
@@ -319,8 +317,7 @@ class PelangganRepository {
     );
     final data = response.data['data'] as List<dynamic>? ?? [];
     return data
-        .map(
-            (e) => SubscriptionPackage.fromJson(e as Map<String, dynamic>))
+        .map((e) => SubscriptionPackage.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 
@@ -338,9 +335,7 @@ class PelangganRepository {
       queryParameters: params,
     );
     final data = response.data['data'] as List<dynamic>? ?? [];
-    return data
-        .map((e) => Order.fromJson(e as Map<String, dynamic>))
-        .toList();
+    return data.map((e) => Order.fromJson(e as Map<String, dynamic>)).toList();
   }
 
   Future<Order> getOrderDetail(String orderId) async {
@@ -348,8 +343,7 @@ class PelangganRepository {
     return Order.fromJson(response.data['data'] as Map<String, dynamic>);
   }
 
-  Future<void> rateOrder(
-      String orderId, int rating, String? comment) async {
+  Future<void> rateOrder(String orderId, int rating, String? comment) async {
     await _dio.post(
       '${ApiEndpoints.orders}/$orderId/rate',
       data: {
@@ -373,12 +367,10 @@ class PelangganRepository {
   // ── Addresses ───────────────────────────────────────────────────────────
 
   Future<List<DeliveryAddress>> getAddresses() async {
-    final response =
-        await _dio.get('${ApiEndpoints.base}/addresses');
+    final response = await _dio.get('${ApiEndpoints.base}/addresses');
     final data = response.data['data'] as List<dynamic>? ?? [];
     return data
-        .map(
-            (e) => DeliveryAddress.fromJson(e as Map<String, dynamic>))
+        .map((e) => DeliveryAddress.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 

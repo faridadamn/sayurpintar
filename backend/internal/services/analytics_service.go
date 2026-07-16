@@ -82,7 +82,7 @@ type DailySummary struct {
 
 // WeeklyComparison compares this week vs last week.
 type WeeklyComparison struct {
-ThisWeek WeekStats   `json:"this_week"`
+	ThisWeek WeekStats   `json:"this_week"`
 	LastWeek WeekStats   `json:"last_week"`
 	Changes  WeekChanges `json:"changes"`
 }
@@ -151,7 +151,7 @@ type CustomerStat struct {
 
 // RouteAnalytics holds route efficiency data.
 type RouteAnalytics struct {
-	AvgDailyDistance  float64 `json:"avg_daily_distance_km"`
+	AvgDailyDistance float64 `json:"avg_daily_distance_km"`
 	AvgDailyDuration float64 `json:"avg_daily_duration_min"`
 	AvgVisitsPerDay  float64 `json:"avg_visits_per_day"`
 	CompletionRate   float64 `json:"completion_rate"`
@@ -573,7 +573,7 @@ func (s *AnalyticsService) GetRouteAnalytics(ctx context.Context, pedagangID str
 	}
 
 	analytics := &RouteAnalytics{
-		AvgDailyDistance:  stats.AvgDistanceKm,
+		AvgDailyDistance: stats.AvgDistanceKm,
 		AvgDailyDuration: stats.AvgDurationMin,
 		CompletionRate:   stats.CompletionRate,
 		FuelCostEstimate: math.Round(stats.AvgFuelCost*float64(days)*100) / 100,

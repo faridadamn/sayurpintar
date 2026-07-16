@@ -102,9 +102,9 @@ type CompareResult struct {
 
 // CompareResponse is the response for price comparison.
 type CompareResponse struct {
-	ProductID   string           `json:"product_id"`
-	ProductName string           `json:"product_name"`
-	Areas       []CompareResult  `json:"areas"`
+	ProductID   string          `json:"product_id"`
+	ProductName string          `json:"product_name"`
+	Areas       []CompareResult `json:"areas"`
 }
 
 // ComparePrices handles GET /prices/compare

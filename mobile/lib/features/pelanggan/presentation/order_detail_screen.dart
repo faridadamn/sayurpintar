@@ -24,16 +24,15 @@ class OrderDetailScreen extends ConsumerStatefulWidget {
 class _OrderDetailScreenState extends ConsumerState<OrderDetailScreen> {
   @override
   Widget build(BuildContext context) {
-    final orderAsync =
-        ref.watch(pelangganOrderDetailProvider(widget.orderId));
+    final orderAsync = ref.watch(pelangganOrderDetailProvider(widget.orderId));
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Detail Pesanan'),
         actions: [
           IconButton(
-            onPressed: () => ref.invalidate(
-                pelangganOrderDetailProvider(widget.orderId)),
+            onPressed: () =>
+                ref.invalidate(pelangganOrderDetailProvider(widget.orderId)),
             icon: const Icon(Icons.refresh),
           ),
         ],
@@ -41,14 +40,14 @@ class _OrderDetailScreenState extends ConsumerState<OrderDetailScreen> {
       body: orderAsync.when(
         data: (order) => _OrderContent(
           order: order,
-          onRefresh: () => ref.invalidate(
-              pelangganOrderDetailProvider(widget.orderId)),
+          onRefresh: () =>
+              ref.invalidate(pelangganOrderDetailProvider(widget.orderId)),
         ),
         loading: () => const SPLoading(message: 'Memuat pesanan...'),
         error: (e, _) => SPErrorWidget(
           message: 'Gagal memuat detail pesanan.',
-          onRetry: () => ref.invalidate(
-              pelangganOrderDetailProvider(widget.orderId)),
+          onRetry: () =>
+              ref.invalidate(pelangganOrderDetailProvider(widget.orderId)),
         ),
       ),
     );
@@ -375,8 +374,19 @@ class _OrderContent extends ConsumerWidget {
     try {
       final d = DateTime.parse(date);
       final months = [
-        '', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember',
+        '',
+        'Januari',
+        'Februari',
+        'Maret',
+        'April',
+        'Mei',
+        'Juni',
+        'Juli',
+        'Agustus',
+        'September',
+        'Oktober',
+        'November',
+        'Desember',
       ];
       return '${d.day} ${months[d.month]} ${d.year}';
     } catch (_) {
@@ -455,7 +465,8 @@ class _OrderContent extends ConsumerWidget {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Pesanan akan dibatalkan. Tindakan ini tidak dapat diurungkan.'),
+            const Text(
+                'Pesanan akan dibatalkan. Tindakan ini tidak dapat diurungkan.'),
             const SizedBox(height: AppTheme.space16),
             TextField(
               controller: reasonCtrl,

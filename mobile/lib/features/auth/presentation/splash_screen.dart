@@ -123,8 +123,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     height: 110,
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius:
-                          BorderRadius.circular(AppTheme.radiusXL),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusXL),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.2),

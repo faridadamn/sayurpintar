@@ -44,10 +44,10 @@ func TestDetectOutliers(t *testing.T) {
 	detector := &PriceAnomalyDetector{}
 
 	tests := []struct {
-		name            string
-		prices          []float64
-		wantOutliers    int
-		wantClean       int
+		name         string
+		prices       []float64
+		wantOutliers int
+		wantClean    int
 	}{
 		{
 			name:         "no outliers in tight range",
@@ -120,10 +120,10 @@ func TestCalculateVolatility(t *testing.T) {
 	detector := &PriceAnomalyDetector{}
 
 	tests := []struct {
-		name     string
-		prices   []float64
-		minVol   float64 // minimum expected volatility
-		maxVol   float64 // maximum expected volatility
+		name   string
+		prices []float64
+		minVol float64 // minimum expected volatility
+		maxVol float64 // maximum expected volatility
 	}{
 		{
 			name:   "constant prices = zero volatility",
@@ -337,9 +337,9 @@ func TestAggregationResult(t *testing.T) {
 
 func TestPriceChangeDirection(t *testing.T) {
 	tests := []struct {
-		name      string
-		change    PriceChange
-		wantDir   string
+		name    string
+		change  PriceChange
+		wantDir string
 	}{
 		{
 			name: "price increase",

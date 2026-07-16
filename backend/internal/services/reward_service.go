@@ -61,7 +61,7 @@ func NewRewardService(userRepo repository.UserRepository, redisClient *redis.Cli
 
 func rewardBalanceKey(userID string) string { return fmt.Sprintf("reward:balance:%s", userID) }
 func rewardHistoryKey(userID string) string { return fmt.Sprintf("reward:history:%s", userID) }
-func rewardStreakKey(userID string) string { return fmt.Sprintf("reward:streak:%s", userID) }
+func rewardStreakKey(userID string) string  { return fmt.Sprintf("reward:streak:%s", userID) }
 
 func (s *RewardService) AddPoints(ctx context.Context, userID string, amount int, reason string) error {
 	if amount <= 0 {

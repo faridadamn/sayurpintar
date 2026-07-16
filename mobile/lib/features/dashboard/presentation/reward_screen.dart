@@ -430,7 +430,8 @@ class _WaysToEarn extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: way.color.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+                        borderRadius:
+                            BorderRadius.circular(AppTheme.radiusFull),
                       ),
                       child: Text(
                         way.points,
@@ -524,7 +525,8 @@ class _PointHistoryList extends StatelessWidget {
                         isPositive
                             ? Icons.add_circle_outline
                             : Icons.remove_circle_outline,
-                        color: isPositive ? AppTheme.primaryGreen : AppTheme.error,
+                        color:
+                            isPositive ? AppTheme.primaryGreen : AppTheme.error,
                         size: 18,
                       ),
                     ),
@@ -559,7 +561,9 @@ class _PointHistoryList extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w700,
-                            color: isPositive ? AppTheme.primaryGreen : AppTheme.error,
+                            color: isPositive
+                                ? AppTheme.primaryGreen
+                                : AppTheme.error,
                           ),
                         ),
                         Text(

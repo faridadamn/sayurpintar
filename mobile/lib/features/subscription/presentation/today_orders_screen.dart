@@ -26,8 +26,7 @@ class _TodayOrdersScreenState extends ConsumerState<TodayOrdersScreen> {
   Widget build(BuildContext context) {
     final ordersAsync = ref.watch(todayOrdersProvider);
     final today = DateTime.now();
-    final dateStr =
-        '${today.day}/${today.month}/${today.year}';
+    final dateStr = '${today.day}/${today.month}/${today.year}';
 
     return Scaffold(
       appBar: AppBar(
@@ -75,23 +74,19 @@ class _TodayOrdersScreenState extends ConsumerState<TodayOrdersScreen> {
                                 .where((o) => o.status == 'delivered')
                                 .length;
                     return Padding(
-                      padding:
-                          const EdgeInsets.only(right: AppTheme.space8),
+                      padding: const EdgeInsets.only(right: AppTheme.space8),
                       child: FilterChip(
                         label: Text('${_filterLabel(f)} ($count)'),
                         selected: isSelected,
-                        onSelected: (_) =>
-                            setState(() => _filter = f),
-                        selectedColor:
-                            AppTheme.primaryGreen.withOpacity(0.2),
+                        onSelected: (_) => setState(() => _filter = f),
+                        selectedColor: AppTheme.primaryGreen.withOpacity(0.2),
                         checkmarkColor: AppTheme.primaryGreen,
                         labelStyle: TextStyle(
                           color: isSelected
                               ? AppTheme.primaryGreen
                               : AppTheme.textSecondary,
-                          fontWeight: isSelected
-                              ? FontWeight.w700
-                              : FontWeight.w500,
+                          fontWeight:
+                              isSelected ? FontWeight.w700 : FontWeight.w500,
                         ),
                       ),
                     );
@@ -149,8 +144,7 @@ class _TodayOrdersScreenState extends ConsumerState<TodayOrdersScreen> {
     switch (_filter) {
       case OrderFilter.pending:
         return orders
-            .where((o) =>
-                o.status == 'pending' || o.status == 'preparing')
+            .where((o) => o.status == 'pending' || o.status == 'preparing')
             .toList();
       case OrderFilter.delivered:
         return orders.where((o) => o.status == 'delivered').toList();
@@ -170,8 +164,7 @@ class _TodayOrdersScreenState extends ConsumerState<TodayOrdersScreen> {
     }
   }
 
-  void _showOrderDetail(
-      BuildContext context, WidgetRef ref, Order order) {
+  void _showOrderDetail(BuildContext context, WidgetRef ref, Order order) {
     SPBottomSheet.show(
       context,
       title: 'Detail Pesanan',
@@ -198,8 +191,7 @@ class _TodayOrdersScreenState extends ConsumerState<TodayOrdersScreen> {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content:
-                Text('Pesanan ${order.pelangganName ?? ""} selesai'),
+            content: Text('Pesanan ${order.pelangganName ?? ""} selesai'),
             backgroundColor: AppTheme.primaryGreen,
           ),
         );
@@ -216,8 +208,7 @@ class _TodayOrdersScreenState extends ConsumerState<TodayOrdersScreen> {
     }
   }
 
-  void _showCancelDialog(
-      BuildContext context, WidgetRef ref, Order order) {
+  void _showCancelDialog(BuildContext context, WidgetRef ref, Order order) {
     final reasonCtrl = TextEditingController();
     showDialog(
       context: context,
@@ -247,8 +238,7 @@ class _TodayOrdersScreenState extends ConsumerState<TodayOrdersScreen> {
             onPressed: () async {
               Navigator.pop(ctx);
               try {
-                final repo =
-                    ref.read(subscriptionRepositoryProvider);
+                final repo = ref.read(subscriptionRepositoryProvider);
                 await repo.cancelOrder(
                   order.id,
                   reasonCtrl.text.trim(),
@@ -269,8 +259,7 @@ class _TodayOrdersScreenState extends ConsumerState<TodayOrdersScreen> {
                 }
               }
             },
-            style: TextButton.styleFrom(
-                foregroundColor: AppTheme.error),
+            style: TextButton.styleFrom(foregroundColor: AppTheme.error),
             child: const Text('Batalkan'),
           ),
         ],
@@ -300,13 +289,11 @@ class _OrderStatsHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final totalRevenue =
-        orders.fold<double>(0, (sum, o) => sum + o.totalPrice);
+    final totalRevenue = orders.fold<double>(0, (sum, o) => sum + o.totalPrice);
     final pendingCount = orders
         .where((o) => o.status == 'pending' || o.status == 'preparing')
         .length;
-    final deliveredCount =
-        orders.where((o) => o.status == 'delivered').length;
+    final deliveredCount = orders.where((o) => o.status == 'delivered').length;
 
     return Container(
       margin: const EdgeInsets.all(AppTheme.space16),
@@ -537,9 +524,7 @@ class _OrderCard extends StatelessWidget {
               const Spacer(),
               if (isActionable)
                 SPButton(
-                  label: order.status == 'pending'
-                      ? 'Antar'
-                      : 'Sudah Sampai',
+                  label: order.status == 'pending' ? 'Antar' : 'Sudah Sampai',
                   icon: order.status == 'pending'
                       ? Icons.local_shipping
                       : Icons.check_circle,
@@ -655,8 +640,7 @@ class _OrderDetailContent extends StatelessWidget {
         const SizedBox(height: AppTheme.space8),
         ...order.items.map(
           (item) => Padding(
-            padding:
-                const EdgeInsets.only(bottom: AppTheme.space4),
+            padding: const EdgeInsets.only(bottom: AppTheme.space4),
             child: Row(
               children: [
                 Expanded(
@@ -701,8 +685,7 @@ class _OrderDetailContent extends StatelessWidget {
         const SizedBox(height: AppTheme.space8),
         Row(
           children: [
-            const Text('Pembayaran: ',
-                style: TextStyle(fontSize: 13)),
+            const Text('Pembayaran: ', style: TextStyle(fontSize: 13)),
             Text(
               order.paymentMethod == 'cash' ? 'Tunai' : 'Transfer',
               style: const TextStyle(
@@ -715,22 +698,19 @@ class _OrderDetailContent extends StatelessWidget {
           ],
         ),
 
-        if (order.deliveryNotes != null &&
-            order.deliveryNotes!.isNotEmpty) ...[
+        if (order.deliveryNotes != null && order.deliveryNotes!.isNotEmpty) ...[
           const SizedBox(height: AppTheme.space12),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(AppTheme.space12),
             decoration: BoxDecoration(
               color: AppTheme.accent.withOpacity(0.1),
-              borderRadius:
-                  BorderRadius.circular(AppTheme.radiusSmall),
+              borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.note,
-                    size: 16, color: AppTheme.accent),
+                const Icon(Icons.note, size: 16, color: AppTheme.accent),
                 const SizedBox(width: AppTheme.space8),
                 Expanded(
                   child: Text(
@@ -749,9 +729,7 @@ class _OrderDetailContent extends StatelessWidget {
             children: [
               ...List.generate(5, (i) {
                 return Icon(
-                  i < order.rating!
-                      ? Icons.star
-                      : Icons.star_border,
+                  i < order.rating! ? Icons.star : Icons.star_border,
                   color: AppTheme.accent,
                   size: 20,
                 );

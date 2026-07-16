@@ -212,8 +212,8 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/subscription-detail',
-      builder: (context, state) => SubscriptionDetailScreen(
-          subscription: state.extra as Subscription),
+      builder: (context, state) =>
+          SubscriptionDetailScreen(subscription: state.extra as Subscription),
     ),
     GoRoute(
       path: '/modify-delivery',

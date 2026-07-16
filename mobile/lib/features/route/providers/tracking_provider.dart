@@ -125,9 +125,7 @@ class TrackingState {
   });
 
   WaypointData? get currentStop =>
-      currentStopIndex < waypoints.length
-          ? waypoints[currentStopIndex]
-          : null;
+      currentStopIndex < waypoints.length ? waypoints[currentStopIndex] : null;
 
   VisitData? get currentVisit {
     final stop = currentStop;
@@ -142,10 +140,8 @@ class TrackingState {
   int get totalStops => waypoints.length;
   int get completedStops =>
       waypoints.where((w) => w.status == 'completed').length;
-  int get skippedStops =>
-      waypoints.where((w) => w.status == 'skipped').length;
-  bool get isRouteFinished =>
-      currentStopIndex >= waypoints.length;
+  int get skippedStops => waypoints.where((w) => w.status == 'skipped').length;
+  bool get isRouteFinished => currentStopIndex >= waypoints.length;
 
   TrackingState copyWith({
     bool? isTracking,
@@ -320,8 +316,7 @@ class TrackingNotifier extends StateNotifier<TrackingState> {
 
     // Update local state
     final updatedWaypoints = List<WaypointData>.from(state.waypoints);
-    updatedWaypoints[state.currentStopIndex] =
-        stop.copyWith(status: 'arrived');
+    updatedWaypoints[state.currentStopIndex] = stop.copyWith(status: 'arrived');
 
     final updatedVisits = List<VisitData>.from(state.visits);
     final visitIdx = updatedVisits.indexWhere((v) => v.id == visit.id);
@@ -426,8 +421,7 @@ class TrackingNotifier extends StateNotifier<TrackingState> {
     if (stop == null || visit == null) return;
 
     final updatedWaypoints = List<WaypointData>.from(state.waypoints);
-    updatedWaypoints[state.currentStopIndex] =
-        stop.copyWith(status: 'skipped');
+    updatedWaypoints[state.currentStopIndex] = stop.copyWith(status: 'skipped');
 
     final updatedVisits = List<VisitData>.from(state.visits);
     final visitIdx = updatedVisits.indexWhere((v) => v.id == visit.id);

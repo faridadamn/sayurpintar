@@ -78,8 +78,8 @@ func (m *mockSubRepo) GetActiveByPelangganAndPackage(ctx context.Context, pelang
 func (m *mockSubRepo) UpdateStatus(ctx context.Context, id string, status string) error {
 	return nil
 }
-func (m *mockSubRepo) Pause(ctx context.Context, id string, reason string) error { return nil }
-func (m *mockSubRepo) Resume(ctx context.Context, id string) error              { return nil }
+func (m *mockSubRepo) Pause(ctx context.Context, id string, reason string) error  { return nil }
+func (m *mockSubRepo) Resume(ctx context.Context, id string) error                { return nil }
 func (m *mockSubRepo) Cancel(ctx context.Context, id string, reason string) error { return nil }
 func (m *mockSubRepo) ListByPedagang(ctx context.Context, pedagangID string, status string) ([]models.Subscription, error) {
 	return m.subs, nil
@@ -105,7 +105,7 @@ func (m *mockRouteRepo) GetByID(ctx context.Context, id string) (*models.Route, 
 func (m *mockRouteRepo) GetByPedagangAndDate(ctx context.Context, pedagangID string, date string) (*models.Route, error) {
 	return nil, repository.ErrRouteNotFound
 }
-func (m *mockRouteRepo) Update(ctx context.Context, route *models.Route) error     { return nil }
+func (m *mockRouteRepo) Update(ctx context.Context, route *models.Route) error { return nil }
 func (m *mockRouteRepo) UpdateStatus(ctx context.Context, routeID string, status string) error {
 	return nil
 }
@@ -277,20 +277,20 @@ func TestFindRouteSavings(t *testing.T) {
 
 	routes := []models.Route{
 		{
-			ID:              "route-1",
-			PedagangID:      "pedagang-1",
-			Date:            now.Format("2006-01-02"),
-			TotalDistanceKm: 8.0, // optimal
+			ID:               "route-1",
+			PedagangID:       "pedagang-1",
+			Date:             now.Format("2006-01-02"),
+			TotalDistanceKm:  8.0, // optimal
 			ActualDistanceKm: &actualDist,
-			Status:          "completed",
+			Status:           "completed",
 		},
 		{
-			ID:              "route-2",
-			PedagangID:      "pedagang-1",
-			Date:            now.AddDate(0, 0, -1).Format("2006-01-02"),
-			TotalDistanceKm: 7.0,
+			ID:               "route-2",
+			PedagangID:       "pedagang-1",
+			Date:             now.AddDate(0, 0, -1).Format("2006-01-02"),
+			TotalDistanceKm:  7.0,
 			ActualDistanceKm: &actualDist,
-			Status:          "completed",
+			Status:           "completed",
 		},
 	}
 

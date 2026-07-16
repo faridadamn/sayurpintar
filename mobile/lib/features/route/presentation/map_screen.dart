@@ -179,9 +179,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: isSelected
-                      ? AppTheme.accent
-                      : AppTheme.primaryGreen,
+                  color: isSelected ? AppTheme.accent : AppTheme.primaryGreen,
                   borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
                   boxShadow: [
                     BoxShadow(
@@ -202,9 +200,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
               ),
               Icon(
                 Icons.location_on,
-                color: isSelected
-                    ? AppTheme.accent
-                    : AppTheme.primaryGreen,
+                color: isSelected ? AppTheme.accent : AppTheme.primaryGreen,
                 size: 28,
               ),
             ],
@@ -259,14 +255,12 @@ class _MapScreenState extends ConsumerState<MapScreen>
                       )
                     : null,
                 border: OutlineInputBorder(
-                  borderRadius:
-                      BorderRadius.circular(AppTheme.radiusMedium),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
                 fillColor: Colors.white,
-                contentPadding:
-                    const EdgeInsets.symmetric(vertical: 14),
+                contentPadding: const EdgeInsets.symmetric(vertical: 14),
               ),
               onChanged: (value) {
                 setState(() {
@@ -282,8 +276,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
           if (_searchResults.isNotEmpty)
             Material(
               elevation: 4,
-              borderRadius:
-                  BorderRadius.circular(AppTheme.radiusMedium),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
               margin: const EdgeInsets.only(top: 4),
               child: ListView.separated(
                 shrinkWrap: true,
@@ -398,9 +391,8 @@ class _MapScreenState extends ConsumerState<MapScreen>
 
         final pendingVisits =
             visits.where((v) => v.status == 'pending').toList();
-        final currentVisit = pendingVisits.isNotEmpty
-            ? pendingVisits.first
-            : null;
+        final currentVisit =
+            pendingVisits.isNotEmpty ? pendingVisits.first : null;
 
         return routeAsync.when(
           data: (route) {
@@ -440,8 +432,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                         }
                       },
                       child: Container(
-                        margin:
-                            const EdgeInsets.only(top: AppTheme.space12),
+                        margin: const EdgeInsets.only(top: AppTheme.space12),
                         width: 40,
                         height: 4,
                         decoration: BoxDecoration(
@@ -471,8 +462,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                             ),
                             _StatChip(
                               icon: Icons.access_time,
-                              value:
-                                  '${route.estimatedDurationMin ?? '-'} min',
+                              value: '${route.estimatedDurationMin ?? '-'} min',
                               label: 'Estimasi',
                             ),
                             _StatChip(
@@ -494,8 +484,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                               width: 48,
                               height: 48,
                               decoration: BoxDecoration(
-                                color:
-                                    AppTheme.primaryGreen.withOpacity(0.1),
+                                color: AppTheme.primaryGreen.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(
                                   AppTheme.radiusMedium,
                                 ),
@@ -508,8 +497,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                             const SizedBox(width: AppTheme.space12),
                             Expanded(
                               child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     currentVisit.waypointLabel ??
@@ -564,8 +552,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                           const SizedBox(width: AppTheme.space12),
                           Expanded(
                             child: OutlinedButton.icon(
-                              onPressed: () =>
-                                  context.push('/route/optimized'),
+                              onPressed: () => context.push('/route/optimized'),
                               icon: const Icon(Icons.map, size: 18),
                               label: const Text('Lihat Rute'),
                             ),
@@ -713,8 +700,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
             ),
             children: [
               TileLayer(
-                urlTemplate:
-                    'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 userAgentPackageName: 'com.sayurpintar.app',
                 maxZoom: 19,
               ),
@@ -790,14 +776,12 @@ class _MapScreenState extends ConsumerState<MapScreen>
               right: 16,
               child: Material(
                 elevation: 6,
-                borderRadius:
-                    BorderRadius.circular(AppTheme.radiusMedium),
+                borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
                 child: Container(
                   padding: const EdgeInsets.all(AppTheme.space12),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius:
-                        BorderRadius.circular(AppTheme.radiusMedium),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
                   ),
                   child: Row(
                     children: [
@@ -856,7 +840,9 @@ class _MapScreenState extends ConsumerState<MapScreen>
       bottomSheet: AnimatedSize(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
-        child: _showBottomSheet ? _buildCurrentStopSheet() : const SizedBox.shrink(),
+        child: _showBottomSheet
+            ? _buildCurrentStopSheet()
+            : const SizedBox.shrink(),
       ),
     );
   }

@@ -16,8 +16,7 @@ class WaypointListScreen extends ConsumerStatefulWidget {
   const WaypointListScreen({super.key});
 
   @override
-  ConsumerState<WaypointListScreen> createState() =>
-      _WaypointListScreenState();
+  ConsumerState<WaypointListScreen> createState() => _WaypointListScreenState();
 }
 
 class _WaypointListScreenState extends ConsumerState<WaypointListScreen> {
@@ -295,25 +294,22 @@ class _WaypointListScreenState extends ConsumerState<WaypointListScreen> {
           _FilterChip(
             label: 'Semua',
             isSelected: currentFilter == WaypointFilter.all,
-            onTap: () =>
-                ref.read(waypointFilterProvider.notifier).state =
-                    WaypointFilter.all,
+            onTap: () => ref.read(waypointFilterProvider.notifier).state =
+                WaypointFilter.all,
           ),
           const SizedBox(width: AppTheme.space8),
           _FilterChip(
             label: 'Aktif',
             isSelected: currentFilter == WaypointFilter.active,
-            onTap: () =>
-                ref.read(waypointFilterProvider.notifier).state =
-                    WaypointFilter.active,
+            onTap: () => ref.read(waypointFilterProvider.notifier).state =
+                WaypointFilter.active,
           ),
           const SizedBox(width: AppTheme.space8),
           _FilterChip(
             label: 'Nonaktif',
             isSelected: currentFilter == WaypointFilter.inactive,
-            onTap: () =>
-                ref.read(waypointFilterProvider.notifier).state =
-                    WaypointFilter.inactive,
+            onTap: () => ref.read(waypointFilterProvider.notifier).state =
+                WaypointFilter.inactive,
           ),
         ],
       ),

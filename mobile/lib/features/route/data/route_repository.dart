@@ -179,11 +179,9 @@ class OptimizedRoute {
                   (e) => WaypointWithOrder.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
-      totalDistanceKm:
-          (json['total_distance_km'] as num?)?.toDouble() ?? 0,
+      totalDistanceKm: (json['total_distance_km'] as num?)?.toDouble() ?? 0,
       estimatedDurationMin: json['estimated_duration_min'] as int? ?? 0,
-      estimatedFuelCost:
-          (json['estimated_fuel_cost'] as num?)?.toDouble() ?? 0,
+      estimatedFuelCost: (json['estimated_fuel_cost'] as num?)?.toDouble() ?? 0,
       polyline: json['polyline'] as String?,
     );
   }
@@ -567,9 +565,7 @@ class RouteRepository {
       '${ApiEndpoints.todayRoute}/visits',
     );
     final data = response.data['data'] as List<dynamic>? ?? [];
-    return data
-        .map((e) => Visit.fromJson(e as Map<String, dynamic>))
-        .toList();
+    return data.map((e) => Visit.fromJson(e as Map<String, dynamic>)).toList();
   }
 
   Future<Visit> markVisitArrived(String visitId) async {
@@ -608,8 +604,7 @@ class RouteRepository {
       '${ApiEndpoints.routes}/visits/summary',
       queryParameters: {'date': date},
     );
-    return VisitSummary.fromJson(
-        response.data['data'] as Map<String, dynamic>);
+    return VisitSummary.fromJson(response.data['data'] as Map<String, dynamic>);
   }
 
   // ── History ──────────────────────────────────
@@ -630,7 +625,6 @@ class RouteRepository {
       '${ApiEndpoints.routes}/stats',
       queryParameters: {'days': days},
     );
-    return RouteStats.fromJson(
-        response.data['data'] as Map<String, dynamic>);
+    return RouteStats.fromJson(response.data['data'] as Map<String, dynamic>);
   }
 }

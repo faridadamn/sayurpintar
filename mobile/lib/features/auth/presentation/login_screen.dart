@@ -220,7 +220,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       backgroundColor: AppTheme.primaryGreen,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+                        borderRadius:
+                            BorderRadius.circular(AppTheme.radiusMedium),
                       ),
                       elevation: 2,
                       shadowColor: AppTheme.primaryGreen.withOpacity(0.4),
@@ -255,7 +256,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                 // ── Terms ────────────────────────────
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppTheme.space8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: AppTheme.space8),
                   child: Text(
                     'Dengan melanjutkan, Anda setuju dengan Syarat & Ketentuan serta Kebijakan Privasi kami.',
                     style: TextStyle(

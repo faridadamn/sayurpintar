@@ -224,8 +224,7 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen>
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
                     color: AppTheme.primaryGreen,
-                    borderRadius:
-                        BorderRadius.circular(AppTheme.radiusSmall),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
                   ),
                   child: Text(
                     'Stop $stopNum dari $total',
@@ -441,8 +440,7 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen>
                 ),
                 GestureDetector(
                   onTap: () => setState(() => _showStopList = false),
-                  child:
-                      const Icon(Icons.close, color: Colors.white, size: 20),
+                  child: const Icon(Icons.close, color: Colors.white, size: 20),
                 ),
               ],
             ),
@@ -597,9 +595,8 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen>
             Expanded(
               flex: 2,
               child: ElevatedButton.icon(
-                onPressed: arrived || completed
-                    ? null
-                    : () => _markArrived(tracking),
+                onPressed:
+                    arrived || completed ? null : () => _markArrived(tracking),
                 icon: Icon(
                   arrived ? Icons.check_circle : Icons.location_on,
                   size: 20,
@@ -610,8 +607,7 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen>
                       arrived ? AppTheme.primaryLight : AppTheme.primaryGreen,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(AppTheme.radiusMedium),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
                   ),
                 ),
               ),
@@ -621,9 +617,7 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen>
             // Lewati button
             Expanded(
               child: OutlinedButton.icon(
-                onPressed: completed
-                    ? null
-                    : () => _showSkipDialog(tracking),
+                onPressed: completed ? null : () => _showSkipDialog(tracking),
                 icon: const Icon(Icons.skip_next, size: 20),
                 label: const Text('Lewati'),
                 style: OutlinedButton.styleFrom(
@@ -631,8 +625,7 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen>
                   side: const BorderSide(color: AppTheme.error),
                   foregroundColor: AppTheme.error,
                   shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(AppTheme.radiusMedium),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
                   ),
                 ),
               ),
@@ -644,13 +637,11 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen>
               Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: AppTheme.primaryGreen),
-                  borderRadius:
-                      BorderRadius.circular(AppTheme.radiusMedium),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
                 ),
                 child: IconButton(
                   onPressed: () => _callCustomer(stop!.phone!),
-                  icon: const Icon(Icons.phone,
-                      color: AppTheme.primaryGreen),
+                  icon: const Icon(Icons.phone, color: AppTheme.primaryGreen),
                   tooltip: 'Telepon pelanggan',
                 ),
               ),
@@ -671,8 +662,7 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen>
                 foregroundColor: Colors.black87,
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(AppTheme.radiusMedium),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
                 ),
               ),
             ),

@@ -30,11 +30,11 @@ func DefaultConstraints() *Constraints {
 
 // OptimizedRoute holds the result of route optimization.
 type OptimizedRoute struct {
-	OrderedWaypoints    []models.WaypointWithOrder `json:"ordered_waypoints"`
-	TotalDistanceKm      float64             `json:"total_distance_km"`
-	EstimatedDurationMin int                `json:"estimated_duration_min"`
-	EstimatedFuelCost    float64             `json:"estimated_fuel_cost"`
-	Polyline             string             `json:"polyline"`
+	OrderedWaypoints     []models.WaypointWithOrder `json:"ordered_waypoints"`
+	TotalDistanceKm      float64                    `json:"total_distance_km"`
+	EstimatedDurationMin int                        `json:"estimated_duration_min"`
+	EstimatedFuelCost    float64                    `json:"estimated_fuel_cost"`
+	Polyline             string                     `json:"polyline"`
 }
 
 // RouteOptimizer implements the TSP solver using Nearest Neighbor + 2-opt.
@@ -56,7 +56,7 @@ func NewRouteOptimizer(osrm *OSRMService, logger *zap.Logger) *RouteOptimizer {
 func (o *RouteOptimizer) OptimizeRoute(ctx context.Context, start OSRMPoint, waypoints []models.Waypoint, constraints *Constraints) (*OptimizedRoute, error) {
 	if len(waypoints) == 0 {
 		return &OptimizedRoute{
-			OrderedWaypoints:    []models.WaypointWithOrder{},
+			OrderedWaypoints:     []models.WaypointWithOrder{},
 			TotalDistanceKm:      0,
 			EstimatedDurationMin: 0,
 			EstimatedFuelCost:    0,
@@ -120,7 +120,7 @@ func (o *RouteOptimizer) OptimizeRoute(ctx context.Context, start OSRMPoint, way
 	}
 
 	return &OptimizedRoute{
-		OrderedWaypoints:    orderedWaypoints,
+		OrderedWaypoints:     orderedWaypoints,
 		TotalDistanceKm:      math.Round(totalDist*100) / 100,
 		EstimatedDurationMin: int(math.Round(totalDur)),
 		EstimatedFuelCost:    math.Round(CalculateFuelCost(totalDist)*100) / 100,
@@ -371,7 +371,7 @@ func parseTimeToMinutes(t string) int {
 // Default: 35 km/L motor (typical Indonesian scooter), Rp 10,000/L Pertalite.
 func CalculateFuelCost(distanceKm float64) float64 {
 	const (
-		fuelEfficiencyKmPerL = 35.0   // km per liter
+		fuelEfficiencyKmPerL = 35.0    // km per liter
 		fuelPricePerLiter    = 10000.0 // IDR per liter
 	)
 	return (distanceKm / fuelEfficiencyKmPerL) * fuelPricePerLiter

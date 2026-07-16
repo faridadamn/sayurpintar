@@ -67,9 +67,7 @@ class RouteMapWidget extends StatelessWidget {
       options: MapOptions(
         center: defaultCenter,
         zoom: zoom,
-        onTap: onMapTap != null
-            ? (tapPos, point) => onMapTap!(point)
-            : null,
+        onTap: onMapTap != null ? (tapPos, point) => onMapTap!(point) : null,
         onLongPress: onMapLongPress != null
             ? (tapPos, point) => onMapLongPress!(point)
             : null,

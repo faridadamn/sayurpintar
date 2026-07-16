@@ -53,8 +53,7 @@ class _VisitCompletionScreenState extends ConsumerState<VisitCompletionScreen> {
     super.dispose();
   }
 
-  double get _totalAmount =>
-      _items.fold(0, (sum, item) => sum + item.subtotal);
+  double get _totalAmount => _items.fold(0, (sum, item) => sum + item.subtotal);
 
   double get _amountDue => _isPaid ? 0 : _totalAmount - _partialAmount;
 
@@ -180,8 +179,8 @@ class _VisitCompletionScreenState extends ConsumerState<VisitCompletionScreen> {
           const SizedBox(height: AppTheme.space12),
           Row(
             children: [
-              _headerBadge(Icons.pin_drop,
-                  'Kunjungan #${widget.waypoint.order}'),
+              _headerBadge(
+                  Icons.pin_drop, 'Kunjungan #${widget.waypoint.order}'),
               const SizedBox(width: AppTheme.space12),
               _headerBadge(Icons.timer, 'Durasi: $_visitDuration'),
             ],
@@ -236,8 +235,7 @@ class _VisitCompletionScreenState extends ConsumerState<VisitCompletionScreen> {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: _quickItems.length,
-            separatorBuilder: (_, __) =>
-                const SizedBox(width: AppTheme.space8),
+            separatorBuilder: (_, __) => const SizedBox(width: AppTheme.space8),
             itemBuilder: (context, index) {
               final qi = _quickItems[index];
               return ActionChip(
@@ -247,12 +245,10 @@ class _VisitCompletionScreenState extends ConsumerState<VisitCompletionScreen> {
                 ),
                 avatar: const Icon(Icons.add, size: 16),
                 backgroundColor: AppTheme.primaryGreen.withOpacity(0.08),
-                side: BorderSide(
-                    color: AppTheme.primaryGreen.withOpacity(0.3)),
+                side: BorderSide(color: AppTheme.primaryGreen.withOpacity(0.3)),
                 onPressed: () => _addQuickItem(qi),
                 shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(AppTheme.radiusFull),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusFull),
                 ),
               );
             },
@@ -297,8 +293,7 @@ class _VisitCompletionScreenState extends ConsumerState<VisitCompletionScreen> {
             decoration: BoxDecoration(
               color: AppTheme.background,
               borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
-              border: Border.all(
-                  color: AppTheme.divider.withOpacity(0.3)),
+              border: Border.all(color: AppTheme.divider.withOpacity(0.3)),
             ),
             child: const Column(
               children: [
@@ -342,8 +337,7 @@ class _VisitCompletionScreenState extends ConsumerState<VisitCompletionScreen> {
             padding: const EdgeInsets.symmetric(vertical: 12),
             side: const BorderSide(color: AppTheme.primaryGreen),
             shape: RoundedRectangleBorder(
-              borderRadius:
-                  BorderRadius.circular(AppTheme.radiusMedium),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
             ),
           ),
         ),
@@ -355,10 +349,8 @@ class _VisitCompletionScreenState extends ConsumerState<VisitCompletionScreen> {
             padding: const EdgeInsets.all(AppTheme.space12),
             decoration: BoxDecoration(
               color: AppTheme.primaryGreen.withOpacity(0.06),
-              borderRadius:
-                  BorderRadius.circular(AppTheme.radiusMedium),
-              border: Border.all(
-                  color: AppTheme.primaryGreen.withOpacity(0.2)),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+              border: Border.all(color: AppTheme.primaryGreen.withOpacity(0.2)),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -416,8 +408,7 @@ class _VisitCompletionScreenState extends ConsumerState<VisitCompletionScreen> {
               padding: const EdgeInsets.all(AppTheme.space12),
               decoration: BoxDecoration(
                 color: AppTheme.background,
-                borderRadius:
-                    BorderRadius.circular(AppTheme.radiusSmall),
+                borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -485,9 +476,7 @@ class _VisitCompletionScreenState extends ConsumerState<VisitCompletionScreen> {
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 15,
-                        color: _isPaid
-                            ? AppTheme.primaryGreen
-                            : AppTheme.error,
+                        color: _isPaid ? AppTheme.primaryGreen : AppTheme.error,
                       ),
                     ),
                   ],
@@ -597,8 +586,7 @@ class _VisitCompletionScreenState extends ConsumerState<VisitCompletionScreen> {
                 label,
                 style: TextStyle(
                   fontSize: 12,
-                  fontWeight:
-                      isSelected ? FontWeight.w700 : FontWeight.w500,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                   color: isSelected
                       ? AppTheme.primaryGreen
                       : AppTheme.textSecondary,
@@ -671,8 +659,7 @@ class _VisitCompletionScreenState extends ConsumerState<VisitCompletionScreen> {
                 foregroundColor: AppTheme.textSecondary,
                 side: const BorderSide(color: AppTheme.divider),
                 shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(AppTheme.radiusMedium),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
                 ),
               ),
             ),
@@ -699,8 +686,7 @@ class _VisitCompletionScreenState extends ConsumerState<VisitCompletionScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 backgroundColor: AppTheme.primaryGreen,
                 shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(AppTheme.radiusMedium),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
                 ),
               ),
             ),
@@ -751,8 +737,7 @@ class _VisitCompletionScreenState extends ConsumerState<VisitCompletionScreen> {
     if (hasEmptyItems) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(
-              '⚠️ Lengkapi nama barang dan harga pada semua item'),
+          content: Text('⚠️ Lengkapi nama barang dan harga pada semua item'),
           backgroundColor: AppTheme.error,
         ),
       );
@@ -837,8 +822,7 @@ class _VisitCompletionScreenState extends ConsumerState<VisitCompletionScreen> {
                 ref.read(trackingProvider.notifier).skipVisit(selected);
                 context.pop();
               },
-              style:
-                  ElevatedButton.styleFrom(backgroundColor: AppTheme.error),
+              style: ElevatedButton.styleFrom(backgroundColor: AppTheme.error),
               child: const Text('Lewati'),
             ),
           ],
@@ -870,8 +854,7 @@ class _VisitCompletionScreenState extends ConsumerState<VisitCompletionScreen> {
               Navigator.pop(ctx);
               context.pop();
             },
-            style:
-                ElevatedButton.styleFrom(backgroundColor: AppTheme.error),
+            style: ElevatedButton.styleFrom(backgroundColor: AppTheme.error),
             child: const Text('Keluar'),
           ),
         ],

@@ -44,10 +44,10 @@ func NewSMSService(cfg *config.Config, logger *zap.Logger) *SMSService {
 // smsRequest represents a generic SMS gateway request.
 // Most Indonesian gateways accept JSON or form-encoded payloads.
 type smsRequest struct {
-	Phone    string `json:"phone"`
-	Message  string `json:"message"`
-	Sender   string `json:"sender,omitempty"`
-	APIKey   string `json:"api_key,omitempty"`
+	Phone   string `json:"phone"`
+	Message string `json:"message"`
+	Sender  string `json:"sender,omitempty"`
+	APIKey  string `json:"api_key,omitempty"`
 }
 
 // smsResponse represents a generic SMS gateway response.
@@ -58,8 +58,8 @@ type smsResponse struct {
 		MessageID string `json:"message_id,omitempty"`
 	} `json:"data,omitempty"`
 	// Some gateways use different field names
-	ID      string `json:"id,omitempty"`
-	Error   string `json:"error,omitempty"`
+	ID    string `json:"id,omitempty"`
+	Error string `json:"error,omitempty"`
 }
 
 // --- helpers -------------------------------------------------------------------

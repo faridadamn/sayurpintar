@@ -15,23 +15,23 @@ import (
 )
 
 const (
-	trackingGeoKey    = "tracking:pedagang_locations"
-	trackingPrefix    = "tracking:location:"
-	trackingTTL       = 5 * time.Minute
-	writeWait         = 10 * time.Second
-	pongWait          = 60 * time.Second
-	pingPeriod        = (pongWait * 9) / 10
-	maxMessageSize    = 512
+	trackingGeoKey = "tracking:pedagang_locations"
+	trackingPrefix = "tracking:location:"
+	trackingTTL    = 5 * time.Minute
+	writeWait      = 10 * time.Second
+	pongWait       = 60 * time.Second
+	pingPeriod     = (pongWait * 9) / 10
+	maxMessageSize = 512
 )
 
 // TrackingMessage represents a message sent over the tracking WebSocket.
 type TrackingMessage struct {
-	Type        string  `json:"type"`
-	Lat         float64 `json:"lat,omitempty"`
-	Lng         float64 `json:"lng,omitempty"`
-	PedagangID  string  `json:"pedagang_id,omitempty"`
-	ETAMin      int     `json:"eta_min,omitempty"`
-	Timestamp   int64   `json:"timestamp,omitempty"`
+	Type       string  `json:"type"`
+	Lat        float64 `json:"lat,omitempty"`
+	Lng        float64 `json:"lng,omitempty"`
+	PedagangID string  `json:"pedagang_id,omitempty"`
+	ETAMin     int     `json:"eta_min,omitempty"`
+	Timestamp  int64   `json:"timestamp,omitempty"`
 }
 
 // PedagangConnection represents a connected pedagang's WebSocket.

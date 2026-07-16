@@ -57,8 +57,7 @@ class MainShell extends ConsumerWidget {
   }
 
   /// Navigate to the appropriate route when a tab is tapped.
-  void _onItemTapped(
-      int index, BuildContext context, bool isPedagang) {
+  void _onItemTapped(int index, BuildContext context, bool isPedagang) {
     if (isPedagang) {
       switch (index) {
         case 0:

@@ -266,5 +266,3 @@ func (s *AuthService) IsTokenBlacklisted(ctx context.Context, accessToken string
 	}
 	return exists > 0, nil
 }
-
-

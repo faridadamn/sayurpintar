@@ -42,15 +42,12 @@ class PackageListScreen extends ConsumerWidget {
               message:
                   'Buat paket langganan untuk pelanggan Anda.\nPelanggan bisa berlangganan dan menerima sayur secara rutin.',
               actionLabel: 'Buat Paket',
-              onAction: () =>
-                  context.push('/subscriptions/create-package'),
+              onAction: () => context.push('/subscriptions/create-package'),
             );
           }
 
-          final activePackages =
-              packages.where((p) => p.isActive).toList();
-          final inactivePackages =
-              packages.where((p) => !p.isActive).toList();
+          final activePackages = packages.where((p) => p.isActive).toList();
+          final inactivePackages = packages.where((p) => !p.isActive).toList();
 
           return RefreshIndicator(
             onRefresh: () async => ref.invalidate(myPackagesProvider),
@@ -63,8 +60,7 @@ class PackageListScreen extends ConsumerWidget {
 
                 // ── Active Packages ─────────────────────────────────────
                 if (activePackages.isNotEmpty) ...[
-                  _buildSectionTitle(
-                      'Aktif (${activePackages.length})'),
+                  _buildSectionTitle('Aktif (${activePackages.length})'),
                   ...activePackages.map(
                     (pkg) => _PackageCard(
                       package: pkg,
@@ -72,16 +68,14 @@ class PackageListScreen extends ConsumerWidget {
                         '/subscriptions/package-detail',
                         extra: pkg.id,
                       ),
-                      onDelete: () =>
-                          _confirmDelete(context, ref, pkg),
+                      onDelete: () => _confirmDelete(context, ref, pkg),
                     ),
                   ),
                 ],
 
                 // ── Inactive Packages ───────────────────────────────────
                 if (inactivePackages.isNotEmpty) ...[
-                  _buildSectionTitle(
-                      'Nonaktif (${inactivePackages.length})'),
+                  _buildSectionTitle('Nonaktif (${inactivePackages.length})'),
                   ...inactivePackages.map(
                     (pkg) => _PackageCard(
                       package: pkg,
@@ -89,8 +83,7 @@ class PackageListScreen extends ConsumerWidget {
                         '/subscriptions/package-detail',
                         extra: pkg.id,
                       ),
-                      onDelete: () =>
-                          _confirmDelete(context, ref, pkg),
+                      onDelete: () => _confirmDelete(context, ref, pkg),
                       isInactive: true,
                     ),
                   ),
@@ -149,15 +142,13 @@ class PackageListScreen extends ConsumerWidget {
             onPressed: () async {
               Navigator.pop(ctx);
               try {
-                final repo =
-                    ref.read(subscriptionRepositoryProvider);
+                final repo = ref.read(subscriptionRepositoryProvider);
                 await repo.deletePackage(pkg.id);
                 ref.invalidate(myPackagesProvider);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content:
-                          Text('Paket "${pkg.name}" dihapus'),
+                      content: Text('Paket "${pkg.name}" dihapus'),
                       backgroundColor: AppTheme.primaryGreen,
                     ),
                   );
@@ -173,8 +164,7 @@ class PackageListScreen extends ConsumerWidget {
                 }
               }
             },
-            style:
-                TextButton.styleFrom(foregroundColor: AppTheme.error),
+            style: TextButton.styleFrom(foregroundColor: AppTheme.error),
             child: const Text('Hapus'),
           ),
         ],
@@ -333,8 +323,7 @@ class _PackageCard extends StatelessWidget {
                     color: package.isActive
                         ? AppTheme.primaryGreen.withOpacity(0.1)
                         : Colors.grey.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(
-                        AppTheme.radiusFull),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusFull),
                   ),
                   child: Text(
                     package.isActive ? 'Aktif' : 'Nonaktif',
@@ -368,8 +357,7 @@ class _PackageCard extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: AppTheme.accent.withOpacity(0.15),
-                    borderRadius:
-                        BorderRadius.circular(AppTheme.radiusSmall),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
                   ),
                   child: Text(
                     package.frequencyText,

@@ -185,9 +185,9 @@ func (h *Handler) CreateOneTimeOrder(c *fiber.Ctx) error {
 	pedagangID := middleware.GetUserID(c)
 
 	var body struct {
-		PelangganID  string            `json:"pelanggan_id"`
+		PelangganID  string             `json:"pelanggan_id"`
 		Items        []models.OrderItem `json:"items"`
-		DeliveryDate string            `json:"delivery_date"`
+		DeliveryDate string             `json:"delivery_date"`
 	}
 	if err := c.BodyParser(&body); err != nil {
 		return utils.ErrorResponse(c, fiber.StatusBadRequest, "Invalid request body", err.Error())

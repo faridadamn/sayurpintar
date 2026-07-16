@@ -605,9 +605,7 @@ class _TopMoverCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isUp = price.trend == 'up';
     final color = isUp ? const Color(0xFFD32F2F) : const Color(0xFF2E7D32);
-    final bgColor = isUp
-        ? const Color(0xFFFFEBEE)
-        : const Color(0xFFE8F5E9);
+    final bgColor = isUp ? const Color(0xFFFFEBEE) : const Color(0xFFE8F5E9);
 
     return Container(
       width: 160,
@@ -703,14 +701,10 @@ class _CategoryChip extends StatelessWidget {
             vertical: AppTheme.space8,
           ),
           decoration: BoxDecoration(
-            color: isSelected
-                ? AppTheme.primaryGreen
-                : AppTheme.surface,
+            color: isSelected ? AppTheme.primaryGreen : AppTheme.surface,
             borderRadius: BorderRadius.circular(AppTheme.radiusFull),
             border: Border.all(
-              color: isSelected
-                  ? AppTheme.primaryGreen
-                  : AppTheme.divider,
+              color: isSelected ? AppTheme.primaryGreen : AppTheme.divider,
             ),
           ),
           child: Text(
