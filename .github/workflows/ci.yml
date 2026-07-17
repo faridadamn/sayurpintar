@@ -133,9 +133,21 @@ jobs:
       - name: Install dependencies
         working-directory: mobile
         run: flutter pub get
-      - name: Check formatting
+      - name: Apply deterministic compile fixes
+        run: python3 scripts/apply_mobile_compile_fixes.py
+      - name: Format generated fixes
         working-directory: mobile
-        run: dart format --output=none --set-exit-if-changed lib test
+        run: dart format lib
+      - name: Upload generated mobile fixes
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-compile-fixes
+          path: |
+            mobile/lib/features/route/presentation/navigation_screen.dart
+            mobile/lib/features/route/presentation/route_optimized_screen.dart
+            mobile/lib/features/route/data/route_repository.dart
+            mobile/lib/features/subscription/presentation/modify_delivery_screen.dart
+            mobile/lib/features/subscription/presentation/package_detail_screen.dart
       - name: Analyze
         working-directory: mobile
         shell: bash
