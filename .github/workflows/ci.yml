@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -17,84 +17,9 @@ env:
   FLUTTER_VERSION: '3.22.3'
 
 jobs:
-  normalize:
-    name: Apply targeted mobile fixes
-    runs-on: ubuntu-latest
-    if: github.actor != 'github-actions[bot]'
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref || github.ref_name }}
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
-          channel: stable
-          cache: true
-      - name: Patch compatibility issues
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-
-          cast_files = [
-              'mobile/lib/features/dashboard/presentation/pelanggan_home_screen.dart',
-              'mobile/lib/features/dashboard/presentation/pelanggan_order_screen.dart',
-              'mobile/lib/features/dashboard/presentation/profile_screen.dart',
-              'mobile/lib/features/price/presentation/pelanggan_price_screen.dart',
-              'mobile/lib/features/price/presentation/price_comparison_screen.dart',
-          ]
-          for filename in cast_files:
-              path = Path(filename)
-              text = path.read_text()
-              text = text.replace(
-                  'final num = price is int ? price : (price as num?)?.toInt() ?? 0;\n    final str = num.toString();',
-                  'final amount = price is int ? price : (price as num?)?.toInt() ?? 0;\n    final str = amount.toString();',
-              )
-              path.write_text(text)
-
-          repo = Path('mobile/lib/features/subscription/data/subscription_repository.dart')
-          text = repo.read_text()
-          marker = '''  String get paymentStatusText {\n    switch (paymentStatus) {\n      case 'paid':\n        return 'Lunas';\n      case 'unpaid':\n        return 'Belum Bayar';\n      case 'partial':\n        return 'Sebagian';\n      default:\n        return paymentStatus;\n    }\n  }\n'''
-          replacement = marker + '''\n  bool get isRated => rating != null;\n\n  String get paymentMethodText {\n    switch (paymentMethod) {\n      case 'cash':\n        return 'Tunai';\n      case 'transfer':\n      case 'bank_transfer':\n        return 'Transfer Bank';\n      case 'ewallet':\n        return 'E-Wallet';\n      case 'qris':\n        return 'QRIS';\n      default:\n        return paymentMethod;\n    }\n  }\n'''
-          if 'bool get isRated' not in text:
-              if marker not in text:
-                  raise SystemExit('Order paymentStatusText marker not found')
-              text = text.replace(marker, replacement, 1)
-          repo.write_text(text)
-
-          merchant = Path('mobile/lib/features/pelanggan/presentation/merchant_detail_screen.dart')
-          text = merchant.read_text()
-          import_line = "import 'package:sayurpintar/features/subscription/data/subscription_repository.dart';\n"
-          anchor = "import 'package:sayurpintar/features/pelanggan/providers/pelanggan_provider.dart';\n"
-          if import_line not in text:
-              if anchor not in text:
-                  raise SystemExit('merchant import anchor not found')
-              text = text.replace(anchor, anchor + import_line, 1)
-          merchant.write_text(text)
-          PY
-          cd mobile
-          dart format \
-            lib/features/dashboard/presentation/pelanggan_home_screen.dart \
-            lib/features/dashboard/presentation/pelanggan_order_screen.dart \
-            lib/features/dashboard/presentation/profile_screen.dart \
-            lib/features/price/presentation/pelanggan_price_screen.dart \
-            lib/features/price/presentation/price_comparison_screen.dart \
-            lib/features/subscription/data/subscription_repository.dart \
-            lib/features/pelanggan/presentation/merchant_detail_screen.dart
-          cd ..
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add mobile/lib
-          if ! git diff --cached --quiet; then
-            git commit -m "fix: resolve mobile model and numeric compatibility"
-            git push origin HEAD:${{ github.head_ref || github.ref_name }}
-          fi
-
   backend:
     name: Backend checks (Go)
     runs-on: ubuntu-latest
-    needs: [normalize]
-    if: always() && (needs.normalize.result == 'success' || needs.normalize.result == 'skipped')
     services:
       postgres:
         image: postgis/postgis:15-3.3
@@ -122,15 +47,27 @@ jobs:
         with:
           go-version-file: backend/go.mod
           cache-dependency-path: backend/go.sum
-      - name: Regenerate dependency checksums
+      - name: Verify dependencies
         working-directory: backend
-        run: |
-          rm -f go.sum
-          go mod tidy
-      - name: Run backend checks
-        id: checks
+        run: go mod verify
+      - name: Check formatting
         working-directory: backend
         shell: bash
+        run: |
+          files="$(gofmt -l .)"
+          if [ -n "$files" ]; then
+            echo "The following files need gofmt:"
+            echo "$files"
+            exit 1
+          fi
+      - name: Run vet
+        working-directory: backend
+        run: go vet ./...
+      - name: Build backend
+        working-directory: backend
+        run: go build ./...
+      - name: Run backend tests
+        working-directory: backend
         env:
           APP_ENV: test
           POSTGRES_HOST: localhost
@@ -140,65 +77,17 @@ jobs:
           POSTGRES_PASSWORD: test_password
           REDIS_HOST: localhost
           REDIS_PORT: 6379
-        run: |
-          set +e
-          status=0
-          go vet ./... > vet.log 2>&1
-          vet_status=$?
-          test "$vet_status" -eq 0 || status=1
-          go build ./... > build.log 2>&1
-          build_status=$?
-          test "$build_status" -eq 0 || status=1
-          go test ./... -race -coverprofile=coverage.out > test.log 2>&1
-          test_status=$?
-          test "$test_status" -eq 0 || status=1
-          files="$(gofmt -l .)"
-          if [ -n "$files" ]; then
-            printf '%s\n' "$files" > format.log
-            format_status=1
-            status=1
-          else
-            : > format.log
-            format_status=0
-          fi
-          {
-            echo "vet_status=$vet_status"
-            echo "build_status=$build_status"
-            echo "test_status=$test_status"
-            echo "format_status=$format_status"
-          } >> "$GITHUB_OUTPUT"
-          exit 0
-      - name: Upload backend diagnostics
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: backend-diagnostics
-          path: |
-            backend/vet.log
-            backend/build.log
-            backend/test.log
-            backend/format.log
-            backend/go.sum
-          if-no-files-found: ignore
+        run: go test ./... -race -coverprofile=coverage.out
       - name: Upload coverage
         if: always() && hashFiles('backend/coverage.out') != ''
         uses: codecov/codecov-action@v4
         with:
           files: backend/coverage.out
           fail_ci_if_error: false
-      - name: Enforce backend quality gate
-        shell: bash
-        run: |
-          test "${{ steps.checks.outputs.vet_status }}" = 0
-          test "${{ steps.checks.outputs.build_status }}" = 0
-          test "${{ steps.checks.outputs.test_status }}" = 0
-          test "${{ steps.checks.outputs.format_status }}" = 0
 
   mobile:
     name: Mobile checks (Flutter)
     runs-on: ubuntu-latest
-    needs: [normalize]
-    if: always() && (needs.normalize.result == 'success' || needs.normalize.result == 'skipped')
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
@@ -209,44 +98,15 @@ jobs:
       - name: Install dependencies
         working-directory: mobile
         run: flutter pub get
-      - name: Run mobile checks
-        id: checks
+      - name: Check formatting
         working-directory: mobile
-        shell: bash
-        run: |
-          set +e
-          status=0
-          flutter analyze > analyze.log 2>&1
-          analyze_status=$?
-          test "$analyze_status" -eq 0 || status=1
-          flutter test --coverage > test.log 2>&1
-          test_status=$?
-          test "$test_status" -eq 0 || status=1
-          dart format --output=none --set-exit-if-changed lib test > format.log 2>&1
-          format_status=$?
-          test "$format_status" -eq 0 || status=1
-          {
-            echo "analyze_status=$analyze_status"
-            echo "test_status=$test_status"
-            echo "format_status=$format_status"
-          } >> "$GITHUB_OUTPUT"
-          exit 0
-      - name: Upload mobile diagnostics
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: mobile-diagnostics
-          path: |
-            mobile/analyze.log
-            mobile/test.log
-            mobile/format.log
-          if-no-files-found: ignore
-      - name: Enforce mobile quality gate
-        shell: bash
-        run: |
-          test "${{ steps.checks.outputs.analyze_status }}" = 0
-          test "${{ steps.checks.outputs.test_status }}" = 0
-          test "${{ steps.checks.outputs.format_status }}" = 0
+        run: dart format --output=none --set-exit-if-changed lib test
+      - name: Analyze
+        working-directory: mobile
+        run: flutter analyze
+      - name: Run tests
+        working-directory: mobile
+        run: flutter test --coverage
 
   docker:
     name: Build backend image
