@@ -138,7 +138,17 @@ jobs:
         run: dart format --output=none --set-exit-if-changed lib test
       - name: Analyze
         working-directory: mobile
-        run: flutter analyze
+        shell: bash
+        run: |
+          set -o pipefail
+          flutter analyze 2>&1 | tee analyze.log
+      - name: Upload analyzer diagnostics
+        if: always() && hashFiles('mobile/analyze.log') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-analyzer-log
+          path: mobile/analyze.log
+          if-no-files-found: ignore
       - name: Run tests
         working-directory: mobile
         run: flutter test --coverage
