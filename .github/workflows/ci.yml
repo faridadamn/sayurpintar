@@ -26,6 +26,23 @@ jobs:
         with:
           go-version-file: backend/go.mod
           cache-dependency-path: backend/go.sum
+      - name: Generate module metadata
+        working-directory: backend
+        run: go mod tidy
+      - name: Upload module metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-go-modules
+          path: |
+            backend/go.mod
+            backend/go.sum
+      - name: Require committed module metadata
+        shell: bash
+        run: |
+          if ! git diff --exit-code -- backend/go.mod backend/go.sum; then
+            echo "go.mod or go.sum is stale; commit the backend-go-modules artifact."
+            exit 1
+          fi
       - name: Verify dependencies
         working-directory: backend
         run: go mod verify
