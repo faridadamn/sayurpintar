@@ -120,7 +120,7 @@ func main() {
 	subHandler := subscription.NewHandler(subService)
 	priceHandler := price.NewPriceHandler(priceService, logger)
 	orderHandler := order.NewHandler(orderService)
-	txnHandler := transaction.NewHandler()
+	txnHandler := transaction.NewHandler(txnRepo)
 	analyticsHandler := analytics.NewAnalyticsHandler(analyticsService)
 	notifHandler := notification.NewNotificationHandler(notifRepo)
 	insightHandler := analytics.NewInsightHandler(insightService)
