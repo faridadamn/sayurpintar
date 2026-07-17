@@ -87,7 +87,11 @@ func (s *AuthService) SendOTP(ctx context.Context, phone string) (*SendOTPRespon
 		return nil, fmt.Errorf("check cooldown: %w", err)
 	}
 	if cooldown > 0 {
-		return &SendOTPResponse{Phone: phone, ExpiresIn: s.otpService.config.OTP.Expiry, Cooldown: cooldown}, nil
+		return &SendOTPResponse{
+			Phone:     phone,
+			ExpiresIn: s.otpService.config.OTP.Expiry,
+			Cooldown:  cooldown,
+		}, nil
 	}
 
 	if _, err = s.otpService.GenerateOTP(ctx, phone); err != nil {
@@ -97,7 +101,12 @@ func (s *AuthService) SendOTP(ctx context.Context, phone string) (*SendOTPRespon
 	_, err = s.userRepo.GetByPhone(ctx, phone)
 	if err != nil {
 		if errors.Is(err, repository.ErrUserNotFound) {
-			newUser := &models.User{Phone: phone, Name: "", Role: "", IsVerified: false}
+			newUser := &models.User{
+				Phone:      phone,
+				Name:       "",
+				Role:       "",
+				IsVerified: false,
+			}
 			if createErr := s.userRepo.Create(ctx, newUser); createErr != nil {
 				return nil, fmt.Errorf("create user: %w", createErr)
 			}
@@ -110,7 +119,10 @@ func (s *AuthService) SendOTP(ctx context.Context, phone string) (*SendOTPRespon
 	if expiry <= 0 {
 		expiry = defaultOTPExpiry
 	}
-	return &SendOTPResponse{Phone: phone, ExpiresIn: expiry}, nil
+	return &SendOTPResponse{
+		Phone:     phone,
+		ExpiresIn: expiry,
+	}, nil
 }
 
 // VerifyOTP verifies the OTP and returns JWT tokens.
@@ -140,8 +152,11 @@ func (s *AuthService) VerifyOTP(ctx context.Context, phone string, otp string) (
 		return nil, fmt.Errorf("generate jwt: %w", err)
 	}
 	return &AuthResponse{
-		AccessToken: tokens.AccessToken, RefreshToken: tokens.RefreshToken,
-		ExpiresIn: tokens.ExpiresIn, User: user, NeedsRole: user.Role == "",
+		AccessToken:  tokens.AccessToken,
+		RefreshToken: tokens.RefreshToken,
+		ExpiresIn:    tokens.ExpiresIn,
+		User:         user,
+		NeedsRole:    user.Role == "",
 	}, nil
 }
 
@@ -203,14 +218,28 @@ func (s *AuthService) UpdateProfile(ctx context.Context, userID string, req Upda
 	if err != nil {
 		return nil, fmt.Errorf("get user: %w", err)
 	}
+
 	name := user.Name
-	if req.Name != "" { name = req.Name }
+	if req.Name != "" {
+		name = req.Name
+	}
+
 	address := ""
-	if user.Address != nil { address = *user.Address }
-	if req.Address != "" { address = req.Address }
+	if user.Address != nil {
+		address = *user.Address
+	}
+	if req.Address != "" {
+		address = req.Address
+	}
+
 	avatarURL := ""
-	if user.AvatarURL != nil { avatarURL = *user.AvatarURL }
-	if req.AvatarURL != "" { avatarURL = req.AvatarURL }
+	if user.AvatarURL != nil {
+		avatarURL = *user.AvatarURL
+	}
+	if req.AvatarURL != "" {
+		avatarURL = req.AvatarURL
+	}
+
 	if err := s.userRepo.UpdateProfile(ctx, userID, name, address, avatarURL); err != nil {
 		return nil, fmt.Errorf("update profile: %w", err)
 	}
