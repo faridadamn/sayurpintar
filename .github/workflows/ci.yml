@@ -26,12 +26,12 @@ jobs:
         with:
           go-version-file: backend/go.mod
           cache-dependency-path: backend/go.sum
-      - name: Generate module metadata
+      - name: Verify module metadata
         working-directory: backend
         shell: bash
         run: |
           set -o pipefail
-          go mod tidy 2>&1 | tee tidy.log
+          go mod tidy -diff 2>&1 | tee tidy.log
       - name: Upload tidy diagnostics
         if: always() && hashFiles('backend/tidy.log') != ''
         uses: actions/upload-artifact@v4
@@ -39,22 +39,6 @@ jobs:
           name: backend-tidy-log
           path: backend/tidy.log
           if-no-files-found: ignore
-      - name: Upload module metadata
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: backend-go-modules
-          path: |
-            backend/go.mod
-            backend/go.sum
-          if-no-files-found: ignore
-      - name: Require committed module metadata
-        shell: bash
-        run: |
-          if ! git diff --exit-code -- backend/go.mod backend/go.sum; then
-            echo "go.mod or go.sum is stale; commit the backend-go-modules artifact."
-            exit 1
-          fi
       - name: Verify dependencies
         working-directory: backend
         run: go mod verify
