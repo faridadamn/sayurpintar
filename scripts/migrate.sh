@@ -41,8 +41,12 @@ for file in "${migration_files[@]}"; do
   checksum="$(sha256sum "$file" | awk '{print $1}')"
 
   existing_checksum="$(psql "$DATABASE_URL" -At -v ON_ERROR_STOP=1 \
-    -v version="$version" \
-    -c "SELECT checksum FROM schema_migrations WHERE version = :'version';")"
+    -v version="$version" <<'SQL'
+SELECT checksum
+FROM schema_migrations
+WHERE version = :'version';
+SQL
+)"
 
   if [[ -n "$existing_checksum" ]]; then
     if [[ "$existing_checksum" != "$checksum" ]]; then
