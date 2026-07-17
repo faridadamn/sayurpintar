@@ -37,6 +37,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to load config: %v", err)
 	}
+	if err := config.ValidateProduction(cfg); err != nil {
+		log.Fatalf("Invalid production config: %v", err)
+	}
 
 	logger, err := initLogger(cfg.Log)
 	if err != nil {
