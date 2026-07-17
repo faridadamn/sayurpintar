@@ -34,21 +34,35 @@ import (
 
 func main() {
 	cfg, err := config.Load()
-	if err != nil { log.Fatalf("Failed to load config: %v", err) }
+	if err != nil {
+		log.Fatalf("Failed to load config: %v", err)
+	}
+
 	logger, err := initLogger(cfg.Log)
-	if err != nil { log.Fatalf("Failed to init logger: %v", err) }
+	if err != nil {
+		log.Fatalf("Failed to init logger: %v", err)
+	}
 	defer logger.Sync()
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
+
 	pgPool, err := database.NewPostgresPool(ctx, cfg.Database.Postgres, logger)
-	if err != nil { logger.Fatal("Failed to connect to PostgreSQL", zap.Error(err)) }
+	if err != nil {
+		logger.Fatal("Failed to connect to PostgreSQL", zap.Error(err))
+	}
 	defer pgPool.Close()
+
 	redisClient, err := database.NewRedisClient(ctx, cfg.Database.Redis, logger)
-	if err != nil { logger.Fatal("Failed to connect to Redis", zap.Error(err)) }
+	if err != nil {
+		logger.Fatal("Failed to connect to Redis", zap.Error(err))
+	}
 	defer redisClient.Close()
+
 	mongoClient, err := database.NewMongoClient(ctx, cfg.Database.Mongo, logger)
-	if err != nil { logger.Fatal("Failed to connect to MongoDB", zap.Error(err)) }
+	if err != nil {
+		logger.Fatal("Failed to connect to MongoDB", zap.Error(err))
+	}
 	defer mongoClient.Disconnect(ctx)
 	mongoDB := mongoClient.Database(cfg.Database.Mongo.DB)
 
@@ -123,38 +137,62 @@ func main() {
 	recoverMiddleware := middleware.Recover(logger)
 
 	app := fiber.New(fiber.Config{
-		AppName: "SayurPintar API", ReadTimeout: cfg.Server.ReadTimeout,
-		WriteTimeout: cfg.Server.WriteTimeout, IdleTimeout: cfg.Server.IdleTimeout,
+		AppName:      "SayurPintar API",
+		ReadTimeout:  cfg.Server.ReadTimeout,
+		WriteTimeout: cfg.Server.WriteTimeout,
+		IdleTimeout:  cfg.Server.IdleTimeout,
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
-			code, message := fiber.StatusInternalServerError, "Internal server error"
-			if e, ok := err.(*fiber.Error); ok { code, message = e.Code, e.Message }
+			code := fiber.StatusInternalServerError
+			message := "Internal server error"
+			if e, ok := err.(*fiber.Error); ok {
+				code = e.Code
+				message = e.Message
+			}
 			logger.Error("unhandled request error", zap.Error(err), zap.Int("status", code))
-			return c.Status(code).JSON(fiber.Map{"success":false, "error":fiber.Map{"code":code, "message":message}})
+			return c.Status(code).JSON(fiber.Map{
+				"success": false,
+				"error": fiber.Map{
+					"code":    code,
+					"message": message,
+				},
+			})
 		},
 	})
+
 	app.Use(recoverMiddleware, requestIDMiddleware, loggerMiddleware, corsMiddleware)
 	app.Get("/health", healthHandler.Liveness)
 	app.Get("/ready", healthHandler.Readiness)
+
 	v1 := app.Group("/api/v1")
 	auth.RegisterRoutes(v1, authHandler, authMiddleware)
 	route.RegisterRoutes(v1, routeHandler, authMiddleware)
+
 	visitGroup := v1.Group("/routes/visits", authMiddleware)
 	visitGroup.Get("/today", visitHandler.GetTodayVisits)
 	visitGroup.Get("/summary", visitHandler.GetVisitSummary)
 	visitGroup.Post("/:id/arrive", visitHandler.MarkVisitArrived)
 	visitGroup.Post("/:id/complete", visitHandler.MarkVisitCompleted)
 	visitGroup.Post("/:id/skip", visitHandler.MarkVisitSkipped)
+
 	trackGroup := v1.Group("/routes/track", authMiddleware)
 	trackGroup.Get("/:pedagang_id", route.GetPedagangLocation(trackingHub))
-	trackGroup.Get("/ws", func(c *fiber.Ctx) error { if websocket.IsWebSocketUpgrade(c) { return c.Next() }; return fiber.ErrUpgradeRequired }, route.HandleTrackingWebSocket(trackingHub))
+	trackGroup.Get("/ws", func(c *fiber.Ctx) error {
+		if websocket.IsWebSocketUpgrade(c) {
+			return c.Next()
+		}
+		return fiber.ErrUpgradeRequired
+	}, route.HandleTrackingWebSocket(trackingHub))
+
 	subscription.RegisterRoutes(v1, subHandler, authMiddleware)
 	price.RegisterRoutes(v1, priceHandler, authMiddleware)
 	order.RegisterRoutes(v1, orderHandler, authMiddleware)
+
 	protected := v1.Group("", authMiddleware)
 	txnGroup := protected.Group("/transactions")
 	txnGroup.Get("/", txnHandler.GetTransactions)
 	txnGroup.Post("/", txnHandler.CreateTransaction)
 	txnGroup.Get("/summary", txnHandler.GetTransactionSummary)
+
 	analytics.RegisterRoutes(v1, analyticsHandler, authMiddleware)
 	notification.RegisterRoutes(v1, notifHandler, authMiddleware)
 	analytics.RegisterInsightRoutes(v1, insightHandler, authMiddleware)
@@ -164,22 +202,39 @@ func main() {
 	group_order.RegisterRoutes(v1, groupOrderHandler, authMiddleware)
 
 	addr := fmt.Sprintf("%s:%d", cfg.Server.Host, cfg.Server.Port)
-	go func() { logger.Info("Starting server", zap.String("address", addr)); if err := app.Listen(addr); err != nil { logger.Fatal("Server failed to start", zap.Error(err)) } }()
+	go func() {
+		logger.Info("Starting server", zap.String("address", addr))
+		if err := app.Listen(addr); err != nil {
+			logger.Fatal("Server failed to start", zap.Error(err))
+		}
+	}()
+
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
+
 	logger.Info("Shutting down server...")
 	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer shutdownCancel()
-	if err := app.ShutdownWithContext(shutdownCtx); err != nil { logger.Error("Server forced to shutdown", zap.Error(err)) }
+	if err := app.ShutdownWithContext(shutdownCtx); err != nil {
+		logger.Error("Server forced to shutdown", zap.Error(err))
+	}
 	logger.Info("Server exited")
 }
 
 func initLogger(cfg config.LogConfig) (*zap.Logger, error) {
 	var zapCfg zap.Config
-	if cfg.Format == "json" { zapCfg = zap.NewProductionConfig() } else { zapCfg = zap.NewDevelopmentConfig(); zapCfg.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder }
+	if cfg.Format == "json" {
+		zapCfg = zap.NewProductionConfig()
+	} else {
+		zapCfg = zap.NewDevelopmentConfig()
+		zapCfg.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+	}
+
 	level, err := zapcore.ParseLevel(cfg.Level)
-	if err != nil { level = zapcore.DebugLevel }
+	if err != nil {
+		level = zapcore.DebugLevel
+	}
 	zapCfg.Level = zap.NewAtomicLevelAt(level)
 	return zapCfg.Build()
 }
