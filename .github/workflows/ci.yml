@@ -41,7 +41,17 @@ jobs:
           fi
       - name: Run vet
         working-directory: backend
-        run: go vet ./...
+        shell: bash
+        run: |
+          set -o pipefail
+          go vet ./... 2>&1 | tee vet.log
+      - name: Upload vet log
+        if: always() && hashFiles('backend/vet.log') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-vet-log
+          path: backend/vet.log
+          if-no-files-found: ignore
       - name: Build backend
         working-directory: backend
         run: go build ./...
