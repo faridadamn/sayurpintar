@@ -38,9 +38,15 @@ jobs:
       - name: Validate runner syntax
         run: bash -n scripts/migrate.sh
       - name: Apply migrations
-        run: bash scripts/migrate.sh
+        shell: bash
+        run: |
+          set -o pipefail
+          bash -x scripts/migrate.sh 2>&1 | tee migration.log
       - name: Re-run migrations
-        run: bash scripts/migrate.sh
+        shell: bash
+        run: |
+          set -o pipefail
+          bash -x scripts/migrate.sh 2>&1 | tee -a migration.log
       - name: Verify migration state
         shell: bash
         run: |
@@ -51,3 +57,10 @@ jobs:
           test "$applied" = "1"
           test "$tables" = "3"
           test "$extensions" = "2"
+      - name: Upload migration diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: migration-diagnostics
+          path: migration.log
+          if-no-files-found: warn
