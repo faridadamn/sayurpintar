@@ -1,0 +1,59 @@
+services:
+  api:
+    image: ${API_IMAGE:?API_IMAGE is required}
+    container_name: sayurpintar-api
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      redis:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:8080/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - sayurpintar
+
+  redis:
+    image: redis:7-alpine
+    container_name: sayurpintar-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - sayurpintar
+
+  mongodb:
+    image: mongo:7
+    container_name: sayurpintar-mongodb
+    restart: unless-stopped
+    volumes:
+      - mongodata:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sayurpintar
+
+volumes:
+  redisdata:
+  mongodata:
+
+networks:
+  sayurpintar:
+    driver: bridge
