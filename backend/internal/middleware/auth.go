@@ -64,6 +64,17 @@ func RequireRole(roles ...string) fiber.Handler {
 	}
 }
 
-func GetUserID(c *fiber.Ctx) string { id, _ := c.Locals("user_id").(string); return id }
-func GetUserRole(c *fiber.Ctx) string { role, _ := c.Locals("role").(string); return role }
-func GetUserPhone(c *fiber.Ctx) string { phone, _ := c.Locals("phone").(string); return phone }
+func GetUserID(c *fiber.Ctx) string {
+	id, _ := c.Locals("user_id").(string)
+	return id
+}
+
+func GetUserRole(c *fiber.Ctx) string {
+	role, _ := c.Locals("role").(string)
+	return role
+}
+
+func GetUserPhone(c *fiber.Ctx) string {
+	phone, _ := c.Locals("phone").(string)
+	return phone
+}
