@@ -51,10 +51,11 @@ jobs:
         shell: bash
         run: |
           set -Eeuo pipefail
+          expected="$(find backend/migrations -maxdepth 1 -type f -name '*.up.sql' | wc -l | tr -d ' ')"
           applied="$(psql "$DATABASE_URL" -Atc "SELECT COUNT(*) FROM schema_migrations")"
           tables="$(psql "$DATABASE_URL" -Atc "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public' AND table_name IN ('users','orders','transactions')")"
           extensions="$(psql "$DATABASE_URL" -Atc "SELECT COUNT(*) FROM pg_extension WHERE extname IN ('pgcrypto','postgis')")"
-          test "$applied" = "1"
+          test "$applied" = "$expected"
           test "$tables" = "3"
           test "$extensions" = "2"
       - name: Upload migration diagnostics
