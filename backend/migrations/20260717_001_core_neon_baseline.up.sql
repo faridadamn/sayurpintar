@@ -1,13 +1,5 @@
-BEGIN;
-
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 CREATE EXTENSION IF NOT EXISTS postgis;
-
-CREATE TABLE IF NOT EXISTS schema_migrations (
-    version text PRIMARY KEY,
-    applied_at timestamptz NOT NULL DEFAULT now(),
-    checksum text NOT NULL
-);
 
 CREATE TABLE IF NOT EXISTS users (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -67,7 +59,7 @@ CREATE TABLE IF NOT EXISTS transactions (
     debt_id uuid,
     type varchar(20) NOT NULL
         CHECK (type IN ('sale', 'purchase', 'expense', 'payment', 'refund')),
-    amount numeric(14,2) NOT NULL CHECK (amount >= 0),
+    amount numeric(14,2) NOT NULL CHECK (amount > 0),
     payment_method varchar(20) NOT NULL
         CHECK (payment_method IN ('cash', 'qris', 'transfer', 'ewallet')),
     payment_gateway varchar(50),
@@ -83,9 +75,3 @@ CREATE TABLE IF NOT EXISTS transactions (
 CREATE INDEX IF NOT EXISTS idx_transactions_pedagang_created
     ON transactions(pedagang_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_transactions_order ON transactions(order_id);
-
-INSERT INTO schema_migrations(version, checksum)
-VALUES ('20260717_001_core_neon_baseline', 'sha256:pending-ci-checksum')
-ON CONFLICT (version) DO NOTHING;
-
-COMMIT;
