@@ -19,8 +19,7 @@ func NewNotificationHandler(repo repository.NotificationRepository) *Handler {
 	return &Handler{notifRepo: repo}
 }
 
-// List handles GET /notifications
-// Query: limit (default 20), offset (default 0), unread (true/false)
+// List handles GET /notifications.
 func (h *Handler) List(c *fiber.Ctx) error {
 	userID := middleware.GetUserID(c)
 
@@ -28,23 +27,20 @@ func (h *Handler) List(c *fiber.Ctx) error {
 	if err != nil || limit <= 0 {
 		limit = 20
 	}
-
-	offset, err := strconv.Atoi(c.Query("offset", "0"))
-	if err != nil || offset < 0 {
-		offset = 0
+	if limit > 100 {
+		limit = 100
 	}
 
 	unreadOnly := c.Query("unread", "false") == "true"
-
-	notifs, total, err := h.notifRepo.ListByUser(c.Context(), userID, limit, offset, unreadOnly)
+	notifs, err := h.notifRepo.ListByUser(c.Context(), userID, unreadOnly, limit)
 	if err != nil {
 		return utils.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to list notifications", nil)
 	}
 
-	return utils.PaginatedResponse(c, notifs, (offset/limit)+1, limit, total)
+	return utils.SuccessResponse(c, fiber.StatusOK, notifs, nil)
 }
 
-// MarkAsRead handles PUT /notifications/:id/read
+// MarkAsRead handles PUT /notifications/:id/read.
 func (h *Handler) MarkAsRead(c *fiber.Ctx) error {
 	userID := middleware.GetUserID(c)
 	notifID := c.Params("id")
@@ -63,26 +59,24 @@ func (h *Handler) MarkAsRead(c *fiber.Ctx) error {
 	return utils.SuccessResponse(c, fiber.StatusOK, fiber.Map{"message": "Notification marked as read"}, nil)
 }
 
-// MarkAllAsRead handles PUT /notifications/read-all
+// MarkAllAsRead handles PUT /notifications/read-all.
 func (h *Handler) MarkAllAsRead(c *fiber.Ctx) error {
 	userID := middleware.GetUserID(c)
 
-	count, err := h.notifRepo.MarkAllAsRead(c.Context(), userID)
-	if err != nil {
+	if err := h.notifRepo.MarkAllAsRead(c.Context(), userID); err != nil {
 		return utils.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to mark all as read", nil)
 	}
 
 	return utils.SuccessResponse(c, fiber.StatusOK, fiber.Map{
 		"message": "All notifications marked as read",
-		"count":   count,
 	}, nil)
 }
 
-// GetUnreadCount handles GET /notifications/unread-count
+// GetUnreadCount handles GET /notifications/unread-count.
 func (h *Handler) GetUnreadCount(c *fiber.Ctx) error {
 	userID := middleware.GetUserID(c)
 
-	count, err := h.notifRepo.UnreadCount(c.Context(), userID)
+	count, err := h.notifRepo.GetUnreadCount(c.Context(), userID)
 	if err != nil {
 		return utils.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to get unread count", nil)
 	}
@@ -90,7 +84,7 @@ func (h *Handler) GetUnreadCount(c *fiber.Ctx) error {
 	return utils.SuccessResponse(c, fiber.StatusOK, fiber.Map{"unread_count": count}, nil)
 }
 
-// Delete handles DELETE /notifications/:id
+// Delete handles DELETE /notifications/:id.
 func (h *Handler) Delete(c *fiber.Ctx) error {
 	userID := middleware.GetUserID(c)
 	notifID := c.Params("id")
@@ -99,7 +93,18 @@ func (h *Handler) Delete(c *fiber.Ctx) error {
 		return utils.ErrorResponse(c, fiber.StatusBadRequest, "Notification ID required", nil)
 	}
 
-	if err := h.notifRepo.Delete(c.Context(), notifID, userID); err != nil {
+	notif, err := h.notifRepo.GetByID(c.Context(), notifID)
+	if err != nil {
+		if err == repository.ErrNotificationNotFound {
+			return utils.ErrorResponse(c, fiber.StatusNotFound, "Notification not found", nil)
+		}
+		return utils.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to delete notification", nil)
+	}
+	if notif.UserID != userID {
+		return utils.ErrorResponse(c, fiber.StatusNotFound, "Notification not found", nil)
+	}
+
+	if err := h.notifRepo.Delete(c.Context(), notifID); err != nil {
 		if err == repository.ErrNotificationNotFound {
 			return utils.ErrorResponse(c, fiber.StatusNotFound, "Notification not found", nil)
 		}

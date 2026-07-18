@@ -11,16 +11,23 @@ import (
 	"github.com/sayurpintar/api/internal/models"
 )
 
+const (
+	TokenTypeAccess  = "access"
+	TokenTypeRefresh = "refresh"
+)
+
 var (
-	ErrInvalidToken = errors.New("invalid or expired token")
-	ErrTokenExpired = errors.New("token has expired")
+	ErrInvalidToken     = errors.New("invalid or expired token")
+	ErrTokenExpired     = errors.New("token has expired")
+	ErrInvalidTokenType = errors.New("invalid token type")
 )
 
 // Claims represents the JWT claims used in SayurPintar tokens.
 type Claims struct {
-	UserID string `json:"user_id"`
-	Phone  string `json:"phone"`
-	Role   string `json:"role"`
+	UserID    string `json:"user_id"`
+	Phone     string `json:"phone"`
+	Role      string `json:"role"`
+	TokenType string `json:"token_type"`
 	jwt.RegisteredClaims
 }
 
@@ -59,18 +66,19 @@ func NewJWTService(cfg *config.Config) *JWTService {
 	}
 }
 
-// GenerateAccessToken creates a short-lived access token.
-func (s *JWTService) GenerateAccessToken(user *models.User) (string, error) {
+func (s *JWTService) generateToken(user *models.User, tokenType string, expiry time.Duration) (string, error) {
 	now := time.Now()
 	claims := &Claims{
-		UserID: user.ID.String(),
-		Phone:  user.Phone,
-		Role:   string(user.Role),
+		UserID:    user.ID,
+		Phone:     user.Phone,
+		Role:      string(user.Role),
+		TokenType: tokenType,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    s.issuer,
-			Subject:   user.ID.String(),
+			Subject:   user.ID,
+			Audience:  jwt.ClaimStrings{"sayurpintar-app"},
 			IssuedAt:  jwt.NewNumericDate(now),
-			ExpiresAt: jwt.NewNumericDate(now.Add(s.accessExpiry)),
+			ExpiresAt: jwt.NewNumericDate(now.Add(expiry)),
 			NotBefore: jwt.NewNumericDate(now),
 			ID:        uuid.New().String(),
 		},
@@ -79,36 +87,19 @@ func (s *JWTService) GenerateAccessToken(user *models.User) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString(s.secret)
 	if err != nil {
-		return "", fmt.Errorf("sign access token: %w", err)
+		return "", fmt.Errorf("sign %s token: %w", tokenType, err)
 	}
-
 	return tokenString, nil
+}
+
+// GenerateAccessToken creates a short-lived access token.
+func (s *JWTService) GenerateAccessToken(user *models.User) (string, error) {
+	return s.generateToken(user, TokenTypeAccess, s.accessExpiry)
 }
 
 // GenerateRefreshToken creates a long-lived refresh token.
 func (s *JWTService) GenerateRefreshToken(user *models.User) (string, error) {
-	now := time.Now()
-	claims := &Claims{
-		UserID: user.ID.String(),
-		Phone:  user.Phone,
-		Role:   string(user.Role),
-		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    s.issuer,
-			Subject:   user.ID.String(),
-			IssuedAt:  jwt.NewNumericDate(now),
-			ExpiresAt: jwt.NewNumericDate(now.Add(s.refreshExpiry)),
-			NotBefore: jwt.NewNumericDate(now),
-			ID:        uuid.New().String(),
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(s.secret)
-	if err != nil {
-		return "", fmt.Errorf("sign refresh token: %w", err)
-	}
-
-	return tokenString, nil
+	return s.generateToken(user, TokenTypeRefresh, s.refreshExpiry)
 }
 
 // GenerateTokenPair creates both access and refresh tokens.
@@ -130,16 +121,22 @@ func (s *JWTService) GenerateTokenPair(user *models.User) (*TokenPair, error) {
 	}, nil
 }
 
-// ValidateToken parses and validates a JWT string, returning the claims.
-func (s *JWTService) ValidateToken(tokenString string) (*Claims, error) {
+func (s *JWTService) validateToken(tokenString, expectedType string) (*Claims, error) {
 	claims := &Claims{}
 
-	token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (interface{}, error) {
-		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
-		}
-		return s.secret, nil
-	})
+	token, err := jwt.ParseWithClaims(
+		tokenString,
+		claims,
+		func(t *jwt.Token) (interface{}, error) {
+			if t.Method.Alg() != jwt.SigningMethodHS256.Alg() {
+				return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
+			}
+			return s.secret, nil
+		},
+		jwt.WithIssuer(s.issuer),
+		jwt.WithAudience("sayurpintar-app"),
+		jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}),
+	)
 
 	if err != nil {
 		if errors.Is(err, jwt.ErrTokenExpired) {
@@ -147,15 +144,30 @@ func (s *JWTService) ValidateToken(tokenString string) (*Claims, error) {
 		}
 		return nil, ErrInvalidToken
 	}
-
 	if !token.Valid {
+		return nil, ErrInvalidToken
+	}
+	if claims.TokenType != expectedType {
+		return nil, ErrInvalidTokenType
+	}
+	if claims.Subject == "" || claims.Subject != claims.UserID || claims.ID == "" {
 		return nil, ErrInvalidToken
 	}
 
 	return claims, nil
 }
 
-// ExtractUserID is a convenience method to get just the user ID from a token.
+// ValidateToken validates an access token. Kept as the public access-token validator.
+func (s *JWTService) ValidateToken(tokenString string) (*Claims, error) {
+	return s.validateToken(tokenString, TokenTypeAccess)
+}
+
+// ValidateRefreshToken validates that a token is specifically a refresh token.
+func (s *JWTService) ValidateRefreshToken(tokenString string) (*Claims, error) {
+	return s.validateToken(tokenString, TokenTypeRefresh)
+}
+
+// ExtractUserID is a convenience method to get just the user ID from an access token.
 func (s *JWTService) ExtractUserID(tokenString string) (string, error) {
 	claims, err := s.ValidateToken(tokenString)
 	if err != nil {

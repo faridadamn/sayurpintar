@@ -63,9 +63,7 @@ class _RouteOptimizedScreenState extends ConsumerState<RouteOptimizedScreen> {
                 decoration: BoxDecoration(
                   color: index == 0
                       ? AppTheme.primaryDark
-                      : (isExpanded
-                          ? AppTheme.accent
-                          : AppTheme.primaryGreen),
+                      : (isExpanded ? AppTheme.accent : AppTheme.primaryGreen),
                   borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
                   boxShadow: [
                     BoxShadow(
@@ -88,9 +86,7 @@ class _RouteOptimizedScreenState extends ConsumerState<RouteOptimizedScreen> {
                 index == 0 ? Icons.flag : Icons.location_on,
                 color: index == 0
                     ? AppTheme.primaryDark
-                    : (isExpanded
-                        ? AppTheme.accent
-                        : AppTheme.primaryGreen),
+                    : (isExpanded ? AppTheme.accent : AppTheme.primaryGreen),
                 size: isExpanded ? 32 : 28,
               ),
             ],
@@ -321,8 +317,7 @@ class _RouteOptimizedScreenState extends ConsumerState<RouteOptimizedScreen> {
                           children: [
                             Expanded(
                               child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     wp.label,
@@ -351,8 +346,7 @@ class _RouteOptimizedScreenState extends ConsumerState<RouteOptimizedScreen> {
                                 vertical: 4,
                               ),
                               decoration: BoxDecoration(
-                                color: AppTheme.primaryGreen
-                                    .withOpacity(0.1),
+                                color: AppTheme.primaryGreen.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(
                                   AppTheme.radiusFull,
                                 ),
@@ -390,12 +384,10 @@ class _RouteOptimizedScreenState extends ConsumerState<RouteOptimizedScreen> {
                               ),
                             ],
                           ),
-                          if (wp.notes != null &&
-                              wp.notes!.isNotEmpty) ...[
+                          if (wp.notes != null && wp.notes!.isNotEmpty) ...[
                             const SizedBox(height: 4),
                             Row(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Icon(
                                   Icons.note,

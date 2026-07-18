@@ -245,7 +245,8 @@ class _SubscribeScreenState extends ConsumerState<SubscribeScreen> {
                     ),
                     Row(
                       children: [
-                        const Icon(Icons.star, size: 14, color: AppTheme.accent),
+                        const Icon(Icons.star,
+                            size: 14, color: AppTheme.accent),
                         const SizedBox(width: 4),
                         Text(
                           '4.5',
@@ -308,7 +309,8 @@ class _SubscribeScreenState extends ConsumerState<SubscribeScreen> {
           // Frequency + delivery days
           Row(
             children: [
-              const Icon(Icons.schedule, size: 16, color: AppTheme.textSecondary),
+              const Icon(Icons.schedule,
+                  size: 16, color: AppTheme.textSecondary),
               const SizedBox(width: 6),
               Text(
                 '${pkg.frequencyText} • ${_buildDaysText(pkg.deliveryDays)}',
@@ -477,8 +479,7 @@ class _SubscribeScreenState extends ConsumerState<SubscribeScreen> {
         ...frequencies.map((f) {
           final isSelected = _paymentFrequency == f['id'];
           return GestureDetector(
-            onTap: () =>
-                setState(() => _paymentFrequency = f['id']!),
+            onTap: () => setState(() => _paymentFrequency = f['id']!),
             child: Container(
               margin: const EdgeInsets.only(bottom: AppTheme.space8),
               padding: const EdgeInsets.symmetric(
@@ -490,8 +491,7 @@ class _SubscribeScreenState extends ConsumerState<SubscribeScreen> {
                     ? AppTheme.primaryGreen.withOpacity(0.08)
                     : Colors.white,
                 border: Border.all(
-                  color:
-                      isSelected ? AppTheme.primaryGreen : AppTheme.divider,
+                  color: isSelected ? AppTheme.primaryGreen : AppTheme.divider,
                   width: isSelected ? 2 : 1,
                 ),
                 borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
@@ -501,8 +501,7 @@ class _SubscribeScreenState extends ConsumerState<SubscribeScreen> {
                   Radio<String>(
                     value: f['id']!,
                     groupValue: _paymentFrequency,
-                    onChanged: (v) =>
-                        setState(() => _paymentFrequency = v!),
+                    onChanged: (v) => setState(() => _paymentFrequency = v!),
                     activeColor: AppTheme.primaryGreen,
                   ),
                   Text(
@@ -613,9 +612,8 @@ class _SubscribeScreenState extends ConsumerState<SubscribeScreen> {
                     entry.value,
                     style: TextStyle(
                       fontSize: 13,
-                      fontWeight: entry.key == 0
-                          ? FontWeight.w600
-                          : FontWeight.w500,
+                      fontWeight:
+                          entry.key == 0 ? FontWeight.w600 : FontWeight.w500,
                       color: entry.key == 0
                           ? AppTheme.textPrimary
                           : AppTheme.textSecondary,
@@ -679,8 +677,7 @@ class _SubscribeScreenState extends ConsumerState<SubscribeScreen> {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
-              color:
-                  isHighlight ? AppTheme.primaryGreen : AppTheme.textPrimary,
+              color: isHighlight ? AppTheme.primaryGreen : AppTheme.textPrimary,
             ),
           ),
         ],

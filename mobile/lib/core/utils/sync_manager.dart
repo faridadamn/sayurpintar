@@ -231,8 +231,7 @@ class SyncManager {
 
   void listenAndAutoSync() {
     _connectivitySub?.cancel();
-    _connectivitySub =
-        _connectivity.onConnectivityChanged.listen((connected) {
+    _connectivitySub = _connectivity.onConnectivityChanged.listen((connected) {
       if (connected && !_isSyncing) {
         syncAll();
       }

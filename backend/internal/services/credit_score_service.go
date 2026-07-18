@@ -44,12 +44,12 @@ func NewCreditScoreService(
 
 // CreditScore represents a computed credit score for a pedagang.
 type CreditScore struct {
-	Score          int           `json:"score"`           // 0-100
-	Level          string        `json:"level"`           // "poor", "fair", "good", "excellent"
-	Badge          string        `json:"badge"`           // emoji badge
-	Factors        ScoreFactors  `json:"factors"`
-	EligibleLoan   float64       `json:"eligible_loan_amount"`
-	Recommendations []string    `json:"recommendations"`
+	Score           int          `json:"score"` // 0-100
+	Level           string       `json:"level"` // "poor", "fair", "good", "excellent"
+	Badge           string       `json:"badge"` // emoji badge
+	Factors         ScoreFactors `json:"factors"`
+	EligibleLoan    float64      `json:"eligible_loan_amount"`
+	Recommendations []string     `json:"recommendations"`
 }
 
 // ScoreFactors holds the individual scoring components.

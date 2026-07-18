@@ -52,8 +52,7 @@ class RecommendedPriceParams {
           marginPct == other.marginPct;
 
   @override
-  int get hashCode =>
-      productId.hashCode ^ area.hashCode ^ marginPct.hashCode;
+  int get hashCode => productId.hashCode ^ area.hashCode ^ marginPct.hashCode;
 }
 
 // ── Current prices (typed, for pedagang screens) ─────────────────────────────
@@ -119,8 +118,7 @@ final areaStatsProvider =
 
 // ── UI State ─────────────────────────────────────────────────────────────────
 
-final selectedAreaProvider =
-    StateProvider<String>((ref) => 'jakarta_selatan');
+final selectedAreaProvider = StateProvider<String>((ref) => 'jakarta_selatan');
 
 final selectedCategoryProvider = StateProvider<String?>((ref) => null);
 
@@ -164,7 +162,8 @@ class PriceAlertsNotifier extends AsyncNotifier<List<PriceAlert>> {
       productId: data['product_id']?.toString() ?? '',
       area: data['area']?.toString() ?? 'jakarta_selatan',
       threshold: (data['threshold_percent'] as num?)?.toDouble() ??
-          (data['threshold'] as num?)?.toDouble() ?? 0,
+          (data['threshold'] as num?)?.toDouble() ??
+          0,
       direction: data['direction']?.toString() ?? 'up',
     );
     await repo.createAlert(request);

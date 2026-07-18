@@ -217,11 +217,11 @@ func (h *Handler) CreateSupplier(c *fiber.Ctx) error {
 	}
 
 	var body struct {
-		Name    string         `json:"name"`
-		Address string         `json:"address"`
-		Phone   string         `json:"phone"`
-		Lat     *float64       `json:"lat"`
-		Lng     *float64       `json:"lng"`
+		Name    string   `json:"name"`
+		Address string   `json:"address"`
+		Phone   string   `json:"phone"`
+		Lat     *float64 `json:"lat"`
+		Lng     *float64 `json:"lng"`
 	}
 	if err := c.BodyParser(&body); err != nil {
 		return utils.ErrorResponse(c, fiber.StatusBadRequest, "Invalid request body", err.Error())

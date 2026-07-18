@@ -185,8 +185,7 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
   return AuthRepository(ApiClient());
 });
 
-final authProvider =
-    StateNotifierProvider<AuthNotifier, AuthState>((ref) {
+final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   return AuthNotifier(
     ref.read(authRepositoryProvider),
     ref.read(authLocalStorageProvider),

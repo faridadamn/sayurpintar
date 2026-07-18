@@ -81,9 +81,9 @@ func (h *RewardHandler) GetStreak(c *fiber.Ctx) error {
 	}
 
 	return utils.SuccessResponse(c, fiber.StatusOK, fiber.Map{
-		"user_id":         userID,
-		"current_streak":  streak,
-		"next_reward_at":  7,
+		"user_id":        userID,
+		"current_streak": streak,
+		"next_reward_at": 7,
 	}, nil)
 }
 

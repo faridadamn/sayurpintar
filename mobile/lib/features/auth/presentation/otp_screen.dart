@@ -70,8 +70,7 @@ class _OTPScreenState extends ConsumerState<OTPScreen> {
     super.dispose();
   }
 
-  String get _otpValue =>
-      _controllers.map((c) => c.text).join();
+  String get _otpValue => _controllers.map((c) => c.text).join();
 
   void _onDigitChanged(int index, String value) {
     if (value.length == 1) {
@@ -225,7 +224,8 @@ class _OTPScreenState extends ConsumerState<OTPScreen> {
                   child: _errorMessage != null
                       ? Container(
                           key: const ValueKey('error'),
-                          margin: const EdgeInsets.only(bottom: AppTheme.space16),
+                          margin:
+                              const EdgeInsets.only(bottom: AppTheme.space16),
                           padding: const EdgeInsets.all(AppTheme.space12),
                           decoration: BoxDecoration(
                             color: AppTheme.error.withOpacity(0.1),

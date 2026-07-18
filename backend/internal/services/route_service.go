@@ -108,7 +108,7 @@ func (s *RouteService) OptimizeTodayRoute(ctx context.Context, pedagangID string
 
 	if len(route.WaypointIDs) == 0 {
 		return &OptimizedRoute{
-			OrderedWaypoints:    []models.WaypointWithOrder{},
+			OrderedWaypoints:     []models.WaypointWithOrder{},
 			TotalDistanceKm:      0,
 			EstimatedDurationMin: 0,
 			EstimatedFuelCost:    0,
@@ -133,7 +133,7 @@ func (s *RouteService) OptimizeTodayRoute(ctx context.Context, pedagangID string
 
 	if len(waypoints) == 0 {
 		return &OptimizedRoute{
-			OrderedWaypoints:    []models.WaypointWithOrder{},
+			OrderedWaypoints:     []models.WaypointWithOrder{},
 			TotalDistanceKm:      0,
 			EstimatedDurationMin: 0,
 			EstimatedFuelCost:    0,

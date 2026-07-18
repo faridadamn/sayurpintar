@@ -225,15 +225,15 @@ func (s *PaymentService) GenerateInvoice(ctx context.Context, orderID string) ([
 // --- Midtrans Integration ---
 
 type midtransChargeRequest struct {
-	PaymentType string            `json:"payment_type"`
-	Transaction midtransTxDetail  `json:"transaction_details"`
-	Customer   *midtransCustomer  `json:"customer_details,omitempty"`
-	QRIS      *midtransQRIS      `json:"qris,omitempty"`
-	BankTransfer *midtransBank   `json:"bank_transfer,omitempty"`
+	PaymentType  string            `json:"payment_type"`
+	Transaction  midtransTxDetail  `json:"transaction_details"`
+	Customer     *midtransCustomer `json:"customer_details,omitempty"`
+	QRIS         *midtransQRIS     `json:"qris,omitempty"`
+	BankTransfer *midtransBank     `json:"bank_transfer,omitempty"`
 }
 
 type midtransTxDetail struct {
-	OrderID string  `json:"order_id"`
+	OrderID  string  `json:"order_id"`
 	GrossAmt float64 `json:"gross_amount"`
 }
 
@@ -306,15 +306,14 @@ func (s *PaymentService) createMidtransQRIS(ctx context.Context, orderID string,
 	}
 
 	if httpResp.StatusCode < 200 || httpResp.StatusCode >= 300 {
-		return nil, fmt.Errorf("midtrans error (status %d): %s", httpResp.StatusCode, string(respBody))
 		var errResp struct {
 			Message string `json:"error_message"`
 		}
-		json.Unmarshal(respBody, &errResp)
+		_ = json.Unmarshal(respBody, &errResp)
 		if errResp.Message != "" {
 			return nil, fmt.Errorf("midtrans: %s", errResp.Message)
 		}
-		return nil, fmt.Errorf("midtrans returned status %d", httpResp.StatusCode)
+		return nil, fmt.Errorf("midtrans error (status %d): %s", httpResp.StatusCode, string(respBody))
 	}
 
 	var chargeResp midtransChargeResponse
@@ -501,13 +500,13 @@ type xenditEWalletRequest struct {
 }
 
 type xenditEWalletResponse struct {
-	ID               string `json:"id"`
-	ExternalID       string `json:"external_id"`
-	Status           string `json:"status"`
-	CallbackURL      string `json:"callback_url"`
-	Actions          struct {
-		MobileURL   string `json:"mobile_url"`
-		DesktopURL  string `json:"desktop_url"`
+	ID          string `json:"id"`
+	ExternalID  string `json:"external_id"`
+	Status      string `json:"status"`
+	CallbackURL string `json:"callback_url"`
+	Actions     struct {
+		MobileURL  string `json:"mobile_url"`
+		DesktopURL string `json:"desktop_url"`
 	} `json:"actions"`
 }
 

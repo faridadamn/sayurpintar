@@ -14,7 +14,8 @@ class AuthRepository {
       ApiEndpoints.sendOtp,
       data: {'phone': phone},
     );
-    return SendOTPResponse.fromJson(response.data['data'] as Map<String, dynamic>);
+    return SendOTPResponse.fromJson(
+        response.data['data'] as Map<String, dynamic>);
   }
 
   /// Verify OTP and receive auth tokens.

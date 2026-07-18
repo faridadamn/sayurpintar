@@ -302,7 +302,8 @@ class _SummaryGradientCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final revPct = summary.revenueVsYesterday;
     final revArrow = revPct >= 0 ? '↑' : '↓';
-    final revColor = revPct >= 0 ? const Color(0xFFA5D6A7) : const Color(0xFFEF9A9A);
+    final revColor =
+        revPct >= 0 ? const Color(0xFFA5D6A7) : const Color(0xFFEF9A9A);
 
     return GestureDetector(
       onTap: () => context.push('/daily-summary'),
@@ -331,7 +332,8 @@ class _SummaryGradientCard extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(AppTheme.radiusFull),
@@ -346,7 +348,8 @@ class _SummaryGradientCard extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                const Icon(Icons.chevron_right, color: Colors.white54, size: 22),
+                const Icon(Icons.chevron_right,
+                    color: Colors.white54, size: 22),
               ],
             ),
             const SizedBox(height: AppTheme.space16),
@@ -397,7 +400,8 @@ class _SummaryGradientCard extends StatelessWidget {
                           const SizedBox(width: 6),
                           const Text(
                             'dari kemarin',
-                            style: TextStyle(color: Colors.white54, fontSize: 11),
+                            style:
+                                TextStyle(color: Colors.white54, fontSize: 11),
                           ),
                         ],
                       ),
@@ -442,7 +446,8 @@ class _SummaryGradientCard extends StatelessWidget {
                   icon: Icons.shopping_bag_outlined,
                   label: 'Pesanan',
                   value: '${summary.totalOrders}',
-                  sub: '${summary.deliveredOrders} selesai, ${summary.pendingOrders} pending',
+                  sub:
+                      '${summary.deliveredOrders} selesai, ${summary.pendingOrders} pending',
                 ),
                 _MiniStatDivider(),
                 _MiniStat(
@@ -594,7 +599,8 @@ class _InsightCardsSection extends StatelessWidget {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: insights.length,
-                separatorBuilder: (_, __) => const SizedBox(width: AppTheme.space12),
+                separatorBuilder: (_, __) =>
+                    const SizedBox(width: AppTheme.space12),
                 itemBuilder: (context, index) {
                   final insight = insights[index];
                   final color = _priorityColor(insight.priority);
@@ -610,7 +616,8 @@ class _InsightCardsSection extends StatelessWidget {
                       padding: const EdgeInsets.all(AppTheme.space16),
                       decoration: BoxDecoration(
                         color: bg,
-                        borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+                        borderRadius:
+                            BorderRadius.circular(AppTheme.radiusMedium),
                         border: Border.all(
                           color: color.withOpacity(0.3),
                           width: 1,
@@ -705,9 +712,21 @@ class _JadwalHariIni extends StatelessWidget {
   // This section pulls from the route feature; we show static schedule cards
   // that navigate to the route screen.
   final List<_ScheduleItem> _items = const [
-    _ScheduleItem(time: '06:30', name: 'Bu Ani', address: 'Jl. Merdeka 12', status: 'next'),
-    _ScheduleItem(time: '07:15', name: 'Pak Budi', address: 'Jl. Sudirman 45', status: 'pending'),
-    _ScheduleItem(time: '08:00', name: 'Bu Citra', address: 'Jl. Diponegoro 8', status: 'pending'),
+    _ScheduleItem(
+        time: '06:30',
+        name: 'Bu Ani',
+        address: 'Jl. Merdeka 12',
+        status: 'next'),
+    _ScheduleItem(
+        time: '07:15',
+        name: 'Pak Budi',
+        address: 'Jl. Sudirman 45',
+        status: 'pending'),
+    _ScheduleItem(
+        time: '08:00',
+        name: 'Bu Citra',
+        address: 'Jl. Diponegoro 8',
+        status: 'pending'),
   ];
 
   @override
@@ -786,7 +805,8 @@ class _JadwalHariIni extends StatelessWidget {
                         item.name,
                         style: TextStyle(
                           fontSize: 15,
-                          fontWeight: isNext ? FontWeight.w700 : FontWeight.w600,
+                          fontWeight:
+                              isNext ? FontWeight.w700 : FontWeight.w600,
                           color: AppTheme.textPrimary,
                         ),
                       ),
@@ -822,7 +842,8 @@ class _JadwalHariIni extends StatelessWidget {
                     ),
                   ),
                 const SizedBox(width: AppTheme.space8),
-                const Icon(Icons.chevron_right, color: AppTheme.textSecondary, size: 20),
+                const Icon(Icons.chevron_right,
+                    color: AppTheme.textSecondary, size: 20),
               ],
             ),
           );
@@ -874,12 +895,23 @@ class _HargaPasarCompact extends StatelessWidget {
   const _HargaPasarCompact({required this.pricesAsync});
 
   static const Map<String, String> _emojis = {
-    'bayam': '🥬', 'kangkung': '🥬', 'sawi': '🥬',
-    'wortel': '🥕', 'kentang': '🥔', 'bawang merah': '🧅',
-    'bawang putih': '🧄', 'cabai': '🌶️', 'tomat': '🍅',
-    'terong': '🍆', 'pisang': '🍌', 'apel': '🍎',
-    'jeruk': '🍊', 'telur': '🥚', 'ayam': '🍗',
-    'tempe': '🫘', 'tahu': '🧈',
+    'bayam': '🥬',
+    'kangkung': '🥬',
+    'sawi': '🥬',
+    'wortel': '🥕',
+    'kentang': '🥔',
+    'bawang merah': '🧅',
+    'bawang putih': '🧄',
+    'cabai': '🌶️',
+    'tomat': '🍅',
+    'terong': '🍆',
+    'pisang': '🍌',
+    'apel': '🍎',
+    'jeruk': '🍊',
+    'telur': '🥚',
+    'ayam': '🍗',
+    'tempe': '🫘',
+    'tahu': '🧈',
   };
 
   String _emoji(String name) {
@@ -951,8 +983,16 @@ class _HargaPasarCompact extends StatelessWidget {
                   final price = p['price'];
                   final trend = (p['trend'] ?? 'stable').toString();
                   final unit = p['unit'] ?? 'kg';
-                  final trendIcon = trend == 'up' ? '⬆️' : trend == 'down' ? '⬇️' : '➡️';
-                  final trendLabel = trend == 'up' ? 'Naik' : trend == 'down' ? 'Turun' : 'Stabil';
+                  final trendIcon = trend == 'up'
+                      ? '⬆️'
+                      : trend == 'down'
+                          ? '⬇️'
+                          : '➡️';
+                  final trendLabel = trend == 'up'
+                      ? 'Naik'
+                      : trend == 'down'
+                          ? 'Turun'
+                          : 'Stabil';
                   final trendColor = trend == 'up'
                       ? AppTheme.error
                       : trend == 'down'
@@ -971,7 +1011,8 @@ class _HargaPasarCompact extends StatelessWidget {
                       ),
                       child: Row(
                         children: [
-                          Text(_emoji(name), style: const TextStyle(fontSize: 22)),
+                          Text(_emoji(name),
+                              style: const TextStyle(fontSize: 22)),
                           const SizedBox(width: AppTheme.space10),
                           Expanded(
                             child: Column(
@@ -1291,25 +1332,32 @@ class _WeeklyComparisonSection extends StatelessWidget {
                             'Rp ${_formatRpShort(thisRev)}',
                             style: TextStyle(
                               fontSize: 11,
-                              color: isUp ? AppTheme.primaryGreen : AppTheme.error,
+                              color:
+                                  isUp ? AppTheme.primaryGreen : AppTheme.error,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
                           const SizedBox(height: 4),
-                            Container(
-                              height: 80 * thisBarH,
-                              constraints: const BoxConstraints(minHeight: 8),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.bottomCenter,
-                                  end: Alignment.topCenter,
-                                  colors: isUp
-                                      ? [AppTheme.primaryGreen, AppTheme.primaryLight]
-                                      : [AppTheme.error, AppTheme.error.withOpacity(0.6)],
-                                ),
-                                borderRadius: BorderRadius.circular(6),
+                          Container(
+                            height: 80 * thisBarH,
+                            constraints: const BoxConstraints(minHeight: 8),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                                colors: isUp
+                                    ? [
+                                        AppTheme.primaryGreen,
+                                        AppTheme.primaryLight
+                                      ]
+                                    : [
+                                        AppTheme.error,
+                                        AppTheme.error.withOpacity(0.6)
+                                      ],
                               ),
+                              borderRadius: BorderRadius.circular(6),
                             ),
+                          ),
                           const SizedBox(height: 6),
                           const Text(
                             'Minggu Ini',

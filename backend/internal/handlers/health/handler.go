@@ -12,9 +12,9 @@ import (
 )
 
 type Handler struct {
-	pgPool  *pgxpool.Pool
-	redis   *redis.Client
-	mongo   *mongo.Client
+	pgPool *pgxpool.Pool
+	redis  *redis.Client
+	mongo  *mongo.Client
 }
 
 func NewHandler(pgPool *pgxpool.Pool, redis *redis.Client, mongo *mongo.Client) *Handler {

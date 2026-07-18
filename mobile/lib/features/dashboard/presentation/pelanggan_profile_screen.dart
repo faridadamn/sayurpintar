@@ -403,8 +403,7 @@ class PelangganProfileScreen extends ConsumerWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Keluar?'),
-        content: const Text(
-            'Anda akan keluar dari akun. Lanjutkan?'),
+        content: const Text('Anda akan keluar dari akun. Lanjutkan?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
@@ -497,8 +496,7 @@ class _ProfileHeader extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: AppTheme.primaryLight.withOpacity(0.15),
-                    borderRadius:
-                        BorderRadius.circular(AppTheme.radiusFull),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusFull),
                   ),
                   child: const Text(
                     '🛒 Pelanggan',
@@ -591,8 +589,7 @@ class _AddressCard extends StatelessWidget {
             padding: const EdgeInsets.all(AppTheme.space8),
             decoration: BoxDecoration(
               color: AppTheme.primaryGreen.withOpacity(0.1),
-              borderRadius:
-                  BorderRadius.circular(AppTheme.radiusSmall),
+              borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
             ),
             child: Icon(
               label == 'Rumah'
@@ -626,10 +623,9 @@ class _AddressCard extends StatelessWidget {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: AppTheme.primaryGreen
-                              .withOpacity(0.12),
-                          borderRadius: BorderRadius.circular(
-                              AppTheme.radiusFull),
+                          color: AppTheme.primaryGreen.withOpacity(0.12),
+                          borderRadius:
+                              BorderRadius.circular(AppTheme.radiusFull),
                         ),
                         child: const Text(
                           'Utama',
@@ -712,14 +708,12 @@ class _PaymentMethodCard extends StatelessWidget {
               color: isSelected
                   ? AppTheme.primaryGreen.withOpacity(0.12)
                   : AppTheme.background,
-              borderRadius:
-                  BorderRadius.circular(AppTheme.radiusSmall),
+              borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
             ),
             child: Icon(
               icon,
-              color: isSelected
-                  ? AppTheme.primaryGreen
-                  : AppTheme.textSecondary,
+              color:
+                  isSelected ? AppTheme.primaryGreen : AppTheme.textSecondary,
               size: 22,
             ),
           ),
@@ -731,8 +725,7 @@ class _PaymentMethodCard extends StatelessWidget {
                 Text(
                   label,
                   style: TextStyle(
-                    fontWeight:
-                        isSelected ? FontWeight.w700 : FontWeight.w600,
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
                     fontSize: 14,
                   ),
                 ),

@@ -24,13 +24,13 @@ type Insight struct {
 
 // InsightService generates actionable business insights for pedagangs.
 type InsightService struct {
-	orderRepo  repository.OrderRepository
-	subRepo    repository.SubscriptionRepository
-	routeRepo  repository.RouteRepository
-	visitRepo  repository.VisitRepository
-	priceRepo  *repository.PriceRepository
-	userRepo   repository.UserRepository
-	logger     *zap.Logger
+	orderRepo repository.OrderRepository
+	subRepo   repository.SubscriptionRepository
+	routeRepo repository.RouteRepository
+	visitRepo repository.VisitRepository
+	priceRepo *repository.PriceRepository
+	userRepo  repository.UserRepository
+	logger    *zap.Logger
 }
 
 // NewInsightService creates a new InsightService.

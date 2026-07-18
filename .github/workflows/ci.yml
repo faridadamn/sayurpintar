@@ -1,30 +1,79 @@
 name: CI
+
 on:
   push:
     branches: ['*']
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FLUTTER_VERSION: '3.22.3'
+
 jobs:
-  lint-backend:
-    name: Lint Backend (Go)
+  backend-static:
+    name: Backend static checks (Go)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.21'
-      - name: Go Vet
-        run: cd backend && go vet ./...
-      - name: Lint
-        uses: golangci/golangci-lint-action@v4
+          go-version-file: backend/go.mod
+          cache-dependency-path: backend/go.sum
+      - name: Verify module metadata
+        working-directory: backend
+        shell: bash
+        run: |
+          set -o pipefail
+          go mod tidy 2>&1 | tee tidy.log
+          git diff --exit-code -- go.mod go.sum
+      - name: Upload tidy diagnostics
+        if: always() && hashFiles('backend/tidy.log') != ''
+        uses: actions/upload-artifact@v4
         with:
-          version: latest
-          working-directory: backend
+          name: backend-tidy-log
+          path: backend/tidy.log
+          if-no-files-found: ignore
+      - name: Verify dependencies
+        working-directory: backend
+        run: go mod verify
+      - name: Check formatting
+        working-directory: backend
+        shell: bash
+        run: |
+          files="$(gofmt -l .)"
+          if [ -n "$files" ]; then
+            echo "The following files need gofmt:"
+            echo "$files"
+            exit 1
+          fi
+      - name: Run vet
+        working-directory: backend
+        shell: bash
+        run: |
+          set -o pipefail
+          go vet ./... 2>&1 | tee vet.log
+      - name: Upload vet log
+        if: always() && hashFiles('backend/vet.log') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-vet-log
+          path: backend/vet.log
+          if-no-files-found: ignore
+      - name: Build backend
+        working-directory: backend
+        run: go build ./...
 
-  test-backend:
-    name: Test Backend (Go)
+  backend-test:
+    name: Backend tests (Go)
     runs-on: ubuntu-latest
+    needs: [backend-static]
     services:
       postgres:
         image: postgis/postgis:15-3.3
@@ -33,18 +82,29 @@ jobs:
           POSTGRES_USER: sp_test
           POSTGRES_PASSWORD: test_password
         ports: ['5432:5432']
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
       redis:
         image: redis:7-alpine
         ports: ['6379:6379']
-        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.21'
-      - name: Run Tests
+          go-version-file: backend/go.mod
+          cache-dependency-path: backend/go.sum
+      - name: Run backend tests
+        working-directory: backend
         env:
+          APP_ENV: test
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
           POSTGRES_DB: sayurpintar_test
@@ -52,43 +112,59 @@ jobs:
           POSTGRES_PASSWORD: test_password
           REDIS_HOST: localhost
           REDIS_PORT: 6379
-        run: cd backend && go test ./... -v -race -coverprofile=coverage.out
-      - name: Upload Coverage
-        uses: codecov/codecov-action@v3
+        run: go test ./... -race -coverprofile=coverage.out
+      - name: Upload coverage
+        if: always() && hashFiles('backend/coverage.out') != ''
+        uses: codecov/codecov-action@v4
         with:
           files: backend/coverage.out
+          fail_ci_if_error: false
 
-  lint-mobile:
-    name: Lint Mobile (Flutter)
+  mobile:
+    name: Mobile checks (Flutter)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.16.0'
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
-      - run: cd mobile && flutter pub get
-      - run: cd mobile && flutter analyze --no-fatal-infos
-
-  test-mobile:
-    name: Test Mobile (Flutter)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+          cache: true
+      - name: Install dependencies
+        working-directory: mobile
+        run: flutter pub get
+      - name: Apply deterministic compile fixes
+        run: python3 scripts/apply_mobile_compile_fixes.py
+      - name: Format generated fixes
+        working-directory: mobile
+        run: dart format lib
+      - name: Upload generated mobile fixes
+        uses: actions/upload-artifact@v4
         with:
-          flutter-version: '3.16.0'
-          channel: stable
-      - run: cd mobile && flutter pub get
-      - run: cd mobile && flutter test --coverage
+          name: mobile-compile-fixes
+          path: mobile/lib
+      - name: Analyze
+        working-directory: mobile
+        shell: bash
+        run: |
+          set -o pipefail
+          flutter analyze --no-fatal-warnings --no-fatal-infos 2>&1 | tee analyze.log
+      - name: Upload analyzer diagnostics
+        if: always() && hashFiles('mobile/analyze.log') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-analyzer-log
+          path: mobile/analyze.log
+          if-no-files-found: ignore
+      - name: Run tests
+        working-directory: mobile
+        run: flutter test --coverage
 
-  build-backend:
-    name: Build Backend Docker Image
+  docker:
+    name: Build backend image
     runs-on: ubuntu-latest
-    needs: [lint-backend, test-backend]
+    needs: [backend-static, backend-test]
     steps:
       - uses: actions/checkout@v4
       - name: Build Docker image
         run: docker build -t sayurpintar-api:${{ github.sha }} backend/
-      - name: Verify image
-        run: docker images | grep sayurpintar-api

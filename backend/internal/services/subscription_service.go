@@ -22,20 +22,20 @@ type SubscribeRequest struct {
 
 // ModifyRequest holds the payload for modifying the next delivery.
 type ModifyRequest struct {
-	DeliveryDate string              `json:"delivery_date" validate:"required"` // YYYY-MM-DD
+	DeliveryDate string               `json:"delivery_date" validate:"required"` // YYYY-MM-DD
 	Items        []models.PackageItem `json:"items"`
-	SkipDelivery bool                `json:"skip_delivery"`
-	Reason       string              `json:"reason"`
+	SkipDelivery bool                 `json:"skip_delivery"`
+	Reason       string               `json:"reason"`
 }
 
 // SubscriptionDetail enriches a subscription with package info and delivery history.
 type SubscriptionDetail struct {
 	models.Subscription
-	Package       *models.SubscriptionPackage         `json:"package"`
-	DeliveryCount int                                  `json:"delivery_count"`
-	TotalSpent    float64                              `json:"total_spent"`
-	NextDelivery  string                               `json:"next_delivery"`
-	Modifications []models.SubscriptionModification    `json:"recent_modifications"`
+	Package       *models.SubscriptionPackage       `json:"package"`
+	DeliveryCount int                               `json:"delivery_count"`
+	TotalSpent    float64                           `json:"total_spent"`
+	NextDelivery  string                            `json:"next_delivery"`
+	Modifications []models.SubscriptionModification `json:"recent_modifications"`
 }
 
 // SubscriberStats holds aggregated stats for a pedagang's subscription business.
@@ -49,12 +49,12 @@ type SubscriberStats struct {
 
 // SubscriptionService manages the subscription lifecycle.
 type SubscriptionService struct {
-	subRepo        repository.SubscriptionRepository
-	pkgRepo        repository.SubscriptionPackageRepository
-	modRepo        repository.SubscriptionModificationRepository
-	orderRepo      repository.OrderRepository
-	notifier       *SubscriptionNotifier
-	logger         *zap.Logger
+	subRepo   repository.SubscriptionRepository
+	pkgRepo   repository.SubscriptionPackageRepository
+	modRepo   repository.SubscriptionModificationRepository
+	orderRepo repository.OrderRepository
+	notifier  *SubscriptionNotifier
+	logger    *zap.Logger
 }
 
 // NewSubscriptionService creates a SubscriptionService.
@@ -67,12 +67,12 @@ func NewSubscriptionService(
 	logger *zap.Logger,
 ) *SubscriptionService {
 	return &SubscriptionService{
-		subRepo:        subRepo,
-		pkgRepo:        pkgRepo,
-		modRepo:        modRepo,
-		orderRepo:      orderRepo,
-		notifier:       notifier,
-		logger:         logger.Named("subscription"),
+		subRepo:   subRepo,
+		pkgRepo:   pkgRepo,
+		modRepo:   modRepo,
+		orderRepo: orderRepo,
+		notifier:  notifier,
+		logger:    logger.Named("subscription"),
 	}
 }
 

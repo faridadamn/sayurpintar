@@ -52,9 +52,9 @@ type waText struct {
 }
 
 type waTemplate struct {
-	Name       string           `json:"name"`
-	Language   waLanguage       `json:"language"`
-	Components []waComponent    `json:"components,omitempty"`
+	Name       string        `json:"name"`
+	Language   waLanguage    `json:"language"`
+	Components []waComponent `json:"components,omitempty"`
 }
 
 type waLanguage struct {
@@ -62,8 +62,8 @@ type waLanguage struct {
 }
 
 type waComponent struct {
-	Type       string          `json:"type"`
-	Parameters []waParameter   `json:"parameters,omitempty"`
+	Type       string        `json:"type"`
+	Parameters []waParameter `json:"parameters,omitempty"`
 }
 
 type waParameter struct {

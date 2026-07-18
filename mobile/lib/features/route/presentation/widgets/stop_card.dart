@@ -155,8 +155,7 @@ class StopCard extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: statusColor.withOpacity(0.12),
-                      borderRadius:
-                          BorderRadius.circular(AppTheme.radiusSmall),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
                     ),
                     child: Text(
                       statusLabel,

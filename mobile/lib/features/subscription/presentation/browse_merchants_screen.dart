@@ -63,7 +63,8 @@ class _BrowseMerchantsScreenState extends ConsumerState<BrowseMerchantsScreen> {
               hint: 'Cari pedagang atau paket...',
               controller: _searchController,
               prefixIcon: Icons.search,
-              suffixIcon: _searchController.text.isNotEmpty ? Icons.clear : null,
+              suffixIcon:
+                  _searchController.text.isNotEmpty ? Icons.clear : null,
               onSuffixTap: () {
                 _searchController.clear();
                 setState(() {});
@@ -181,9 +182,8 @@ class _BrowseMerchantsScreenState extends ConsumerState<BrowseMerchantsScreen> {
                   max: 500000,
                   divisions: 49,
                   activeColor: AppTheme.primaryGreen,
-                  label: _maxPrice != null
-                      ? _formatRupiah(_maxPrice!)
-                      : 'Semua',
+                  label:
+                      _maxPrice != null ? _formatRupiah(_maxPrice!) : 'Semua',
                   onChanged: (v) => setState(() => _maxPrice = v),
                 ),
               ),
@@ -218,8 +218,7 @@ class _BrowseMerchantsScreenState extends ConsumerState<BrowseMerchantsScreen> {
               : AppTheme.primaryGreen.withOpacity(0.08),
           borderRadius: BorderRadius.circular(AppTheme.radiusFull),
           border: Border.all(
-            color:
-                isSelected ? AppTheme.primaryGreen : AppTheme.divider,
+            color: isSelected ? AppTheme.primaryGreen : AppTheme.divider,
           ),
         ),
         child: Text(
@@ -262,7 +261,8 @@ class _BrowseMerchantsScreenState extends ConsumerState<BrowseMerchantsScreen> {
                     ),
                     Row(
                       children: [
-                        const Icon(Icons.star, size: 14, color: AppTheme.accent),
+                        const Icon(Icons.star,
+                            size: 14, color: AppTheme.accent),
                         const SizedBox(width: 4),
                         const Text(
                           '4.5',
@@ -369,12 +369,11 @@ class _BrowseMerchantsScreenState extends ConsumerState<BrowseMerchantsScreen> {
               runSpacing: 6,
               children: pkg.items.take(5).map((item) {
                 return Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: AppTheme.background,
-                    borderRadius:
-                        BorderRadius.circular(AppTheme.radiusSmall),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
                   ),
                   child: Text(
                     '🥬 ${item.name}',
@@ -535,11 +534,9 @@ class _BrowseMerchantsScreenState extends ConsumerState<BrowseMerchantsScreen> {
                     // Info
                     _detailRow('Frekuensi', pkg.frequencyText),
                     _detailRow('Hari Kirim', pkg.deliveryDaysText),
-                    _detailRow(
-                        'Jumlah Item', '${pkg.items.length} produk'),
+                    _detailRow('Jumlah Item', '${pkg.items.length} produk'),
                     if (pkg.subscriberCount != null)
-                      _detailRow('Pelanggan',
-                          '${pkg.subscriberCount} orang'),
+                      _detailRow('Pelanggan', '${pkg.subscriberCount} orang'),
 
                     const SizedBox(height: AppTheme.space16),
                     const Text(
@@ -551,12 +548,10 @@ class _BrowseMerchantsScreenState extends ConsumerState<BrowseMerchantsScreen> {
                     ),
                     const SizedBox(height: AppTheme.space8),
                     ...pkg.items.map((item) => Padding(
-                          padding:
-                              const EdgeInsets.symmetric(vertical: 6),
+                          padding: const EdgeInsets.symmetric(vertical: 6),
                           child: Row(
                             children: [
-                              const Text('🥬 ',
-                                  style: TextStyle(fontSize: 16)),
+                              const Text('🥬 ', style: TextStyle(fontSize: 16)),
                               Expanded(
                                 child: Text(
                                   item.name,

@@ -54,8 +54,7 @@ class _PriceAlertPelangganScreenState
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.error_outline,
-                  size: 48, color: AppTheme.error),
+              const Icon(Icons.error_outline, size: 48, color: AppTheme.error),
               const SizedBox(height: AppTheme.space12),
               Text('Gagal memuat alert: $e', textAlign: TextAlign.center),
               const SizedBox(height: AppTheme.space16),
@@ -106,8 +105,8 @@ class _PriceAlertPelangganScreenState
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-            top: Radius.circular(AppTheme.radiusLarge)),
+        borderRadius:
+            BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLarge)),
       ),
       builder: (_) => const _CreateAlertSheet(),
     );
@@ -146,8 +145,7 @@ class _AlertCard extends StatelessWidget {
           context: context,
           builder: (ctx) => AlertDialog(
             title: const Text('Hapus Alert?'),
-            content: Text(
-                'Hapus alert harga untuk $productName?'),
+            content: Text('Hapus alert harga untuk $productName?'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx, false),
@@ -155,8 +153,7 @@ class _AlertCard extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () => Navigator.pop(ctx, true),
-                style: TextButton.styleFrom(
-                    foregroundColor: AppTheme.error),
+                style: TextButton.styleFrom(foregroundColor: AppTheme.error),
                 child: const Text('Hapus'),
               ),
             ],
@@ -183,8 +180,7 @@ class _AlertCard extends StatelessWidget {
               height: 48,
               decoration: BoxDecoration(
                 color: directionColor.withOpacity(0.1),
-                borderRadius:
-                    BorderRadius.circular(AppTheme.radiusSmall),
+                borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
               ),
               child: Icon(
                 Icons.notifications_active,
@@ -211,8 +207,8 @@ class _AlertCard extends StatelessWidget {
                             horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
                           color: directionColor.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(
-                              AppTheme.radiusFull),
+                          borderRadius:
+                              BorderRadius.circular(AppTheme.radiusFull),
                         ),
                         child: Text(
                           directionLabel,
@@ -259,8 +255,7 @@ class _CreateAlertSheet extends ConsumerStatefulWidget {
   const _CreateAlertSheet();
 
   @override
-  ConsumerState<_CreateAlertSheet> createState() =>
-      _CreateAlertSheetState();
+  ConsumerState<_CreateAlertSheet> createState() => _CreateAlertSheetState();
 }
 
 class _CreateAlertSheetState extends ConsumerState<_CreateAlertSheet> {
@@ -297,8 +292,7 @@ class _CreateAlertSheetState extends ConsumerState<_CreateAlertSheet> {
               height: 4,
               decoration: BoxDecoration(
                 color: AppTheme.divider,
-                borderRadius:
-                    BorderRadius.circular(AppTheme.radiusFull),
+                borderRadius: BorderRadius.circular(AppTheme.radiusFull),
               ),
             ),
           ),
@@ -328,8 +322,7 @@ class _CreateAlertSheetState extends ConsumerState<_CreateAlertSheet> {
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 decoration: BoxDecoration(
                   border: Border.all(color: AppTheme.divider),
-                  borderRadius:
-                      BorderRadius.circular(AppTheme.radiusMedium),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
@@ -368,12 +361,11 @@ class _CreateAlertSheetState extends ConsumerState<_CreateAlertSheet> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 12, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 decoration: BoxDecoration(
                   color: AppTheme.primaryGreen.withOpacity(0.1),
-                  borderRadius:
-                      BorderRadius.circular(AppTheme.radiusFull),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusFull),
                 ),
                 child: Text(
                   '${_threshold.toInt()}%',
@@ -397,8 +389,12 @@ class _CreateAlertSheetState extends ConsumerState<_CreateAlertSheet> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: const [
-              Text('5%', style: TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
-              Text('50%', style: TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
+              Text('5%',
+                  style:
+                      TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
+              Text('50%',
+                  style:
+                      TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
             ],
           ),
           const SizedBox(height: AppTheme.space16),
@@ -426,24 +422,19 @@ class _CreateAlertSheetState extends ConsumerState<_CreateAlertSheet> {
                       ),
                     ),
                     selected: selected,
-                    onSelected: (_) =>
-                        setState(() => _direction = entry.key),
-                    selectedColor:
-                        AppTheme.primaryGreen.withOpacity(0.15),
+                    onSelected: (_) => setState(() => _direction = entry.key),
+                    selectedColor: AppTheme.primaryGreen.withOpacity(0.15),
                     labelStyle: TextStyle(
                       color: selected
                           ? AppTheme.primaryGreen
                           : AppTheme.textPrimary,
-                      fontWeight:
-                          selected ? FontWeight.w700 : FontWeight.w400,
+                      fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
                     ),
                     shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(AppTheme.radiusFull),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusFull),
                       side: BorderSide(
-                        color: selected
-                            ? AppTheme.primaryGreen
-                            : AppTheme.divider,
+                        color:
+                            selected ? AppTheme.primaryGreen : AppTheme.divider,
                       ),
                     ),
                   ),
@@ -457,9 +448,7 @@ class _CreateAlertSheetState extends ConsumerState<_CreateAlertSheet> {
           SPButton(
             label: 'Simpan Alert',
             icon: Icons.check,
-            onPressed: _selectedProductId == null
-                ? null
-                : () => _submitAlert(),
+            onPressed: _selectedProductId == null ? null : () => _submitAlert(),
           ),
         ],
       ),

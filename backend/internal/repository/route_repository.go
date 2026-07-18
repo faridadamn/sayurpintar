@@ -26,6 +26,7 @@ type RouteRepository interface {
 	UpdateStatus(ctx context.Context, routeID string, status string) error
 	ListByPedagang(ctx context.Context, pedagangID string, from, to string) ([]models.Route, error)
 	Delete(ctx context.Context, id string) error
+	GetRouteStats(ctx context.Context, pedagangID string, days int) (*RouteStats, error)
 }
 
 // routeRepo implements RouteRepository backed by pgxpool.
@@ -301,13 +302,13 @@ func (r *routeRepo) Delete(ctx context.Context, id string) error {
 
 // RouteStats holds aggregate route statistics.
 type RouteStats struct {
-	TotalRoutes     int      `json:"total_routes"`
-	AvgDistanceKm   float64  `json:"avg_distance_km"`
-	AvgDurationMin  float64  `json:"avg_duration_min"`
-	AvgFuelCost     float64  `json:"avg_fuel_cost"`
-	TotalDistanceKm float64  `json:"total_distance_km"`
-	TotalDurationHr float64  `json:"total_duration_hr"`
-	CompletionRate  float64  `json:"completion_rate"`
+	TotalRoutes     int     `json:"total_routes"`
+	AvgDistanceKm   float64 `json:"avg_distance_km"`
+	AvgDurationMin  float64 `json:"avg_duration_min"`
+	AvgFuelCost     float64 `json:"avg_fuel_cost"`
+	TotalDistanceKm float64 `json:"total_distance_km"`
+	TotalDurationHr float64 `json:"total_duration_hr"`
+	CompletionRate  float64 `json:"completion_rate"`
 }
 
 // GetRouteStats returns aggregate statistics for a pedagang's routes over the given number of days.

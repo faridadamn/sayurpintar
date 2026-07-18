@@ -154,9 +154,9 @@ func (s *NotificationService) NotifyOrderCreated(ctx context.Context, order *mod
 	body := fmt.Sprintf("Pesanan baru seharga Rp %.0f telah dibuat untuk pengantaran %s.", order.TotalPrice, order.DeliveryDate)
 
 	data := map[string]string{
-		"order_id":       order.ID,
-		"delivery_date":  order.DeliveryDate,
-		"total_price":    fmt.Sprintf("%.0f", order.TotalPrice),
+		"order_id":      order.ID,
+		"delivery_date": order.DeliveryDate,
+		"total_price":   fmt.Sprintf("%.0f", order.TotalPrice),
 	}
 
 	return s.Create(ctx, order.PelangganID, models.NotifTypeOrder, title, body, data)
@@ -221,13 +221,13 @@ func (s *NotificationService) NotifyPriceAlert(ctx context.Context, alert *model
 	)
 
 	data := map[string]string{
-		"alert_id":    alert.ID,
-		"product_id":  alert.ProductID,
-		"area":        alert.Area,
-		"change_pct":  fmt.Sprintf("%.1f", change.ChangePct),
-		"direction":   change.Direction,
-		"old_price":   fmt.Sprintf("%.0f", change.OldPrice),
-		"new_price":   fmt.Sprintf("%.0f", change.NewPrice),
+		"alert_id":   alert.ID,
+		"product_id": alert.ProductID,
+		"area":       alert.Area,
+		"change_pct": fmt.Sprintf("%.1f", change.ChangePct),
+		"direction":  change.Direction,
+		"old_price":  fmt.Sprintf("%.0f", change.OldPrice),
+		"new_price":  fmt.Sprintf("%.0f", change.NewPrice),
 	}
 
 	return s.Create(ctx, alert.UserID, "price_alert", title, body, data)

@@ -296,8 +296,7 @@ class AreaPriceStats {
       totalProducts: (json['total_products'] as num?)?.toInt() ?? 0,
       avgSubmissionsPerDay:
           (json['avg_submissions_per_day'] as num?)?.toInt() ?? 0,
-      mostSubmittedProduct:
-          json['most_submitted_product']?.toString() ?? '',
+      mostSubmittedProduct: json['most_submitted_product']?.toString() ?? '',
     );
   }
 

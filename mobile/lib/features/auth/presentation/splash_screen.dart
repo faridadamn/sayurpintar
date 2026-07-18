@@ -31,21 +31,21 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: _controller,
-        const Interval(0, 0.5, curve: Curves.easeOut),
+        curve: const Interval(0, 0.5, curve: Curves.easeOut),
       ),
     );
 
     _scaleAnimation = Tween<double>(begin: 0.6, end: 1).animate(
       CurvedAnimation(
         parent: _controller,
-        const Interval(0, 0.6, curve: Curves.elasticOut),
+        curve: const Interval(0, 0.6, curve: Curves.elasticOut),
       ),
     );
 
     _subtitleFade = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: _controller,
-        const Interval(0.4, 0.8, curve: Curves.easeIn),
+        curve: const Interval(0.4, 0.8, curve: Curves.easeIn),
       ),
     );
 
@@ -55,7 +55,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Listen for auth state changes after initial delay
     _navigateAfterDelay();
   }
 
@@ -65,10 +64,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
     final authState = ref.read(authProvider);
 
-    // If auth is still initializing, wait for it
     if (authState.status == AuthStatus.initial ||
         authState.status == AuthStatus.loading) {
-      // Use ref.listen properly
       final sub = ref.listenManual<AuthState>(authProvider, (prev, next) {
         if (_navigated) return;
         if (next.isAuthenticated) {
@@ -79,8 +76,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
           _navigate('/login');
         }
       });
-      // Auto-cleanup after 5 seconds
-      Future.delayed(const Duration(seconds: 5), () => sub.close());
+      Future.delayed(const Duration(seconds: 5), sub.close);
     } else if (authState.isAuthenticated) {
       _navigate('/home');
     } else if (authState.needsRole) {
@@ -122,14 +118,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // ── Logo ─────────────────────
                   Container(
                     width: 110,
                     height: 110,
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius:
-                          BorderRadius.circular(AppTheme.radiusXL),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusXL),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.2),
@@ -146,8 +140,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     ),
                   ),
                   const SizedBox(height: AppTheme.space24),
-
-                  // ── App name ─────────────────
                   const Text(
                     'SayurPintar',
                     style: TextStyle(
@@ -159,8 +151,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     ),
                   ),
                   const SizedBox(height: AppTheme.space8),
-
-                  // ── Subtitle ─────────────────
                   FadeTransition(
                     opacity: _subtitleFade,
                     child: const Text(
@@ -173,8 +163,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     ),
                   ),
                   const SizedBox(height: AppTheme.space48),
-
-                  // ── Loading indicator ────────
                   FadeTransition(
                     opacity: _subtitleFade,
                     child: const SizedBox(

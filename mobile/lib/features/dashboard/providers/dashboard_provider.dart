@@ -124,7 +124,7 @@ final dashboardStatsProvider =
 
 final todayPricesProvider = FutureProvider<List<dynamic>>((ref) async {
   final repo = ref.read(priceRepositoryProvider);
-  return await repo.getCurrentPrices();
+  return repo.getCurrentPrices('Jakarta');
 });
 
 final priceAlertCountProvider = Provider<int>((ref) {

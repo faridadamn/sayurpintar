@@ -175,18 +175,16 @@ class _PelangganPriceScreenState extends ConsumerState<PelangganPriceScreen> {
                   selectedColor: AppTheme.primaryGreen.withOpacity(0.2),
                   checkmarkColor: AppTheme.primaryGreen,
                   labelStyle: TextStyle(
-                    color: selected
-                        ? AppTheme.primaryGreen
-                        : AppTheme.textPrimary,
+                    color:
+                        selected ? AppTheme.primaryGreen : AppTheme.textPrimary,
                     fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
                     fontSize: 13,
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppTheme.radiusFull),
                     side: BorderSide(
-                      color: selected
-                          ? AppTheme.primaryGreen
-                          : AppTheme.divider,
+                      color:
+                          selected ? AppTheme.primaryGreen : AppTheme.divider,
                     ),
                   ),
                 );
@@ -203,17 +201,14 @@ class _PelangganPriceScreenState extends ConsumerState<PelangganPriceScreen> {
                   return const SPEmptyState(
                     icon: Icons.search_off,
                     title: 'Produk Tidak Ditemukan',
-                    message:
-                        'Coba ubah kata kunci atau pilih kategori lain.',
+                    message: 'Coba ubah kata kunci atau pilih kategori lain.',
                   );
                 }
                 return RefreshIndicator(
-                  onRefresh: () =>
-                      ref.refresh(pricesProvider.future),
+                  onRefresh: () => ref.refresh(pricesProvider.future),
                   child: ListView.builder(
                     padding: const EdgeInsets.only(
-                        top: AppTheme.space8,
-                        bottom: AppTheme.space80),
+                        top: AppTheme.space8, bottom: AppTheme.space80),
                     itemCount: filtered.length,
                     itemBuilder: (context, index) {
                       return _PriceCard(
@@ -223,8 +218,7 @@ class _PelangganPriceScreenState extends ConsumerState<PelangganPriceScreen> {
                         onTap: () {
                           final productId =
                               filtered[index]['product_id']?.toString() ?? '';
-                          context.push('/price-compare',
-                              extra: productId);
+                          context.push('/price-compare', extra: productId);
                         },
                       );
                     },
@@ -289,11 +283,28 @@ class _PelangganPriceScreenState extends ConsumerState<PelangganPriceScreen> {
   String _formattedDate() {
     final now = DateTime.now();
     const days = [
-      'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'
+      'Senin',
+      'Selasa',
+      'Rabu',
+      'Kamis',
+      'Jumat',
+      'Sabtu',
+      'Minggu'
     ];
     const months = [
-      '', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+      '',
+      'Januari',
+      'Februari',
+      'Maret',
+      'April',
+      'Mei',
+      'Juni',
+      'Juli',
+      'Agustus',
+      'September',
+      'Oktober',
+      'November',
+      'Desember'
     ];
     return '${days[now.weekday - 1]}, ${now.day} ${months[now.month]} ${now.year}';
   }
@@ -409,8 +420,7 @@ class _PriceCard extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
                   color: trendColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(AppTheme.radiusFull),

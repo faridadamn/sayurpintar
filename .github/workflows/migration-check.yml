@@ -1,0 +1,67 @@
+name: Migration Check
+
+on:
+  push:
+    branches: ['*']
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: migration-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  migrate:
+    name: PostgreSQL migration validation
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgis/postgis:15-3.3
+        env:
+          POSTGRES_DB: sayurpintar_migration_test
+          POSTGRES_USER: sp_migrate
+          POSTGRES_PASSWORD: migration_test_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql://sp_migrate:migration_test_password@localhost:5432/sayurpintar_migration_test?sslmode=disable
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate runner syntax
+        run: bash -n scripts/migrate.sh
+      - name: Apply migrations
+        shell: bash
+        run: |
+          set -o pipefail
+          bash -x scripts/migrate.sh 2>&1 | tee migration.log
+      - name: Re-run migrations
+        shell: bash
+        run: |
+          set -o pipefail
+          bash -x scripts/migrate.sh 2>&1 | tee -a migration.log
+      - name: Verify migration state
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          expected="$(find backend/migrations -maxdepth 1 -type f -name '*.up.sql' | wc -l | tr -d ' ')"
+          applied="$(psql "$DATABASE_URL" -Atc "SELECT COUNT(*) FROM schema_migrations")"
+          tables="$(psql "$DATABASE_URL" -Atc "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public' AND table_name IN ('users','orders','transactions')")"
+          extensions="$(psql "$DATABASE_URL" -Atc "SELECT COUNT(*) FROM pg_extension WHERE extname IN ('pgcrypto','postgis')")"
+          test "$applied" = "$expected"
+          test "$tables" = "3"
+          test "$extensions" = "2"
+      - name: Upload migration diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: migration-diagnostics
+          path: migration.log
+          if-no-files-found: warn

@@ -7,19 +7,19 @@ import (
 )
 
 type Config struct {
-	Server   ServerConfig
-	Database DatabaseConfig
-	JWT      JWTConfig
-	WhatsApp WhatsAppConfig
-	SMS      SMSConfig
-	Maps     MapsConfig
-	OTP      OTPConfig
+	Server    ServerConfig
+	Database  DatabaseConfig
+	JWT       JWTConfig
+	WhatsApp  WhatsAppConfig
+	SMS       SMSConfig
+	Maps      MapsConfig
+	OTP       OTPConfig
 	RateLimit RateLimitConfig
-	CORS     CORSConfig
-	Log      LogConfig
-	App      AppConfig
-	OSRM     OSRMConfig
-	Payment  PaymentConfig
+	CORS      CORSConfig
+	Log       LogConfig
+	App       AppConfig
+	OSRM      OSRMConfig
+	Payment   PaymentConfig
 }
 
 type ServerConfig struct {
@@ -115,15 +115,15 @@ type XenditConfig struct {
 }
 
 type OTPConfig struct {
-	Length          int
-	Expiry          time.Duration
-	MaxAttempts     int
-	ResendCooldown  time.Duration
+	Length         int
+	Expiry         time.Duration
+	MaxAttempts    int
+	ResendCooldown time.Duration
 }
 
 type RateLimitConfig struct {
-	AuthPerMin  int
-	AnonPerMin  int
+	AuthPerMin int
+	AnonPerMin int
 }
 
 type CORSConfig struct {

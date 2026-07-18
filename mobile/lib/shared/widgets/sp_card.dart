@@ -24,10 +24,11 @@ class SPCard extends StatelessWidget {
     return Card(
       elevation: elevation ?? 2,
       color: color ?? Colors.white,
-      margin: margin ?? const EdgeInsets.symmetric(
-        horizontal: AppTheme.space16,
-        vertical: AppTheme.space8,
-      ),
+      margin: margin ??
+          const EdgeInsets.symmetric(
+            horizontal: AppTheme.space16,
+            vertical: AppTheme.space8,
+          ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
       ),

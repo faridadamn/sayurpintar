@@ -91,8 +91,10 @@ class _TrendChartPainter extends CustomPainter {
     final minPrice = prices.reduce(math.min);
     final maxPrice = prices.reduce(math.max);
     final priceRange = maxPrice - minPrice;
-    final adjustedMin = priceRange > 0 ? minPrice - priceRange * 0.1 : minPrice - 1000;
-    final adjustedMax = priceRange > 0 ? maxPrice + priceRange * 0.1 : maxPrice + 1000;
+    final adjustedMin =
+        priceRange > 0 ? minPrice - priceRange * 0.1 : minPrice - 1000;
+    final adjustedMax =
+        priceRange > 0 ? maxPrice + priceRange * 0.1 : maxPrice + 1000;
     final adjustedRange = adjustedMax - adjustedMin;
 
     // Draw grid lines
@@ -162,9 +164,10 @@ class _TrendChartPainter extends CustomPainter {
       );
       canvas.drawPath(
         fillPath,
-        Paint()..shader = fillGradient.createShader(
-          Rect.fromLTWH(0, _topPadding, size.width, chartHeight),
-        ),
+        Paint()
+          ..shader = fillGradient.createShader(
+            Rect.fromLTWH(0, _topPadding, size.width, chartHeight),
+          ),
       );
     }
 

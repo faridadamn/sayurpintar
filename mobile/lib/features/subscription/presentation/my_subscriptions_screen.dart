@@ -85,7 +85,8 @@ class MySubscriptionsScreen extends ConsumerWidget {
       return SPEmptyState(
         icon: Icons.shopping_bag_outlined,
         title: 'Belum Berlangganan',
-        message: 'Cari pedagang di sekitarmu dan mulai berlangganan sayuran segar! 🔍',
+        message:
+            'Cari pedagang di sekitarmu dan mulai berlangganan sayuran segar! 🔍',
         actionLabel: 'Cari Pedagang',
         onAction: () => context.push('/browse-merchants'),
       );

@@ -21,7 +21,8 @@ import 'package:sayurpintar/features/route/presentation/add_waypoint_screen.dart
 import 'package:sayurpintar/features/route/presentation/route_optimized_screen.dart';
 import 'package:sayurpintar/features/route/presentation/navigation_screen.dart';
 import 'package:sayurpintar/features/route/presentation/visit_completion_screen.dart';
-import 'package:sayurpintar/features/route/providers/tracking_provider.dart';
+import 'package:sayurpintar/features/route/providers/tracking_provider.dart'
+    as tracking;
 import 'package:sayurpintar/features/subscription/presentation/create_package_screen.dart';
 import 'package:sayurpintar/features/subscription/presentation/package_list_screen.dart';
 import 'package:sayurpintar/features/subscription/data/subscription_repository.dart';
@@ -45,23 +46,13 @@ import 'package:sayurpintar/features/price/data/price_repository.dart';
 final appRouter = GoRouter(
   initialLocation: '/',
   routes: [
-    // ── Splash ─────────────────────────────────
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const SplashScreen(),
-    ),
-
-    // ── Auth ───────────────────────────────────
-    GoRoute(
-      path: '/login',
-      builder: (context, state) => const LoginScreen(),
-    ),
+    GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
+    GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
     GoRoute(
       path: '/otp',
-      builder: (context, state) {
-        final phone = state.uri.queryParameters['phone'] ?? '';
-        return OTPScreen(phone: phone);
-      },
+      builder: (context, state) => OTPScreen(
+        phone: state.uri.queryParameters['phone'] ?? '',
+      ),
     ),
     GoRoute(
       path: '/role-selection',
@@ -71,21 +62,11 @@ final appRouter = GoRouter(
       path: '/profile-setup',
       builder: (context, state) => const ProfileSetupScreen(),
     ),
-
-    // ── Pedagang Shell (with bottom nav) ───────
     ShellRoute(
-      builder: (context, state, child) {
-        return MainShell(child: child);
-      },
+      builder: (context, state, child) => MainShell(child: child),
       routes: [
-        GoRoute(
-          path: '/home',
-          builder: (context, state) => const HomeScreen(),
-        ),
-        GoRoute(
-          path: '/map',
-          builder: (context, state) => const MapScreen(),
-        ),
+        GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
+        GoRoute(path: '/map', builder: (context, state) => const MapScreen()),
         GoRoute(
           path: '/subscriptions/packages',
           builder: (context, state) => const PackageListScreen(),
@@ -104,12 +85,8 @@ final appRouter = GoRouter(
         ),
       ],
     ),
-
-    // ── Pelanggan Shell (with bottom nav) ──────
     ShellRoute(
-      builder: (context, state, child) {
-        return MainShell(child: child);
-      },
+      builder: (context, state, child) => MainShell(child: child),
       routes: [
         GoRoute(
           path: '/pelanggan/home',
@@ -129,8 +106,6 @@ final appRouter = GoRouter(
         ),
       ],
     ),
-
-    // ── Dashboard (standalone) ─────────────────
     GoRoute(
       path: '/daily-summary',
       builder: (context, state) => const DailySummaryScreen(),
@@ -147,8 +122,6 @@ final appRouter = GoRouter(
       path: '/rewards',
       builder: (context, state) => const RewardScreen(),
     ),
-
-    // ── Route feature (standalone) ─────────────
     GoRoute(
       path: '/waypoints',
       builder: (context, state) => const WaypointListScreen(),
@@ -168,52 +141,43 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/route/optimized',
-      builder: (context, state) {
-        final extra = state.extra;
-        if (extra != null && extra is Map) {
-          return const RouteOptimizedScreen();
-        }
-        return const RouteOptimizedScreen();
-      },
+      builder: (context, state) => const RouteOptimizedScreen(),
     ),
     GoRoute(
       path: '/route/navigation',
-      builder: (context, state) {
-        final route = state.extra as RouteData;
-        return NavigationScreen(route: route);
-      },
+      builder: (context, state) => NavigationScreen(
+        route: state.extra as tracking.RouteData,
+      ),
     ),
     GoRoute(
       path: '/visit/complete',
       builder: (context, state) {
         final args = state.extra as Map<String, dynamic>;
         return VisitCompletionScreen(
-          visit: args['visit'] as VisitData,
-          waypoint: args['waypoint'] as WaypointData,
+          visit: args['visit'] as tracking.VisitData,
+          waypoint: args['waypoint'] as tracking.WaypointData,
         );
       },
     ),
-
-    // ── Subscription feature (standalone) ──────
     GoRoute(
       path: '/subscriptions/create-package',
       builder: (context, state) => const CreatePackageScreen(),
     ),
     GoRoute(
       path: '/subscriptions/subscribe',
-      builder: (context, state) {
-        return const PackageListScreen();
-      },
+      builder: (context, state) => const PackageListScreen(),
     ),
     GoRoute(
       path: '/subscribe',
-      builder: (context, state) =>
-          SubscribeScreen(package: state.extra as SubscriptionPackage),
+      builder: (context, state) => SubscribeScreen(
+        package: state.extra as SubscriptionPackage,
+      ),
     ),
     GoRoute(
       path: '/subscription-detail',
       builder: (context, state) => SubscriptionDetailScreen(
-          subscription: state.extra as Subscription),
+        subscription: state.extra as Subscription,
+      ),
     ),
     GoRoute(
       path: '/modify-delivery',
@@ -243,30 +207,25 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/subscriptions/package-detail',
-      builder: (context, state) {
-        final packageId = state.extra as String;
-        return PackageDetailScreen(packageId: packageId);
-      },
+      builder: (context, state) => PackageDetailScreen(
+        packageId: state.extra as String,
+      ),
     ),
     GoRoute(
       path: '/subscriptions/edit-package',
-      builder: (context, state) {
-        final packageId = state.extra as String;
-        return CreatePackageScreen(packageId: packageId);
-      },
+      builder: (context, state) => CreatePackageScreen(
+        packageId: state.extra as String,
+      ),
     ),
-
-    // ── Price feature (standalone) ─────────────
     GoRoute(
       path: '/prices/submit',
       builder: (context, state) => const PriceSubmitScreen(),
     ),
     GoRoute(
       path: '/price-compare',
-      builder: (context, state) {
-        final productId = state.extra as String;
-        return PriceComparisonScreen(productId: productId);
-      },
+      builder: (context, state) => PriceComparisonScreen(
+        productId: state.extra as String,
+      ),
     ),
     GoRoute(
       path: '/price-alerts',
@@ -282,48 +241,5 @@ final appRouter = GoRouter(
         );
       },
     ),
-
-    // ── Notifications & Rewards (real screens) ──
   ],
 );
-
-// ── Placeholder Screen (for routes referenced but not yet built) ─────────
-
-class _PlaceholderScreen extends StatelessWidget {
-  final String title;
-  final IconData icon;
-
-  const _PlaceholderScreen({required this.title, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 64, color: Colors.grey.shade400),
-            const SizedBox(height: 16),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-                fontFamily: 'Nunito',
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Segera hadir',
-              style: TextStyle(
-                color: Colors.grey.shade500,
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

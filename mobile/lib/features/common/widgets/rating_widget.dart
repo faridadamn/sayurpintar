@@ -175,7 +175,8 @@ class _InteractiveRatingDialogState extends State<InteractiveRatingDialog> {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: _rating > 0 ? AppTheme.primaryDark : AppTheme.textSecondary,
+              color:
+                  _rating > 0 ? AppTheme.primaryDark : AppTheme.textSecondary,
             ),
           ),
           const SizedBox(height: AppTheme.space16),

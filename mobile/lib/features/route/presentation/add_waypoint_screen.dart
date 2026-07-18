@@ -179,9 +179,8 @@ class _AddWaypointScreenState extends ConsumerState<AddWaypointScreen> {
             preferredTimeStart: _preferredStart != null
                 ? _formatTimeOfDay(_preferredStart!)
                 : null,
-            preferredTimeEnd: _preferredEnd != null
-                ? _formatTimeOfDay(_preferredEnd!)
-                : null,
+            preferredTimeEnd:
+                _preferredEnd != null ? _formatTimeOfDay(_preferredEnd!) : null,
           ),
         );
       } else {
@@ -200,9 +199,8 @@ class _AddWaypointScreenState extends ConsumerState<AddWaypointScreen> {
             preferredTimeStart: _preferredStart != null
                 ? _formatTimeOfDay(_preferredStart!)
                 : null,
-            preferredTimeEnd: _preferredEnd != null
-                ? _formatTimeOfDay(_preferredEnd!)
-                : null,
+            preferredTimeEnd:
+                _preferredEnd != null ? _formatTimeOfDay(_preferredEnd!) : null,
           ),
         );
       }
@@ -256,8 +254,7 @@ class _AddWaypointScreenState extends ConsumerState<AddWaypointScreen> {
             ),
             children: [
               TileLayer(
-                urlTemplate:
-                    'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 userAgentPackageName: 'com.sayurpintar.app',
               ),
               MarkerLayer(
@@ -287,8 +284,7 @@ class _AddWaypointScreenState extends ConsumerState<AddWaypointScreen> {
                   icon: Icons.my_location,
                   onPressed: () async {
                     try {
-                      final position =
-                          await Geolocator.getCurrentPosition(
+                      final position = await Geolocator.getCurrentPosition(
                         desiredAccuracy: LocationAccuracy.high,
                       );
                       final loc = LatLng(
@@ -382,12 +378,10 @@ class _AddWaypointScreenState extends ConsumerState<AddWaypointScreen> {
                   color: isSelected
                       ? AppTheme.primaryGreen.withOpacity(0.1)
                       : Colors.white,
-                  borderRadius:
-                      BorderRadius.circular(AppTheme.radiusSmall),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
                   border: Border.all(
-                    color: isSelected
-                        ? AppTheme.primaryGreen
-                        : AppTheme.divider,
+                    color:
+                        isSelected ? AppTheme.primaryGreen : AppTheme.divider,
                   ),
                 ),
                 child: Row(
@@ -479,10 +473,8 @@ class _AddWaypointScreenState extends ConsumerState<AddWaypointScreen> {
                         onPressed: () async {
                           Navigator.pop(ctx);
                           try {
-                            final repo =
-                                ref.read(routeRepositoryProvider);
-                            await repo
-                                .deleteWaypoint(_existingWaypoint!.id);
+                            final repo = ref.read(routeRepositoryProvider);
+                            await repo.deleteWaypoint(_existingWaypoint!.id);
                             ref.invalidate(waypointsProvider);
                             if (mounted) context.pop();
                           } catch (e) {

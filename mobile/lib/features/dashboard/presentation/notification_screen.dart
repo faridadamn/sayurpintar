@@ -66,7 +66,8 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
             return const SPEmptyState(
               icon: Icons.notifications_none,
               title: 'Tidak ada notifikasi',
-              message: 'Notifikasi akan muncul di sini ketika ada pesanan baru, perubahan harga, atau info penting lainnya.',
+              message:
+                  'Notifikasi akan muncul di sini ketika ada pesanan baru, perubahan harga, atau info penting lainnya.',
             );
           }
           // Group by date
@@ -113,7 +114,8 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                           },
                           onTap: () async {
                             if (!notif.isRead) {
-                              final repo = ref.read(dashboardRepositoryProvider);
+                              final repo =
+                                  ref.read(dashboardRepositoryProvider);
                               await repo.markAsRead(notif.id);
                               ref.invalidate(notificationsProvider);
                               ref.invalidate(unreadCountProvider);
@@ -314,7 +316,8 @@ class _NotificationCard extends StatelessWidget {
                             notification.title,
                             style: TextStyle(
                               fontSize: 14,
-                              fontWeight: isRead ? FontWeight.w500 : FontWeight.w700,
+                              fontWeight:
+                                  isRead ? FontWeight.w500 : FontWeight.w700,
                               color: AppTheme.textPrimary,
                             ),
                           ),
@@ -335,7 +338,9 @@ class _NotificationCard extends StatelessWidget {
                       notification.body,
                       style: TextStyle(
                         fontSize: 13,
-                        color: isRead ? AppTheme.textSecondary : AppTheme.textPrimary,
+                        color: isRead
+                            ? AppTheme.textSecondary
+                            : AppTheme.textPrimary,
                         height: 1.3,
                       ),
                       maxLines: 2,

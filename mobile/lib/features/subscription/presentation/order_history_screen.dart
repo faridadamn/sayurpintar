@@ -14,8 +14,7 @@ class OrderHistoryScreen extends ConsumerStatefulWidget {
   const OrderHistoryScreen({super.key});
 
   @override
-  ConsumerState<OrderHistoryScreen> createState() =>
-      _OrderHistoryScreenState();
+  ConsumerState<OrderHistoryScreen> createState() => _OrderHistoryScreenState();
 }
 
 class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
@@ -54,8 +53,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
           // ── Filter Chips ──
           Container(
             height: 56,
-            padding:
-                const EdgeInsets.symmetric(horizontal: AppTheme.space16),
+            padding: const EdgeInsets.symmetric(horizontal: AppTheme.space16),
             color: Colors.white,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
@@ -123,13 +121,11 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
 
                 return RefreshIndicator(
                   onRefresh: () async {
-                    ref.invalidate(
-                        orderHistoryProvider(_selectedFilter));
+                    ref.invalidate(orderHistoryProvider(_selectedFilter));
                   },
                   color: AppTheme.primaryGreen,
                   child: ListView.builder(
-                    padding:
-                        const EdgeInsets.all(AppTheme.space16),
+                    padding: const EdgeInsets.all(AppTheme.space16),
                     itemCount: orders.length,
                     itemBuilder: (context, index) {
                       final order = orders[index];
@@ -218,18 +214,16 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                 )
               else if (order.status == 'delivered')
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: AppTheme.accent.withOpacity(0.1),
-                    borderRadius:
-                        BorderRadius.circular(AppTheme.radiusSmall),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
                   ),
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.star_border,
-                          size: 14, color: AppTheme.accent),
+                      Icon(Icons.star_border, size: 14, color: AppTheme.accent),
                       SizedBox(width: 4),
                       Text(
                         'Beri Rating',
@@ -329,8 +323,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
     );
   }
 
-  void _showOrderDetail(
-      BuildContext context, WidgetRef ref, Order order) {
+  void _showOrderDetail(BuildContext context, WidgetRef ref, Order order) {
     int? selectedRating = order.rating;
     final commentController =
         TextEditingController(text: order.ratingComment ?? '');
@@ -469,11 +462,9 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(5, (i) {
                     return GestureDetector(
-                      onTap: () =>
-                          setModalState(() => selectedRating = i + 1),
+                      onTap: () => setModalState(() => selectedRating = i + 1),
                       child: Padding(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 4),
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
                         child: Icon(
                           i < (selectedRating ?? 0)
                               ? Icons.star
@@ -501,8 +492,8 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                       ? null
                       : () async {
                           try {
-                            final repo = ref.read(
-                                subscriptionRepositoryProvider);
+                            final repo =
+                                ref.read(subscriptionRepositoryProvider);
                             await repo.rateDelivery(
                               orderId: order.id,
                               rating: selectedRating!,
@@ -516,8 +507,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                               Navigator.pop(ctx);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content:
-                                      Text('Rating berhasil dikirim! ⭐'),
+                                  content: Text('Rating berhasil dikirim! ⭐'),
                                   backgroundColor: AppTheme.primaryGreen,
                                 ),
                               );

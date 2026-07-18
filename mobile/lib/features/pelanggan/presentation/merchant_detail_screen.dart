@@ -5,6 +5,7 @@ import 'package:sayurpintar/app/theme.dart';
 import 'package:sayurpintar/features/common/widgets/rating_widget.dart';
 import 'package:sayurpintar/features/pelanggan/data/pelanggan_repository.dart';
 import 'package:sayurpintar/features/pelanggan/providers/pelanggan_provider.dart';
+import 'package:sayurpintar/features/subscription/data/subscription_repository.dart';
 import 'package:sayurpintar/shared/widgets/sp_avatar.dart';
 import 'package:sayurpintar/shared/widgets/sp_button.dart';
 import 'package:sayurpintar/shared/widgets/sp_card.dart';
@@ -25,8 +26,7 @@ class MerchantDetailScreen extends ConsumerStatefulWidget {
 class _MerchantDetailScreenState extends ConsumerState<MerchantDetailScreen> {
   @override
   Widget build(BuildContext context) {
-    final merchantAsync =
-        ref.watch(merchantDetailProvider(widget.merchantId));
+    final merchantAsync = ref.watch(merchantDetailProvider(widget.merchantId));
 
     return Scaffold(
       body: merchantAsync.when(
@@ -145,7 +145,8 @@ class _MerchantContent extends StatelessWidget {
                   icon: Icons.shopping_bag_outlined,
                   onPressed: () {
                     if (merchant.packages.isNotEmpty) {
-                      context.push('/subscribe', extra: merchant.packages.first);
+                      context.push('/subscribe',
+                          extra: merchant.packages.first);
                     }
                   },
                 ),
@@ -161,8 +162,7 @@ class _MerchantContent extends StatelessWidget {
                   ...merchant.packages.map(
                     (pkg) => _PackageCard(
                       package: pkg,
-                      onTap: () =>
-                          context.push('/subscribe', extra: pkg),
+                      onTap: () => context.push('/subscribe', extra: pkg),
                     ),
                   ),
                   const SizedBox(height: AppTheme.space24),

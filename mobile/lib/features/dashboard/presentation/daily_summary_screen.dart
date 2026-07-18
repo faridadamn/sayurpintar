@@ -576,7 +576,8 @@ class _RouteStats extends StatelessWidget {
           Container(width: 1, height: 40, color: AppTheme.divider),
           _RouteStatItem(
             icon: Icons.check_circle_outline,
-            value: '${summary.visitsCompleted}/${summary.visitsCompleted + summary.visitsSkipped}',
+            value:
+                '${summary.visitsCompleted}/${summary.visitsCompleted + summary.visitsSkipped}',
             label: 'Kunjungan',
           ),
         ],

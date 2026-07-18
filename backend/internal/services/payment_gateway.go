@@ -99,8 +99,8 @@ type QRISResponse struct {
 // midtransSnapRequest is the internal request format for Midtrans Snap API.
 type midtransSnapRequest struct {
 	TransactionDetails midtransTransactionDetails `json:"transaction_details"`
-	CustomerDetails    *midtransCustomerDetails    `json:"customer_details,omitempty"`
-	Items              []midtransItemDetail        `json:"item_details,omitempty"`
+	CustomerDetails    *midtransCustomerDetails   `json:"customer_details,omitempty"`
+	Items              []midtransItemDetail       `json:"item_details,omitempty"`
 }
 
 // midtransTransactionDetails identifies the order and amount.
@@ -126,9 +126,9 @@ type midtransItemDetail struct {
 
 // midtransSnapResponse is the response from Midtrans Snap API.
 type midtransSnapResponse struct {
-	Token       string            `json:"token"`
-	RedirectURL string            `json:"redirect_url"`
-	ErrorMsg    string            `json:"error_message,omitempty"`
+	Token       string `json:"token"`
+	RedirectURL string `json:"redirect_url"`
+	ErrorMsg    string `json:"error_message,omitempty"`
 }
 
 // midtransNotificationPayload is the webhook payload from Midtrans.
@@ -162,22 +162,22 @@ type midtransStatusResponse struct {
 
 // midtransQRISRequest is the request body for Midtrans QRIS via e-wallet API.
 type midtransQRISRequest struct {
-	PaymentType        string                   `json:"payment_type"`
+	PaymentType        string                     `json:"payment_type"`
 	TransactionDetails midtransTransactionDetails `json:"transaction_details"`
 	CustomerDetails    *midtransCustomerDetails   `json:"customer_details,omitempty"`
 }
 
 // midtransQRISResponse is the response from Midtrans QRIS creation.
 type midtransQRISResponse struct {
-	TransactionID   string              `json:"transaction_id"`
-	OrderID         string              `json:"order_id"`
-	GrossAmount     string              `json:"gross_amount"`
-	Currency        string              `json:"currency"`
-	PaymentType     string              `json:"payment_type"`
-	TransactionStatus string            `json:"transaction_status"`
-	StatusMessage   string              `json:"status_message"`
-	StatusCode      string              `json:"status_code"`
-	Actions         []midtransQRISAction `json:"actions,omitempty"`
+	TransactionID     string               `json:"transaction_id"`
+	OrderID           string               `json:"order_id"`
+	GrossAmount       string               `json:"gross_amount"`
+	Currency          string               `json:"currency"`
+	PaymentType       string               `json:"payment_type"`
+	TransactionStatus string               `json:"transaction_status"`
+	StatusMessage     string               `json:"status_message"`
+	StatusCode        string               `json:"status_code"`
+	Actions           []midtransQRISAction `json:"actions,omitempty"`
 }
 
 // midtransQRISAction represents an action in the QRIS response.

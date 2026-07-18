@@ -11,15 +11,15 @@ import (
 
 // Scheduler runs periodic background jobs with timezone-aware scheduling.
 type Scheduler struct {
-	orderGen      *OrderGenerator
-	priceAgg      *PriceAggregator
-	priceService  *PriceService
-	notifService  *NotificationService
-	paymentGW     *PaymentGateway
-	orderRepo     repository.OrderRepository
-	logger        *zap.Logger
-	stopCh        chan struct{}
-	wg            sync.WaitGroup
+	orderGen     *OrderGenerator
+	priceAgg     *PriceAggregator
+	priceService *PriceService
+	notifService *NotificationService
+	paymentGW    *PaymentGateway
+	orderRepo    repository.OrderRepository
+	logger       *zap.Logger
+	stopCh       chan struct{}
+	wg           sync.WaitGroup
 }
 
 // NewScheduler creates a new Scheduler with all required service dependencies.

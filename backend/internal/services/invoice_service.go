@@ -59,7 +59,6 @@ func (s *InvoiceService) GenerateInvoice(ctx context.Context, orderID string) ([
 		return nil, fmt.Errorf("get order: %w", err)
 	}
 
-	// Parse order items
 	var orderItems []struct {
 		ProductID string  `json:"product_id"`
 		Name      string  `json:"nama"`
@@ -98,7 +97,11 @@ func (s *InvoiceService) GenerateInvoice(ctx context.Context, orderID string) ([
 		notes = *order.DeliveryNotes
 	}
 
-	invoiceNumber := fmt.Sprintf("INV-%s-%s", time.Now().Format("20060102"), orderID[:8])
+	orderRef := orderID
+	if len(orderRef) > 8 {
+		orderRef = orderRef[:8]
+	}
+	invoiceNumber := fmt.Sprintf("INV-%s-%s", time.Now().Format("20060102"), orderRef)
 
 	data := InvoiceData{
 		InvoiceNumber: invoiceNumber,
@@ -135,12 +138,10 @@ func (s *InvoiceService) GeneratePDF(data InvoiceData) ([]byte, error) {
 	pdf.SetAutoPageBreak(true, 20)
 	pdf.AddPage()
 
-	// ── Header ──
 	pdf.SetFont("Helvetica", "B", 20)
 	pdf.Cell(0, 12, "INVOICE")
 	pdf.Ln(16)
 
-	// Invoice info
 	pdf.SetFont("Helvetica", "", 10)
 	pdf.CellFormat(95, 6, fmt.Sprintf("No. Invoice: %s", data.InvoiceNumber), "", 0, "L", false, 0, "")
 	pdf.CellFormat(95, 6, fmt.Sprintf("Tanggal: %s", data.Date), "", 1, "R", false, 0, "")
@@ -148,7 +149,6 @@ func (s *InvoiceService) GeneratePDF(data InvoiceData) ([]byte, error) {
 	pdf.CellFormat(95, 6, fmt.Sprintf("Status: %s", data.PaymentStatus), "", 1, "R", false, 0, "")
 	pdf.Ln(6)
 
-	// ── From / To ──
 	pdf.SetFont("Helvetica", "B", 11)
 	pdf.CellFormat(95, 7, "Dari:", "", 0, "L", false, 0, "")
 	pdf.CellFormat(95, 7, "Kepada:", "", 1, "L", false, 0, "")
@@ -162,12 +162,9 @@ func (s *InvoiceService) GeneratePDF(data InvoiceData) ([]byte, error) {
 	pdf.CellFormat(95, 6, data.PelangganAddr, "", 1, "L", false, 0, "")
 	pdf.Ln(8)
 
-	// ── Items Table ──
-	// Column widths: Name=70, Qty=20, Unit=20, Price=40, Subtotal=40 = 190
 	colW := []float64{70, 20, 20, 40, 40}
 	headers := []string{"Item", "Qty", "Satuan", "Harga", "Subtotal"}
 
-	// Table header
 	pdf.SetFillColor(41, 128, 185)
 	pdf.SetTextColor(255, 255, 255)
 	pdf.SetFont("Helvetica", "B", 10)
@@ -176,7 +173,6 @@ func (s *InvoiceService) GeneratePDF(data InvoiceData) ([]byte, error) {
 	}
 	pdf.Ln(-1)
 
-	// Table rows
 	pdf.SetTextColor(0, 0, 0)
 	pdf.SetFont("Helvetica", "", 10)
 	for i, item := range data.Items {
@@ -206,13 +202,10 @@ func (s *InvoiceService) GeneratePDF(data InvoiceData) ([]byte, error) {
 	}
 
 	pdf.Ln(4)
-
-	// ── Totals ──
-	totalW := colW[3] + colW[4]
 	offsetX := colW[0] + colW[1] + colW[2]
 
 	pdf.SetFont("Helvetica", "", 10)
-	pdf.CellFormat(offsetX, 7, "", 0, 0, "L", false, 0, "")
+	pdf.CellFormat(offsetX, 7, "", "", 0, "L", false, 0, "")
 	pdf.CellFormat(colW[3], 7, "Subtotal:", "1", 0, "R", false, 0, "")
 	pdf.CellFormat(colW[4], 7, formatRupiah(data.Subtotal), "1", 0, "R", false, 0, "")
 	pdf.Ln(-1)
@@ -220,22 +213,19 @@ func (s *InvoiceService) GeneratePDF(data InvoiceData) ([]byte, error) {
 	pdf.SetFont("Helvetica", "B", 11)
 	pdf.SetFillColor(41, 128, 185)
 	pdf.SetTextColor(255, 255, 255)
-	pdf.CellFormat(offsetX, 8, "", 0, 0, "L", false, 0, "")
+	pdf.CellFormat(offsetX, 8, "", "", 0, "L", false, 0, "")
 	pdf.CellFormat(colW[3], 8, "TOTAL:", "1", 0, "R", true, 0, "")
 	pdf.CellFormat(colW[4], 8, formatRupiah(data.Total), "1", 0, "R", true, 0, "")
 	pdf.Ln(-1)
 	pdf.SetTextColor(0, 0, 0)
 
 	pdf.Ln(8)
-
-	// ── Payment Info ──
 	if data.PaymentMethod != "" {
 		pdf.SetFont("Helvetica", "B", 10)
 		pdf.Cell(0, 6, fmt.Sprintf("Metode Pembayaran: %s", data.PaymentMethod))
 		pdf.Ln(8)
 	}
 
-	// ── Notes ──
 	if data.Notes != "" {
 		pdf.SetFont("Helvetica", "B", 10)
 		pdf.Cell(0, 6, "Catatan:")
@@ -245,7 +235,6 @@ func (s *InvoiceService) GeneratePDF(data InvoiceData) ([]byte, error) {
 		pdf.Ln(4)
 	}
 
-	// ── Footer ──
 	pdf.Ln(10)
 	pdf.SetFont("Helvetica", "I", 9)
 	pdf.Cell(0, 6, "Terima kasih telah berbelanja di SayurPintar!")

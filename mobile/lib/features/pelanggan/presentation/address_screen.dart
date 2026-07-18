@@ -353,10 +353,8 @@ class _AddressFormSheetState extends ConsumerState<_AddressFormSheet> {
   @override
   void initState() {
     super.initState();
-    _addressCtrl =
-        TextEditingController(text: widget.existing?.address ?? '');
-    _notesCtrl =
-        TextEditingController(text: widget.existing?.notes ?? '');
+    _addressCtrl = TextEditingController(text: widget.existing?.address ?? '');
+    _notesCtrl = TextEditingController(text: widget.existing?.notes ?? '');
     _selectedLabel = widget.existing?.label ?? 'Rumah';
     _isDefault = widget.existing?.isDefault ?? false;
   }
@@ -473,13 +471,10 @@ class _AddressFormSheetState extends ConsumerState<_AddressFormSheet> {
                 return Expanded(
                   child: Padding(
                     padding: EdgeInsets.only(
-                      right: opt != _labelOptions.last
-                          ? AppTheme.space8
-                          : 0,
+                      right: opt != _labelOptions.last ? AppTheme.space8 : 0,
                     ),
                     child: GestureDetector(
-                      onTap: () =>
-                          setState(() => _selectedLabel = opt.label),
+                      onTap: () => setState(() => _selectedLabel = opt.label),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                           vertical: AppTheme.space12,
@@ -627,9 +622,7 @@ class _AddressFormSheetState extends ConsumerState<_AddressFormSheet> {
         address: _addressCtrl.text.trim(),
         latitude: widget.existing?.latitude,
         longitude: widget.existing?.longitude,
-        notes: _notesCtrl.text.trim().isEmpty
-            ? null
-            : _notesCtrl.text.trim(),
+        notes: _notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim(),
         isDefault: _isDefault,
       );
 

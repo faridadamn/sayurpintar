@@ -159,8 +159,19 @@ class StatusTimeline extends StatelessWidget {
 
   String _formatTimestamp(DateTime dt) {
     final months = [
-      '', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
-      'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des',
+      '',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'Mei',
+      'Jun',
+      'Jul',
+      'Agu',
+      'Sep',
+      'Okt',
+      'Nov',
+      'Des',
     ];
     return '${dt.day} ${months[dt.month]} ${dt.year}, '
         '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
@@ -188,13 +199,10 @@ class _StepNode extends StatelessWidget {
             ? AppTheme.primaryLight
             : AppTheme.divider.withOpacity(0.4);
 
-    final iconColor = state == _StepState.pending
-        ? AppTheme.textSecondary
-        : Colors.white;
+    final iconColor =
+        state == _StepState.pending ? AppTheme.textSecondary : Colors.white;
 
-    final icon = state == _StepState.completed
-        ? Icons.check
-        : step.icon;
+    final icon = state == _StepState.completed ? Icons.check : step.icon;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -226,9 +234,8 @@ class _StepNode extends StatelessWidget {
           step.label,
           style: TextStyle(
             fontSize: 10,
-            fontWeight: state == _StepState.pending
-                ? FontWeight.w400
-                : FontWeight.w600,
+            fontWeight:
+                state == _StepState.pending ? FontWeight.w400 : FontWeight.w600,
             color: state == _StepState.pending
                 ? AppTheme.textSecondary
                 : AppTheme.primaryDark,

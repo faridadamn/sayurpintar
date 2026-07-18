@@ -12,9 +12,9 @@ import (
 
 // DeliveryResult captures the outcome of a notification delivery attempt.
 type DeliveryResult struct {
-	Channel   string `json:"channel"`    // "whatsapp" or "sms"
+	Channel   string `json:"channel"` // "whatsapp" or "sms"
 	MessageID string `json:"message_id"`
-	Status    string `json:"status"`     // "sent", "failed", "fallback"
+	Status    string `json:"status"` // "sent", "failed", "fallback"
 	Error     string `json:"error,omitempty"`
 }
 

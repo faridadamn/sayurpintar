@@ -201,7 +201,8 @@ class _PriceDetailScreenState extends ConsumerState<PriceDetailScreen> {
                   height: 200,
                   child: SPErrorWidget(
                     message: 'Gagal memuat tren: $e',
-                    onRetry: () => ref.invalidate(priceTrendProvider(trendParams)),
+                    onRetry: () =>
+                        ref.invalidate(priceTrendProvider(trendParams)),
                   ),
                 ),
               ),

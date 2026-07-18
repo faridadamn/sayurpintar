@@ -314,7 +314,8 @@ class _PriceSubmitScreenState extends ConsumerState<PriceSubmitScreen> {
                                   width: 36,
                                   height: 36,
                                   decoration: BoxDecoration(
-                                    color: AppTheme.primaryGreen.withOpacity(0.1),
+                                    color:
+                                        AppTheme.primaryGreen.withOpacity(0.1),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: const Icon(

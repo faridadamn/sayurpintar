@@ -53,8 +53,7 @@ class ProfileScreen extends ConsumerWidget {
 
   // ── Pedagang Sections ────────────────────────────────────────────────
 
-  Widget _buildPedagangSections(
-      BuildContext context, WidgetRef ref) {
+  Widget _buildPedagangSections(BuildContext context, WidgetRef ref) {
     final summaryAsync = ref.watch(dashboardStatsProvider);
 
     return Column(
@@ -227,8 +226,7 @@ class ProfileScreen extends ConsumerWidget {
           left: AppTheme.space16,
           right: AppTheme.space16,
           top: AppTheme.space24,
-          bottom:
-              MediaQuery.of(ctx).viewInsets.bottom + AppTheme.space24,
+          bottom: MediaQuery.of(ctx).viewInsets.bottom + AppTheme.space24,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -302,8 +300,7 @@ class ProfileScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(AppTheme.space8),
               decoration: BoxDecoration(
                 color: AppTheme.primaryGreen.withOpacity(0.12),
-                borderRadius:
-                    BorderRadius.circular(AppTheme.radiusSmall),
+                borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
               ),
               child: const Icon(
                 Icons.eco,
@@ -363,8 +360,7 @@ class ProfileScreen extends ConsumerWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Keluar?'),
-        content:
-            const Text('Anda akan keluar dari akun. Lanjutkan?'),
+        content: const Text('Anda akan keluar dari akun. Lanjutkan?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
@@ -460,8 +456,7 @@ class _ProfileHeader extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: AppTheme.primaryLight.withOpacity(0.15),
-                    borderRadius:
-                        BorderRadius.circular(AppTheme.radiusFull),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusFull),
                   ),
                   child: Text(
                     roleLabel,
@@ -659,8 +654,7 @@ class _RewardBadgeCard extends StatelessWidget {
                   const SizedBox(height: AppTheme.space4),
                   Row(
                     children: [
-                      const Icon(Icons.star,
-                          size: 14, color: AppTheme.accent),
+                      const Icon(Icons.star, size: 14, color: AppTheme.accent),
                       const SizedBox(width: 4),
                       const Text(
                         '1.250 poin',
@@ -681,14 +675,13 @@ class _RewardBadgeCard extends StatelessWidget {
                   ),
                   const SizedBox(height: AppTheme.space4),
                   ClipRRect(
-                    borderRadius:
-                        BorderRadius.circular(AppTheme.radiusFull),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusFull),
                     child: LinearProgressIndicator(
                       value: 0.65,
                       minHeight: 6,
                       backgroundColor: AppTheme.accent.withOpacity(0.2),
-                      valueColor: const AlwaysStoppedAnimation<Color>(
-                          AppTheme.accent),
+                      valueColor:
+                          const AlwaysStoppedAnimation<Color>(AppTheme.accent),
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -744,8 +737,7 @@ class _AddressCard extends StatelessWidget {
               padding: const EdgeInsets.all(AppTheme.space8),
               decoration: BoxDecoration(
                 color: AppTheme.primaryGreen.withOpacity(0.1),
-                borderRadius:
-                    BorderRadius.circular(AppTheme.radiusSmall),
+                borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
               ),
               child: Icon(
                 label == 'Rumah'
@@ -777,10 +769,9 @@ class _AddressCard extends StatelessWidget {
                             vertical: 2,
                           ),
                           decoration: BoxDecoration(
-                            color: AppTheme.primaryGreen
-                                .withOpacity(0.12),
-                            borderRadius: BorderRadius.circular(
-                                AppTheme.radiusFull),
+                            color: AppTheme.primaryGreen.withOpacity(0.12),
+                            borderRadius:
+                                BorderRadius.circular(AppTheme.radiusFull),
                           ),
                           child: const Text(
                             'Utama',
@@ -813,13 +804,10 @@ class _AddressCard extends StatelessWidget {
                 if (v == 'delete') onDelete();
               },
               itemBuilder: (_) => [
-                const PopupMenuItem(
-                    value: 'edit', child: Text('Edit')),
-                const PopupMenuItem(
-                    value: 'delete', child: Text('Hapus')),
+                const PopupMenuItem(value: 'edit', child: Text('Edit')),
+                const PopupMenuItem(value: 'delete', child: Text('Hapus')),
               ],
-              icon: const Icon(Icons.more_vert,
-                  color: AppTheme.textSecondary),
+              icon: const Icon(Icons.more_vert, color: AppTheme.textSecondary),
             ),
           ],
         ),
@@ -868,8 +856,7 @@ class _MenuTile extends StatelessWidget {
           fontSize: 12,
         ),
       ),
-      trailing: const Icon(Icons.chevron_right,
-          color: AppTheme.textSecondary),
+      trailing: const Icon(Icons.chevron_right, color: AppTheme.textSecondary),
       onTap: onTap,
     );
   }

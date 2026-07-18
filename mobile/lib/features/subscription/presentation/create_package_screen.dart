@@ -97,10 +97,9 @@ class _CreatePackageScreenState extends ConsumerState<CreatePackageScreen> {
   double get _calculatedPrice =>
       _items.fold(0.0, (sum, item) => sum + item.subtotal);
 
-  double get _displayPrice =>
-      _useManualPrice
-          ? (double.tryParse(_priceController.text) ?? 0)
-          : _calculatedPrice;
+  double get _displayPrice => _useManualPrice
+      ? (double.tryParse(_priceController.text) ?? 0)
+      : _calculatedPrice;
 
   List<int> get _availableDays {
     switch (_frequency) {
@@ -207,8 +206,7 @@ class _CreatePackageScreenState extends ConsumerState<CreatePackageScreen> {
           price: _displayPrice,
           frequency: _frequency,
           deliveryDays: _selectedDays,
-          maxSubscribers:
-              int.tryParse(_maxSubscribersController.text) ?? 0,
+          maxSubscribers: int.tryParse(_maxSubscribersController.text) ?? 0,
         ));
       }
 
@@ -295,12 +293,10 @@ class _CreatePackageScreenState extends ConsumerState<CreatePackageScreen> {
                             ),
                           ),
                           items: const [
-                            DropdownMenuItem(
-                                value: 'kg', child: Text('kg')),
+                            DropdownMenuItem(value: 'kg', child: Text('kg')),
                             DropdownMenuItem(
                                 value: 'ikat', child: Text('ikat')),
-                            DropdownMenuItem(
-                                value: 'pcs', child: Text('pcs')),
+                            DropdownMenuItem(value: 'pcs', child: Text('pcs')),
                             DropdownMenuItem(
                                 value: 'liter', child: Text('liter')),
                           ],
@@ -335,9 +331,7 @@ class _CreatePackageScreenState extends ConsumerState<CreatePackageScreen> {
                     return;
                   }
                   _addItem(PackageItem(
-                    productId: DateTime.now()
-                        .millisecondsSinceEpoch
-                        .toString(),
+                    productId: DateTime.now().millisecondsSinceEpoch.toString(),
                     name: name,
                     qty: qty,
                     unit: unit,
@@ -482,8 +476,8 @@ class _CreatePackageScreenState extends ConsumerState<CreatePackageScreen> {
                   background: Container(
                     alignment: Alignment.centerRight,
                     padding: const EdgeInsets.only(right: AppTheme.space20),
-                    margin: const EdgeInsets.symmetric(
-                        vertical: AppTheme.space4),
+                    margin:
+                        const EdgeInsets.symmetric(vertical: AppTheme.space4),
                     decoration: BoxDecoration(
                       color: AppTheme.error,
                       borderRadius:
@@ -496,8 +490,7 @@ class _CreatePackageScreenState extends ConsumerState<CreatePackageScreen> {
                       context: context,
                       builder: (ctx) => AlertDialog(
                         title: const Text('Hapus Item'),
-                        content: Text(
-                            'Hapus ${item.name} dari paket?'),
+                        content: Text('Hapus ${item.name} dari paket?'),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(ctx, false),
@@ -515,8 +508,8 @@ class _CreatePackageScreenState extends ConsumerState<CreatePackageScreen> {
                   },
                   onDismissed: (_) => _removeItem(index),
                   child: SPCard(
-                    margin: const EdgeInsets.symmetric(
-                        vertical: AppTheme.space4),
+                    margin:
+                        const EdgeInsets.symmetric(vertical: AppTheme.space4),
                     child: Row(
                       children: [
                         Expanded(
@@ -598,8 +591,7 @@ class _CreatePackageScreenState extends ConsumerState<CreatePackageScreen> {
                 padding: const EdgeInsets.all(AppTheme.space12),
                 decoration: BoxDecoration(
                   color: AppTheme.primaryGreen.withOpacity(0.05),
-                  borderRadius:
-                      BorderRadius.circular(AppTheme.radiusSmall),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
                   border: Border.all(
                     color: AppTheme.primaryGreen.withOpacity(0.2),
                   ),
@@ -700,8 +692,7 @@ class _CreatePackageScreenState extends ConsumerState<CreatePackageScreen> {
                     runSpacing: AppTheme.space8,
                     children: List.generate(7, (i) {
                       final dayNum = i + 1;
-                      final isAvailable =
-                          _availableDays.contains(dayNum);
+                      final isAvailable = _availableDays.contains(dayNum);
                       final isSelected = _selectedDays.contains(dayNum);
                       return FilterChip(
                         label: Text(_dayNames[i]),
@@ -717,8 +708,7 @@ class _CreatePackageScreenState extends ConsumerState<CreatePackageScreen> {
                                 });
                               }
                             : null,
-                        selectedColor:
-                            AppTheme.primaryGreen.withOpacity(0.2),
+                        selectedColor: AppTheme.primaryGreen.withOpacity(0.2),
                         checkmarkColor: AppTheme.primaryGreen,
                         labelStyle: TextStyle(
                           color: isSelected
@@ -774,8 +764,7 @@ class _CreatePackageScreenState extends ConsumerState<CreatePackageScreen> {
                       ),
                     ),
                     value: _useManualPrice,
-                    onChanged: (v) =>
-                        setState(() => _useManualPrice = v),
+                    onChanged: (v) => setState(() => _useManualPrice = v),
                     activeColor: AppTheme.primaryGreen,
                   ),
                   if (_useManualPrice) ...[
@@ -793,8 +782,7 @@ class _CreatePackageScreenState extends ConsumerState<CreatePackageScreen> {
                     padding: const EdgeInsets.all(AppTheme.space12),
                     decoration: BoxDecoration(
                       color: AppTheme.primaryGreen.withOpacity(0.08),
-                      borderRadius:
-                          BorderRadius.circular(AppTheme.radiusSmall),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
                     ),
                     child: Column(
                       children: [

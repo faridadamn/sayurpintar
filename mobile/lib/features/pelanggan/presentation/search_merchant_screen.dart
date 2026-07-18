@@ -235,8 +235,8 @@ class _FilterChips extends StatelessWidget {
           _FilterChip(
             label: 'Terdekat',
             icon: Icons.near_me,
-            isSelected: currentFilter.radiusKm != null &&
-                currentFilter.radiusKm! <= 5,
+            isSelected:
+                currentFilter.radiusKm != null && currentFilter.radiusKm! <= 5,
             onTap: () => onFilterChanged(MerchantSearchParams(
               area: currentFilter.area,
               query: currentFilter.query,
@@ -251,8 +251,8 @@ class _FilterChips extends StatelessWidget {
           _FilterChip(
             label: 'Rating 4+',
             icon: Icons.star,
-            isSelected:
-                currentFilter.minRating != null && currentFilter.minRating! >= 4,
+            isSelected: currentFilter.minRating != null &&
+                currentFilter.minRating! >= 4,
             onTap: () => onFilterChanged(MerchantSearchParams(
               area: currentFilter.area,
               query: currentFilter.query,
@@ -307,14 +307,10 @@ class _FilterChip extends StatelessWidget {
           vertical: AppTheme.space8,
         ),
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppTheme.primaryGreen
-              : Colors.white,
+          color: isSelected ? AppTheme.primaryGreen : Colors.white,
           borderRadius: BorderRadius.circular(AppTheme.radiusFull),
           border: Border.all(
-            color: isSelected
-                ? AppTheme.primaryGreen
-                : AppTheme.divider,
+            color: isSelected ? AppTheme.primaryGreen : AppTheme.divider,
           ),
         ),
         child: Row(

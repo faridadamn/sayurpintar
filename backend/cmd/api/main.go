@@ -19,8 +19,8 @@ import (
 	"github.com/sayurpintar/api/internal/handlers/group_order"
 	"github.com/sayurpintar/api/internal/handlers/health"
 	"github.com/sayurpintar/api/internal/handlers/notification"
-	paymentHandler "github.com/sayurpintar/api/internal/handlers/payment"
 	"github.com/sayurpintar/api/internal/handlers/order"
+	paymentHandler "github.com/sayurpintar/api/internal/handlers/payment"
 	"github.com/sayurpintar/api/internal/handlers/price"
 	"github.com/sayurpintar/api/internal/handlers/route"
 	"github.com/sayurpintar/api/internal/handlers/subscription"
@@ -33,13 +33,14 @@ import (
 )
 
 func main() {
-	// Load configuration
 	cfg, err := config.Load()
 	if err != nil {
 		log.Fatalf("Failed to load config: %v", err)
 	}
+	if err := config.ValidateProduction(cfg); err != nil {
+		log.Fatalf("Invalid production config: %v", err)
+	}
 
-	// Initialize logger
 	logger, err := initLogger(cfg.Log)
 	if err != nil {
 		log.Fatalf("Failed to init logger: %v", err)
@@ -49,30 +50,25 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	// Connect to PostgreSQL
 	pgPool, err := database.NewPostgresPool(ctx, cfg.Database.Postgres, logger)
 	if err != nil {
 		logger.Fatal("Failed to connect to PostgreSQL", zap.Error(err))
 	}
 	defer pgPool.Close()
 
-	// Connect to Redis
 	redisClient, err := database.NewRedisClient(ctx, cfg.Database.Redis, logger)
 	if err != nil {
 		logger.Fatal("Failed to connect to Redis", zap.Error(err))
 	}
 	defer redisClient.Close()
 
-	// Connect to MongoDB
 	mongoClient, err := database.NewMongoClient(ctx, cfg.Database.Mongo, logger)
 	if err != nil {
 		logger.Fatal("Failed to connect to MongoDB", zap.Error(err))
 	}
 	defer mongoClient.Disconnect(ctx)
-
 	mongoDB := mongoClient.Database(cfg.Database.Mongo.DB)
 
-	// ── Repositories ──
 	userRepo := repository.NewUserRepository(pgPool)
 	waypointRepo := repository.NewWaypointRepository(pgPool)
 	routeRepo := repository.NewRouteRepository(pgPool)
@@ -88,7 +84,6 @@ func main() {
 	groupOrderRepo := repository.NewGroupOrderRepository(pgPool)
 	debtRepo := repository.NewDebtRepository(pgPool)
 
-	// ── Services ──
 	jwtService := services.NewJWTService(cfg)
 	otpService := services.NewOTPService(redisClient, cfg)
 	whatsappSvc := services.NewWhatsAppService(cfg, logger)
@@ -100,43 +95,26 @@ func main() {
 	routeService := services.NewRouteService(routeRepo, waypointRepo, routeOptimizer, osrmService, logger)
 	visitService := services.NewVisitService(visitRepo, routeRepo, waypointRepo, logger)
 	trackingHub := services.NewTrackingHub(redisClient, logger)
-
-	// ── Price services ──
 	priceService := services.NewPriceService(priceRepo, productRepo, notifDispatcher, redisClient, logger)
 	priceAnomaly := services.NewPriceAnomalyDetector(priceRepo, logger)
 	priceAggregator := services.NewPriceAggregator(priceRepo, redisClient, logger)
-
-	// ── Subscription & Order services ──
 	subNotifier := services.NewSubscriptionNotifier(notifDispatcher, subRepo, logger)
 	subService := services.NewSubscriptionService(subRepo, pkgRepo, modRepo, orderRepo, subNotifier, logger)
 	orderService := services.NewOrderService(orderRepo, subRepo, routeService, logger)
 	orderGenerator := services.NewOrderGenerator(subRepo, pkgRepo, modRepo, orderRepo, routeService, waypointRepo, notifDispatcher, userRepo, logger)
-
-	// ── Payment services ──
 	paymentGW := services.NewPaymentGateway(&cfg.Payment, logger)
 	invoiceSvc := services.NewInvoiceService(orderRepo, logger)
-
-	// ── Debt & Payment integration services ──
-	debtService := services.NewDebtService(debtRepo, orderRepo, txnRepo, userRepo, notifService, notifDispatcher, logger)
-	paymentService := services.NewPaymentService(&cfg.Payment, txnRepo, debtRepo, userRepo, debtService, logger)
-
-	// ── Notification service ──
 	notifService := services.NewNotificationService(notifRepo, notifDispatcher, redisClient, logger)
-
-	// ── Analytics, Insight, Reward services ──
-	analyticsService := services.NewAnalyticsService(orderRepo, txnRepo, subRepo, routeRepo, visitRepo, priceRepo, userRepo, redisClient, logger)
+	debtService := services.NewDebtService(debtRepo, orderRepo, txnRepo, userRepo, notifService, notifDispatcher, logger)
+	analyticsService := services.NewAnalyticsService(pgPool, orderRepo, subRepo, routeRepo, visitRepo, priceRepo, userRepo, redisClient, logger)
 	insightService := services.NewInsightService(orderRepo, subRepo, routeRepo, visitRepo, priceRepo, userRepo, logger)
 	rewardService := services.NewRewardService(userRepo, redisClient, logger)
 	groupOrderService := services.NewGroupOrderService(groupOrderRepo, notifService, logger)
 
-	// ── Scheduler (wires all background jobs) ──
 	scheduler := services.NewScheduler(orderGenerator, priceAggregator, priceService, notifService, paymentGW, orderRepo, logger)
-
-	// Start background scheduler
 	scheduler.Start()
 	defer scheduler.Stop()
 
-	// ── Handlers ──
 	healthHandler := health.NewHandler(pgPool, redisClient, mongoClient)
 	authHandler := auth.NewAuthHandler(authService)
 	routeHandler := route.NewHandler(routeService)
@@ -145,27 +123,22 @@ func main() {
 	subHandler := subscription.NewHandler(subService)
 	priceHandler := price.NewPriceHandler(priceService, logger)
 	orderHandler := order.NewHandler(orderService)
-	txnHandler := transaction.NewHandler()
+	txnHandler := transaction.NewHandler(txnRepo)
 	analyticsHandler := analytics.NewAnalyticsHandler(analyticsService)
-	notifHandler := notification.NewNotificationHandler(notifService)
+	notifHandler := notification.NewNotificationHandler(notifRepo)
 	insightHandler := analytics.NewInsightHandler(insightService)
 	rewardHandler := analytics.NewRewardHandler(rewardService)
-	payHandler := paymentHandler.NewHandler(paymentGW, invoiceSvc, notifService, orderRepo, userRepo, txnRepo, logger)
+	payHandler := paymentHandler.NewHandler(paymentGW, invoiceSvc)
 	debtH := debtHandler.NewHandler(debtService)
-	paySvcHandler := paymentHandler.NewHandler(paymentService)
 	groupOrderHandler := group_order.NewHandler(groupOrderService, logger)
-
-	// Suppress unused variable warnings for future use
 	_ = priceAnomaly
 
-	// ── Middleware ──
-	authMiddleware := middleware.AuthMiddleware(jwtService)
+	authMiddleware := middleware.AuthMiddleware(jwtService, authService)
 	corsMiddleware := middleware.CORSMiddleware(cfg)
 	requestIDMiddleware := middleware.RequestID()
 	loggerMiddleware := middleware.Logger(logger)
 	recoverMiddleware := middleware.Recover(logger)
 
-	// Create Fiber app
 	app := fiber.New(fiber.Config{
 		AppName:      "SayurPintar API",
 		ReadTimeout:  cfg.Server.ReadTimeout,
@@ -173,39 +146,30 @@ func main() {
 		IdleTimeout:  cfg.Server.IdleTimeout,
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
 			code := fiber.StatusInternalServerError
+			message := "Internal server error"
 			if e, ok := err.(*fiber.Error); ok {
 				code = e.Code
+				message = e.Message
 			}
+			logger.Error("unhandled request error", zap.Error(err), zap.Int("status", code))
 			return c.Status(code).JSON(fiber.Map{
 				"success": false,
 				"error": fiber.Map{
 					"code":    code,
-					"message": err.Error(),
+					"message": message,
 				},
 			})
 		},
 	})
 
-	// Global middleware
-	app.Use(recoverMiddleware)
-	app.Use(requestIDMiddleware)
-	app.Use(loggerMiddleware)
-	app.Use(corsMiddleware)
-
-	// Health routes (no auth)
+	app.Use(recoverMiddleware, requestIDMiddleware, loggerMiddleware, corsMiddleware)
 	app.Get("/health", healthHandler.Liveness)
 	app.Get("/ready", healthHandler.Readiness)
 
-	// API v1 routes
 	v1 := app.Group("/api/v1")
-
-	// Auth routes (public + protected, handled by RegisterRoutes)
 	auth.RegisterRoutes(v1, authHandler, authMiddleware)
-
-	// Routes & Waypoints (uses RegisterRoutes for clean separation)
 	route.RegisterRoutes(v1, routeHandler, authMiddleware)
 
-	// Visit tracking routes (under /api/v1)
 	visitGroup := v1.Group("/routes/visits", authMiddleware)
 	visitGroup.Get("/today", visitHandler.GetTodayVisits)
 	visitGroup.Get("/summary", visitHandler.GetVisitSummary)
@@ -213,7 +177,6 @@ func main() {
 	visitGroup.Post("/:id/complete", visitHandler.MarkVisitCompleted)
 	visitGroup.Post("/:id/skip", visitHandler.MarkVisitSkipped)
 
-	// Tracking: HTTP polling + WebSocket
 	trackGroup := v1.Group("/routes/track", authMiddleware)
 	trackGroup.Get("/:pedagang_id", route.GetPedagangLocation(trackingHub))
 	trackGroup.Get("/ws", func(c *fiber.Ctx) error {
@@ -223,48 +186,25 @@ func main() {
 		return fiber.ErrUpgradeRequired
 	}, route.HandleTrackingWebSocket(trackingHub))
 
-	// Subscriptions (uses RegisterRoutes for clean separation)
 	subscription.RegisterRoutes(v1, subHandler, authMiddleware)
-
-	// Prices & Products (uses RegisterRoutes for clean separation)
 	price.RegisterRoutes(v1, priceHandler, authMiddleware)
-
-	// Orders (uses RegisterRoutes for clean separation)
 	order.RegisterRoutes(v1, orderHandler, authMiddleware)
 
-	// Transactions
 	protected := v1.Group("", authMiddleware)
 	txnGroup := protected.Group("/transactions")
 	txnGroup.Get("/", txnHandler.GetTransactions)
 	txnGroup.Post("/", txnHandler.CreateTransaction)
 	txnGroup.Get("/summary", txnHandler.GetTransactionSummary)
 
-	// Analytics
 	analytics.RegisterRoutes(v1, analyticsHandler, authMiddleware)
-
-	// Notifications
 	notification.RegisterRoutes(v1, notifHandler, authMiddleware)
-
-	// Insights
 	analytics.RegisterInsightRoutes(v1, insightHandler, authMiddleware)
-
-	// Rewards
 	analytics.RegisterRewardRoutes(v1, rewardHandler, authMiddleware)
-
-	// Payments (existing)
 	paymentHandler.RegisterRoutes(v1, payHandler, authMiddleware)
-
-	// Debts (piutang) & Payment integration
 	debtHandler.RegisterRoutes(v1, debtH, authMiddleware)
-	// Note: paySvcHandler is available for additional payment routes if needed
-	_ = paySvcHandler
-
-	// Group Orders (GrosirKu)
 	group_order.RegisterRoutes(v1, groupOrderHandler, authMiddleware)
 
-	// Start server
 	addr := fmt.Sprintf("%s:%d", cfg.Server.Host, cfg.Server.Port)
-
 	go func() {
 		logger.Info("Starting server", zap.String("address", addr))
 		if err := app.Listen(addr); err != nil {
@@ -272,7 +212,6 @@ func main() {
 		}
 	}()
 
-	// Graceful shutdown
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
@@ -280,11 +219,9 @@ func main() {
 	logger.Info("Shutting down server...")
 	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer shutdownCancel()
-
 	if err := app.ShutdownWithContext(shutdownCtx); err != nil {
 		logger.Error("Server forced to shutdown", zap.Error(err))
 	}
-
 	logger.Info("Server exited")
 }
 
@@ -302,6 +239,5 @@ func initLogger(cfg config.LogConfig) (*zap.Logger, error) {
 		level = zapcore.DebugLevel
 	}
 	zapCfg.Level = zap.NewAtomicLevelAt(level)
-
 	return zapCfg.Build()
 }

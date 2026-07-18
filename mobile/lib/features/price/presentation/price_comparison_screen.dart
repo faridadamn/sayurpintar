@@ -18,8 +18,7 @@ class PriceComparisonScreen extends ConsumerStatefulWidget {
       _PriceComparisonScreenState();
 }
 
-class _PriceComparisonScreenState
-    extends ConsumerState<PriceComparisonScreen> {
+class _PriceComparisonScreenState extends ConsumerState<PriceComparisonScreen> {
   _SortBy _sortBy = _SortBy.lowestPrice;
 
   static const Map<String, String> _sortLabels = {
@@ -51,8 +50,7 @@ class _PriceComparisonScreenState
       ),
       body: comparisonAsync.when(
         data: (data) {
-          final productName =
-              data['product_name'] ?? 'Produk';
+          final productName = data['product_name'] ?? 'Produk';
           final unit = data['unit'] ?? 'kg';
           final sellers = (data['sellers'] as List<dynamic>?) ?? [];
           final marketAvg = data['market_average'];
@@ -130,8 +128,7 @@ class _PriceComparisonScreenState
               // ── Sort selector ───────────────────
               Padding(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.space16,
-                    vertical: AppTheme.space12),
+                    horizontal: AppTheme.space16, vertical: AppTheme.space12),
                 child: Row(
                   children: [
                     const Text(
@@ -155,16 +152,15 @@ class _PriceComparisonScreenState
                                     ? _sortLabels['nearest']!
                                     : _sortLabels['rating']!;
                             return Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 8),
+                              padding: const EdgeInsets.only(right: 8),
                               child: ChoiceChip(
                                 label: Text(label,
                                     style: const TextStyle(fontSize: 12)),
                                 selected: selected,
                                 onSelected: (_) =>
                                     setState(() => _sortBy = sort),
-                                selectedColor: AppTheme.primaryGreen
-                                    .withOpacity(0.15),
+                                selectedColor:
+                                    AppTheme.primaryGreen.withOpacity(0.15),
                                 labelStyle: TextStyle(
                                   color: selected
                                       ? AppTheme.primaryGreen
@@ -198,13 +194,12 @@ class _PriceComparisonScreenState
                     ? const Center(
                         child: Text(
                           'Belum ada pedagang yang menjual produk ini.',
-                          style:
-                              TextStyle(color: AppTheme.textSecondary),
+                          style: TextStyle(color: AppTheme.textSecondary),
                         ),
                       )
                     : ListView.builder(
-                        padding: const EdgeInsets.only(
-                            bottom: AppTheme.space16),
+                        padding:
+                            const EdgeInsets.only(bottom: AppTheme.space16),
                         itemCount: sorted.length,
                         itemBuilder: (context, index) {
                           final seller = sorted[index];
@@ -232,8 +227,8 @@ class _PriceComparisonScreenState
                 Text('Gagal memuat data: $e', textAlign: TextAlign.center),
                 const SizedBox(height: AppTheme.space16),
                 ElevatedButton.icon(
-                  onPressed: () => ref.invalidate(
-                      priceComparisonProvider(widget.productId)),
+                  onPressed: () =>
+                      ref.invalidate(priceComparisonProvider(widget.productId)),
                   icon: const Icon(Icons.refresh),
                   label: const Text('Coba Lagi'),
                 ),
@@ -277,8 +272,7 @@ class _SellerComparisonCard extends StatelessWidget {
               // Avatar
               CircleAvatar(
                 radius: 22,
-                backgroundColor:
-                    AppTheme.primaryGreen.withOpacity(0.1),
+                backgroundColor: AppTheme.primaryGreen.withOpacity(0.1),
                 child: Text(
                   name.isNotEmpty ? name[0].toUpperCase() : '?',
                   style: const TextStyle(
@@ -312,8 +306,8 @@ class _SellerComparisonCard extends StatelessWidget {
                                 horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
                               color: AppTheme.accent.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(
-                                  AppTheme.radiusFull),
+                              borderRadius:
+                                  BorderRadius.circular(AppTheme.radiusFull),
                             ),
                             child: const Text(
                               '⭐ Langganan',
@@ -329,8 +323,7 @@ class _SellerComparisonCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        Icon(Icons.star,
-                            size: 14, color: Colors.amber[700]),
+                        Icon(Icons.star, size: 14, color: Colors.amber[700]),
                         const SizedBox(width: 2),
                         Text(
                           rating.toStringAsFixed(1),
@@ -366,8 +359,7 @@ class _SellerComparisonCard extends StatelessWidget {
             padding: const EdgeInsets.all(AppTheme.space12),
             decoration: BoxDecoration(
               color: AppTheme.background,
-              borderRadius:
-                  BorderRadius.circular(AppTheme.radiusSmall),
+              borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
             ),
             child: Row(
               children: [
@@ -396,14 +388,13 @@ class _SellerComparisonCard extends StatelessWidget {
                 if (marketAvg != null && marketAvg > 0) ...[
                   const Spacer(),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
                       color: isBelowAvg
                           ? AppTheme.primaryGreen.withOpacity(0.1)
                           : AppTheme.error.withOpacity(0.1),
-                      borderRadius:
-                          BorderRadius.circular(AppTheme.radiusFull),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusFull),
                     ),
                     child: Text(
                       isBelowAvg
@@ -412,9 +403,8 @@ class _SellerComparisonCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: isBelowAvg
-                            ? AppTheme.primaryGreen
-                            : AppTheme.error,
+                        color:
+                            isBelowAvg ? AppTheme.primaryGreen : AppTheme.error,
                       ),
                     ),
                   ),

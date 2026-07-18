@@ -65,24 +65,19 @@ class RouteMapWidget extends StatelessWidget {
     return FlutterMap(
       mapController: mapController,
       options: MapOptions(
-        center: defaultCenter,
-        zoom: zoom,
-        onTap: onMapTap != null
-            ? (tapPos, point) => onMapTap!(point)
-            : null,
+        initialCenter: defaultCenter,
+        initialZoom: zoom,
+        onTap: onMapTap != null ? (tapPos, point) => onMapTap!(point) : null,
         onLongPress: onMapLongPress != null
             ? (tapPos, point) => onMapLongPress!(point)
             : null,
       ),
       children: [
-        // ── Tile layer ──────────────────────────────
         TileLayer(
           urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
           userAgentPackageName: 'com.sayurpintar.app',
           maxZoom: 19,
         ),
-
-        // ── Route polyline ──────────────────────────
         if (polyline != null && polyline!.isNotEmpty)
           PolylineLayer(
             polylines: [
@@ -95,29 +90,26 @@ class RouteMapWidget extends StatelessWidget {
               ),
             ],
           ),
-
-        // ── Waypoint markers ────────────────────────
         MarkerLayer(
           markers: [
-            // Numbered stop markers
-            ...markers.map((m) => Marker(
-                  point: m.position,
-                  width: m.isCurrent ? 52 : 40,
-                  height: m.isCurrent ? 52 : 40,
-                  builder: (ctx) => _StopMarker(
-                    number: m.order,
-                    isCurrent: m.isCurrent,
-                    isCompleted: m.isCompleted,
-                  ),
-                )),
-
-            // Current location blue dot
+            ...markers.map(
+              (marker) => Marker(
+                point: marker.position,
+                width: marker.isCurrent ? 52 : 40,
+                height: marker.isCurrent ? 52 : 40,
+                child: _StopMarker(
+                  number: marker.order,
+                  isCurrent: marker.isCurrent,
+                  isCompleted: marker.isCompleted,
+                ),
+              ),
+            ),
             if (showCurrentLocation && currentLocation != null)
               Marker(
                 point: currentLocation!,
                 width: 24,
                 height: 24,
-                builder: (ctx) => Container(
+                child: Container(
                   decoration: BoxDecoration(
                     color: Colors.blue,
                     shape: BoxShape.circle,
@@ -134,8 +126,6 @@ class RouteMapWidget extends StatelessWidget {
               ),
           ],
         ),
-
-        // ── Overlay ─────────────────────────────────
         if (additionalOverlay != null) additionalOverlay!,
       ],
     );

@@ -256,7 +256,8 @@ class SubscriptionDetail extends Subscription {
       pelangganPhone: json['pelanggan_phone'],
       nextDelivery: json['next_delivery'],
       package: json['package'] != null
-          ? SubscriptionPackage.fromJson(json['package'] as Map<String, dynamic>)
+          ? SubscriptionPackage.fromJson(
+              json['package'] as Map<String, dynamic>)
           : null,
       deliveryCount: json['delivery_count'] ?? 0,
       totalSpent: (json['total_spent'] as num?)?.toDouble() ?? 0,
@@ -346,6 +347,24 @@ class Order {
         return 'Sebagian';
       default:
         return paymentStatus;
+    }
+  }
+
+  bool get isRated => rating != null;
+
+  String get paymentMethodText {
+    switch (paymentMethod) {
+      case 'cash':
+        return 'Tunai';
+      case 'transfer':
+      case 'bank_transfer':
+        return 'Transfer Bank';
+      case 'ewallet':
+        return 'E-Wallet';
+      case 'qris':
+        return 'QRIS';
+      default:
+        return paymentMethod;
     }
   }
 
@@ -648,8 +667,8 @@ class SubscriptionRepository {
 
   Future<SubscriptionPackage> updatePackage(
       String id, UpdatePackageRequest request) async {
-    final response =
-        await _dio.patch('${ApiEndpoints.packages}/$id', data: request.toJson());
+    final response = await _dio.patch('${ApiEndpoints.packages}/$id',
+        data: request.toJson());
     return SubscriptionPackage.fromJson(
         response.data['data'] as Map<String, dynamic>);
   }
@@ -672,8 +691,7 @@ class SubscriptionRepository {
   }
 
   Future<SubscriptionDetail> getSubscriptionDetail(String id) async {
-    final response =
-        await _dio.get('${ApiEndpoints.packages}/subscribers/$id');
+    final response = await _dio.get('${ApiEndpoints.packages}/subscribers/$id');
     return SubscriptionDetail.fromJson(
         response.data['data'] as Map<String, dynamic>);
   }
@@ -690,9 +708,7 @@ class SubscriptionRepository {
   Future<List<Order>> getTodayOrders() async {
     final response = await _dio.get(ApiEndpoints.todayOrders);
     final data = response.data['data'] as List<dynamic>? ?? [];
-    return data
-        .map((e) => Order.fromJson(e as Map<String, dynamic>))
-        .toList();
+    return data.map((e) => Order.fromJson(e as Map<String, dynamic>)).toList();
   }
 
   Future<Order> getOrderDetail(String id) async {
@@ -719,7 +735,6 @@ class SubscriptionRepository {
       '${ApiEndpoints.orders}/summary',
       queryParameters: {'date': date},
     );
-    return OrderSummary.fromJson(
-        response.data['data'] as Map<String, dynamic>);
+    return OrderSummary.fromJson(response.data['data'] as Map<String, dynamic>);
   }
 }

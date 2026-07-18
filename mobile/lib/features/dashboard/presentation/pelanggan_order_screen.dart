@@ -18,8 +18,7 @@ class PelangganOrderScreen extends ConsumerStatefulWidget {
       _PelangganOrderScreenState();
 }
 
-class _PelangganOrderScreenState
-    extends ConsumerState<PelangganOrderScreen>
+class _PelangganOrderScreenState extends ConsumerState<PelangganOrderScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
@@ -72,8 +71,7 @@ class _PelangganOrderScreenState
             return SPEmptyState(
               icon: Icons.receipt_long_outlined,
               title: 'Belum ada pesanan',
-              message:
-                  'Mulai berlangganan untuk melihat pesanan Anda di sini.',
+              message: 'Mulai berlangganan untuk melihat pesanan Anda di sini.',
               actionLabel: 'Cari Pedagang',
               onAction: () => context.push('/browse-merchants'),
             );
@@ -167,8 +165,7 @@ class _OrderCard extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   color: statusColor.withOpacity(0.12),
-                  borderRadius:
-                      BorderRadius.circular(AppTheme.radiusFull),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusFull),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -256,8 +253,7 @@ class _OrderCard extends StatelessWidget {
               if (isRated)
                 Row(
                   children: [
-                    const Icon(Icons.star,
-                        size: 16, color: AppTheme.accent),
+                    const Icon(Icons.star, size: 16, color: AppTheme.accent),
                     const SizedBox(width: 4),
                     Text(
                       '${order.rating ?? '-'}',
@@ -301,8 +297,19 @@ class _OrderCard extends StatelessWidget {
     try {
       final d = DateTime.parse(date.toString());
       final months = [
-        '', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
-        'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
+        '',
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'Mei',
+        'Jun',
+        'Jul',
+        'Agu',
+        'Sep',
+        'Okt',
+        'Nov',
+        'Des'
       ];
       return '${d.day} ${months[d.month]} ${d.year}';
     } catch (_) {
@@ -311,8 +318,8 @@ class _OrderCard extends StatelessWidget {
   }
 
   String _formatPrice(dynamic price) {
-    final num = price is int ? price : (price as num?)?.toInt() ?? 0;
-    final str = num.toString();
+    final amount = price is int ? price : (price as num?)?.toInt() ?? 0;
+    final str = amount.toString();
     final buffer = StringBuffer('Rp ');
     for (int i = 0; i < str.length; i++) {
       if (i > 0 && (str.length - i) % 3 == 0) buffer.write('.');
@@ -385,12 +392,9 @@ class _OrderCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(5, (index) {
                   return IconButton(
-                    onPressed: () =>
-                        setState(() => rating = index + 1),
+                    onPressed: () => setState(() => rating = index + 1),
                     icon: Icon(
-                      index < rating
-                          ? Icons.star
-                          : Icons.star_border,
+                      index < rating ? Icons.star : Icons.star_border,
                       color: AppTheme.accent,
                       size: 36,
                     ),
@@ -414,9 +418,7 @@ class _OrderCard extends StatelessWidget {
               child: const Text('Nanti'),
             ),
             ElevatedButton(
-              onPressed: rating > 0
-                  ? () => Navigator.pop(ctx)
-                  : null,
+              onPressed: rating > 0 ? () => Navigator.pop(ctx) : null,
               child: const Text('Kirim'),
             ),
           ],
@@ -452,8 +454,7 @@ class _OrderTimeline extends StatelessWidget {
       _TimelineStep(
         label: 'Diantar',
         icon: Icons.local_shipping,
-        isCompleted:
-            status == 'in_transit' || status == 'delivered',
+        isCompleted: status == 'in_transit' || status == 'delivered',
         isActive: status == 'in_transit',
       ),
       _TimelineStep(

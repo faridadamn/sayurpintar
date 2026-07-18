@@ -1,11 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sayurpintar/core/network/api_client.dart';
+import 'package:sayurpintar/features/subscription/data/app_subscription_repository.dart';
 import 'package:sayurpintar/features/subscription/data/subscription_repository.dart';
 
 // ── Repository ───────────────────────────────────────────────────────────────
 
-final subscriptionRepositoryProvider = Provider<SubscriptionRepository>((ref) {
-  return SubscriptionRepository(ApiClient().dio);
+final subscriptionRepositoryProvider =
+    Provider<AppSubscriptionRepository>((ref) {
+  return AppSubscriptionRepository(ApiClient().dio);
 });
 
 // ── Packages ────────────────────────────────────────────────────────────────
@@ -30,14 +32,12 @@ final packageDetailProvider =
 
 // ── Subscribers ─────────────────────────────────────────────────────────────
 
-final subscribersProvider =
-    FutureProvider<List<Subscription>>((ref) async {
+final subscribersProvider = FutureProvider<List<Subscription>>((ref) async {
   final repo = ref.read(subscriptionRepositoryProvider);
   return await repo.getSubscribers(status: 'active');
 });
 
-final subscriberStatsProvider =
-    FutureProvider<SubscriberStats>((ref) async {
+final subscriberStatsProvider = FutureProvider<SubscriberStats>((ref) async {
   final repo = ref.read(subscriptionRepositoryProvider);
   return await repo.getSubscriberStats();
 });
@@ -100,8 +100,7 @@ final merchantPackagesProvider =
 final orderHistoryProvider =
     FutureProvider.family<List<Order>, String>((ref, status) async {
   final repo = ref.read(subscriptionRepositoryProvider);
-  return await repo.getOrderHistory(
-      status: status == 'semua' ? null : status);
+  return await repo.getOrderHistory(status: status == 'semua' ? null : status);
 });
 
 // ── Pelanggan: Payment History ────────────────────────────────────────────
@@ -115,8 +114,7 @@ final paymentHistoryProvider =
 
 // ── Pelanggan: UI State ──────────────────────────────────────────────────
 
-final selectedPaymentMethodProvider =
-    StateProvider<String>((ref) => 'cash');
+final selectedPaymentMethodProvider = StateProvider<String>((ref) => 'cash');
 
 final selectedPaymentFrequencyProvider =
     StateProvider<String>((ref) => 'per_kirim');

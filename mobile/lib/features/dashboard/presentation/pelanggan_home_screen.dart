@@ -85,8 +85,7 @@ class _PelangganHomeScreenState extends ConsumerState<PelangganHomeScreen> {
                         Stack(
                           children: [
                             IconButton(
-                              onPressed: () =>
-                                  context.push('/notifications'),
+                              onPressed: () => context.push('/notifications'),
                               icon: const Icon(
                                 Icons.notifications_outlined,
                                 color: Colors.white,
@@ -126,7 +125,8 @@ class _PelangganHomeScreenState extends ConsumerState<PelangganHomeScreen> {
                   subscriptionsAsync.when(
                     data: (subs) {
                       if (subs.isNotEmpty) {
-                        return _ActiveSubscriptionCard(subscription: subs.first);
+                        return _ActiveSubscriptionCard(
+                            subscription: subs.first);
                       }
                       return _NoSubscriptionCard();
                     },
@@ -159,8 +159,7 @@ class _PelangganHomeScreenState extends ConsumerState<PelangganHomeScreen> {
                             padding: EdgeInsets.all(AppTheme.space16),
                             child: Text(
                               'Belum ada pesanan',
-                              style:
-                                  TextStyle(color: AppTheme.textSecondary),
+                              style: TextStyle(color: AppTheme.textSecondary),
                             ),
                           ),
                         ),
@@ -176,8 +175,7 @@ class _PelangganHomeScreenState extends ConsumerState<PelangganHomeScreen> {
                           padding: EdgeInsets.all(AppTheme.space16),
                           child: Text(
                             'Gagal memuat pesanan',
-                            style:
-                                TextStyle(color: AppTheme.textSecondary),
+                            style: TextStyle(color: AppTheme.textSecondary),
                           ),
                         ),
                       ),
@@ -288,8 +286,7 @@ class _ActiveSubscriptionCard extends StatelessWidget {
             padding: const EdgeInsets.all(AppTheme.space12),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius:
-                  BorderRadius.circular(AppTheme.radiusSmall),
+              borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
             ),
             child: Row(
               children: [
@@ -342,16 +339,15 @@ class _ActiveSubscriptionCard extends StatelessWidget {
             children: [
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: () => context.push('/modify-delivery',
-                      extra: {
-                        'subscription': subscription,
-                        'date': '',
-                      }),
+                  onPressed: () => context.push('/modify-delivery', extra: {
+                    'subscription': subscription,
+                    'date': '',
+                  }),
                   icon: const Icon(Icons.edit_outlined, size: 16),
                   label: const Text('Ubah Pesanan'),
                   style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: AppTheme.space8),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: AppTheme.space8),
                     textStyle: const TextStyle(fontSize: 13),
                   ),
                 ),
@@ -363,8 +359,8 @@ class _ActiveSubscriptionCard extends StatelessWidget {
                   icon: const Icon(Icons.pause_outlined, size: 16),
                   label: const Text('Lewati'),
                   style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: AppTheme.space8),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: AppTheme.space8),
                     textStyle: const TextStyle(fontSize: 13),
                   ),
                 ),
@@ -381,11 +377,28 @@ class _ActiveSubscriptionCard extends StatelessWidget {
     try {
       final d = DateTime.parse(date.toString());
       final days = [
-        'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'
+        'Senin',
+        'Selasa',
+        'Rabu',
+        'Kamis',
+        'Jumat',
+        'Sabtu',
+        'Minggu'
       ];
       final months = [
-        '', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        '',
+        'Januari',
+        'Februari',
+        'Maret',
+        'April',
+        'Mei',
+        'Juni',
+        'Juli',
+        'Agustus',
+        'September',
+        'Oktober',
+        'November',
+        'Desember'
       ];
       final tomorrow = DateTime.now().add(const Duration(days: 1));
       final isTomorrow = d.year == tomorrow.year &&
@@ -590,8 +603,7 @@ class _LastOrderCard extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   color: statusColor.withOpacity(0.12),
-                  borderRadius:
-                      BorderRadius.circular(AppTheme.radiusFull),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusFull),
                 ),
                 child: Text(
                   statusLabel,
@@ -632,8 +644,8 @@ class _LastOrderCard extends StatelessWidget {
                   icon: const Icon(Icons.star_outline, size: 18),
                   label: const Text('Beri Rating'),
                   style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: AppTheme.space8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: AppTheme.space8),
                   ),
                 ),
             ],
@@ -660,8 +672,19 @@ class _LastOrderCard extends StatelessWidget {
     try {
       final d = DateTime.parse(date.toString());
       final months = [
-        '', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
-        'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
+        '',
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'Mei',
+        'Jun',
+        'Jul',
+        'Agu',
+        'Sep',
+        'Okt',
+        'Nov',
+        'Des'
       ];
       return '${d.day} ${months[d.month]} ${d.year}';
     } catch (_) {
@@ -670,8 +693,8 @@ class _LastOrderCard extends StatelessWidget {
   }
 
   String _formatPrice(dynamic price) {
-    final num = price is int ? price : (price as num?)?.toInt() ?? 0;
-    final str = num.toString();
+    final amount = price is int ? price : (price as num?)?.toInt() ?? 0;
+    final str = amount.toString();
     final buffer = StringBuffer('Rp ');
     for (int i = 0; i < str.length; i++) {
       if (i > 0 && (str.length - i) % 3 == 0) buffer.write('.');
@@ -727,12 +750,9 @@ class _LastOrderCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(5, (index) {
                   return IconButton(
-                    onPressed: () =>
-                        setState(() => rating = index + 1),
+                    onPressed: () => setState(() => rating = index + 1),
                     icon: Icon(
-                      index < rating
-                          ? Icons.star
-                          : Icons.star_border,
+                      index < rating ? Icons.star : Icons.star_border,
                       color: AppTheme.accent,
                       size: 36,
                     ),
@@ -747,9 +767,7 @@ class _LastOrderCard extends StatelessWidget {
               child: const Text('Nanti'),
             ),
             ElevatedButton(
-              onPressed: rating > 0
-                  ? () => Navigator.pop(ctx)
-                  : null,
+              onPressed: rating > 0 ? () => Navigator.pop(ctx) : null,
               child: const Text('Kirim'),
             ),
           ],
@@ -827,8 +845,7 @@ class _MarketPricesSection extends StatelessWidget {
               children: top5.map((price) {
                 final name = price['product_name'] ?? 'Produk';
                 final currentPrice = price['price'];
-                final trend =
-                    (price['trend'] ?? 'stable').toString();
+                final trend = (price['trend'] ?? 'stable').toString();
                 final unit = price['unit'] ?? 'kg';
                 final trendIcon = trend == 'up'
                     ? '⬆️'
@@ -872,14 +889,11 @@ class _MarketPricesSection extends StatelessWidget {
                 }
 
                 return Padding(
-                  padding:
-                      const EdgeInsets.only(bottom: AppTheme.space8),
+                  padding: const EdgeInsets.only(bottom: AppTheme.space8),
                   child: SPCard(
                     onTap: () {
-                      final productId =
-                          price['product_id']?.toString() ?? '';
-                      context.push('/price-compare',
-                          extra: productId);
+                      final productId = price['product_id']?.toString() ?? '';
+                      context.push('/price-compare', extra: productId);
                     },
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppTheme.space12,
@@ -887,13 +901,11 @@ class _MarketPricesSection extends StatelessWidget {
                     ),
                     child: Row(
                       children: [
-                        Text(emoji,
-                            style: const TextStyle(fontSize: 20)),
+                        Text(emoji, style: const TextStyle(fontSize: 20)),
                         const SizedBox(width: AppTheme.space8),
                         Expanded(
                           child: Column(
-                            crossAxisAlignment:
-                                CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 name,
@@ -1032,8 +1044,7 @@ class _FeaturedPedagangSection extends StatelessWidget {
                           const SizedBox(width: AppTheme.space8),
                           Expanded(
                             child: Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   pedagang.name,
@@ -1047,8 +1058,7 @@ class _FeaturedPedagangSection extends StatelessWidget {
                                 Row(
                                   children: [
                                     const Icon(Icons.star,
-                                        size: 14,
-                                        color: AppTheme.accent),
+                                        size: 14, color: AppTheme.accent),
                                     const SizedBox(width: 2),
                                     Text(
                                       '${pedagang.rating}',
@@ -1089,8 +1099,7 @@ class _FeaturedPedagangSection extends StatelessWidget {
                       Row(
                         children: [
                           const Icon(Icons.people,
-                              size: 14,
-                              color: AppTheme.primaryGreen),
+                              size: 14, color: AppTheme.primaryGreen),
                           const SizedBox(width: 4),
                           Text(
                             '${pedagang.subscribers} pelanggan',
@@ -1139,8 +1148,7 @@ class _PendingRatingsCard extends ConsumerWidget {
 
     return ordersAsync.when(
       data: (orders) {
-        final unrated =
-            orders.where((o) => !(o.isRated ?? false)).toList();
+        final unrated = orders.where((o) => !(o.isRated ?? false)).toList();
         if (unrated.isEmpty) return const SizedBox.shrink();
 
         return SPCard(
@@ -1152,8 +1160,7 @@ class _PendingRatingsCard extends ConsumerWidget {
                 padding: const EdgeInsets.all(AppTheme.space12),
                 decoration: BoxDecoration(
                   color: AppTheme.accent.withOpacity(0.2),
-                  borderRadius:
-                      BorderRadius.circular(AppTheme.radiusSmall),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
                 ),
                 child: const Icon(
                   Icons.rate_review_outlined,
@@ -1184,8 +1191,7 @@ class _PendingRatingsCard extends ConsumerWidget {
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right,
-                  color: AppTheme.textSecondary),
+              const Icon(Icons.chevron_right, color: AppTheme.textSecondary),
             ],
           ),
         );

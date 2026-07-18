@@ -2,6 +2,8 @@ package services
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"time"
@@ -64,10 +66,22 @@ func NewAuthService(
 	}
 }
 
+func tokenBlacklistKey(token string) string {
+	digest := sha256.Sum256([]byte(token))
+	return tokenBlacklistPrefix + hex.EncodeToString(digest[:])
+}
+
+func (s *AuthService) blacklistToken(ctx context.Context, token string, expiresAt time.Time) error {
+	ttl := time.Until(expiresAt)
+	if ttl <= 0 {
+		return nil
+	}
+	return s.redis.Set(ctx, tokenBlacklistKey(token), "1", ttl).Err()
+}
+
 // SendOTP generates and sends an OTP to the given phone number.
 // Creates a new user if one doesn't exist. Returns cooldown if recently sent.
 func (s *AuthService) SendOTP(ctx context.Context, phone string) (*SendOTPResponse, error) {
-	// Check cooldown
 	cooldown, err := s.otpService.ResendCooldown(ctx, phone)
 	if err != nil {
 		return nil, fmt.Errorf("check cooldown: %w", err)
@@ -80,13 +94,10 @@ func (s *AuthService) SendOTP(ctx context.Context, phone string) (*SendOTPRespon
 		}, nil
 	}
 
-	// Generate OTP
-	_, err = s.otpService.GenerateOTP(ctx, phone)
-	if err != nil {
+	if _, err = s.otpService.GenerateOTP(ctx, phone); err != nil {
 		return nil, fmt.Errorf("generate otp: %w", err)
 	}
 
-	// Create user if not exists
 	_, err = s.userRepo.GetByPhone(ctx, phone)
 	if err != nil {
 		if errors.Is(err, repository.ErrUserNotFound) {
@@ -108,7 +119,6 @@ func (s *AuthService) SendOTP(ctx context.Context, phone string) (*SendOTPRespon
 	if expiry <= 0 {
 		expiry = defaultOTPExpiry
 	}
-
 	return &SendOTPResponse{
 		Phone:     phone,
 		ExpiresIn: expiry,
@@ -116,7 +126,6 @@ func (s *AuthService) SendOTP(ctx context.Context, phone string) (*SendOTPRespon
 }
 
 // VerifyOTP verifies the OTP and returns JWT tokens.
-// If the user has no role set, NeedsRole is true in the response.
 func (s *AuthService) VerifyOTP(ctx context.Context, phone string, otp string) (*AuthResponse, error) {
 	valid, err := s.otpService.VerifyOTP(ctx, phone, otp)
 	if err != nil {
@@ -126,29 +135,22 @@ func (s *AuthService) VerifyOTP(ctx context.Context, phone string, otp string) (
 		return nil, fmt.Errorf("invalid OTP")
 	}
 
-	// Get user
 	user, err := s.userRepo.GetByPhone(ctx, phone)
 	if err != nil {
 		return nil, fmt.Errorf("get user: %w", err)
 	}
-
-	// Mark as verified
 	if !user.IsVerified {
 		if err := s.userRepo.SetVerified(ctx, user.ID); err != nil {
 			return nil, fmt.Errorf("set verified: %w", err)
 		}
 		user.IsVerified = true
 	}
-
-	// Update last login
 	_ = s.userRepo.UpdateLastLogin(ctx, user.ID)
 
-	// Generate tokens
 	tokens, err := s.jwtService.GenerateTokenPair(user)
 	if err != nil {
 		return nil, fmt.Errorf("generate jwt: %w", err)
 	}
-
 	return &AuthResponse{
 		AccessToken:  tokens.AccessToken,
 		RefreshToken: tokens.RefreshToken,
@@ -164,54 +166,53 @@ func (s *AuthService) SetRole(ctx context.Context, userID string, role string) e
 	if roleVal != models.RolePedagang && roleVal != models.RolePelanggan {
 		return fmt.Errorf("invalid role: must be 'pedagang' or 'pelanggan'")
 	}
-
 	user, err := s.userRepo.GetByID(ctx, userID)
 	if err != nil {
 		return fmt.Errorf("get user: %w", err)
 	}
-
 	if user.Role != "" {
 		return fmt.Errorf("role already set")
 	}
-
 	user.Role = role
 	return s.userRepo.Update(ctx, user)
 }
 
-// RefreshToken validates a refresh token and issues a new access token.
+// RefreshToken validates and rotates a refresh token.
 func (s *AuthService) RefreshToken(ctx context.Context, refreshToken string) (*TokenPair, error) {
-	// Check if token is blacklisted
-	blacklistKey := tokenBlacklistPrefix + refreshToken
-	exists, err := s.redis.Exists(ctx, blacklistKey).Result()
+	blacklisted, err := s.IsTokenBlacklisted(ctx, refreshToken)
 	if err != nil {
-		return nil, fmt.Errorf("check token blacklist: %w", err)
+		return nil, err
 	}
-	if exists > 0 {
+	if blacklisted {
 		return nil, fmt.Errorf("refresh token has been revoked")
 	}
 
-	// Validate the refresh token
-	claims, err := s.jwtService.ValidateToken(refreshToken)
+	claims, err := s.jwtService.ValidateRefreshToken(refreshToken)
 	if err != nil {
 		return nil, fmt.Errorf("invalid refresh token: %w", err)
 	}
-
-	// Get user
 	user, err := s.userRepo.GetByID(ctx, claims.UserID)
 	if err != nil {
 		return nil, fmt.Errorf("get user: %w", err)
 	}
 
-	// Generate new tokens
-	return s.jwtService.GenerateTokenPair(user)
+	tokens, err := s.jwtService.GenerateTokenPair(user)
+	if err != nil {
+		return nil, err
+	}
+	if claims.ExpiresAt == nil {
+		return nil, fmt.Errorf("invalid refresh token: missing expiry")
+	}
+	if err := s.blacklistToken(ctx, refreshToken, claims.ExpiresAt.Time); err != nil {
+		return nil, fmt.Errorf("revoke rotated refresh token: %w", err)
+	}
+	return tokens, nil
 }
 
-// GetProfile returns the user profile by ID.
 func (s *AuthService) GetProfile(ctx context.Context, userID string) (*models.User, error) {
 	return s.userRepo.GetByID(ctx, userID)
 }
 
-// UpdateProfile updates user profile fields.
 func (s *AuthService) UpdateProfile(ctx context.Context, userID string, req UpdateProfileRequest) (*models.User, error) {
 	user, err := s.userRepo.GetByID(ctx, userID)
 	if err != nil {
@@ -242,29 +243,26 @@ func (s *AuthService) UpdateProfile(ctx context.Context, userID string, req Upda
 	if err := s.userRepo.UpdateProfile(ctx, userID, name, address, avatarURL); err != nil {
 		return nil, fmt.Errorf("update profile: %w", err)
 	}
-
-	// Re-fetch to get updated state
 	return s.userRepo.GetByID(ctx, userID)
 }
 
-// Logout adds the access token to the Redis blacklist.
-func (s *AuthService) Logout(ctx context.Context, accessToken string, expiresAt time.Time) error {
-	blacklistKey := tokenBlacklistPrefix + accessToken
-	ttl := time.Until(expiresAt)
-	if ttl <= 0 {
-		return nil
+// Logout validates and revokes the current access token until its real expiry.
+func (s *AuthService) Logout(ctx context.Context, accessToken string) error {
+	claims, err := s.jwtService.ValidateToken(accessToken)
+	if err != nil {
+		return fmt.Errorf("invalid access token: %w", err)
 	}
-	return s.redis.Set(ctx, blacklistKey, "1", ttl).Err()
+	if claims.ExpiresAt == nil {
+		return fmt.Errorf("invalid access token: missing expiry")
+	}
+	return s.blacklistToken(ctx, accessToken, claims.ExpiresAt.Time)
 }
 
-// IsTokenBlacklisted checks if a token has been blacklisted.
-func (s *AuthService) IsTokenBlacklisted(ctx context.Context, accessToken string) (bool, error) {
-	blacklistKey := tokenBlacklistPrefix + accessToken
-	exists, err := s.redis.Exists(ctx, blacklistKey).Result()
+// IsTokenBlacklisted checks whether a token has been revoked.
+func (s *AuthService) IsTokenBlacklisted(ctx context.Context, token string) (bool, error) {
+	exists, err := s.redis.Exists(ctx, tokenBlacklistKey(token)).Result()
 	if err != nil {
 		return false, fmt.Errorf("check blacklist: %w", err)
 	}
 	return exists > 0, nil
 }
-
-
