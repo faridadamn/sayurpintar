@@ -34,7 +34,7 @@ dependencies:
   geolocator: ^11.0.0
 
   # Connectivity
-  connectivity_plus: ^5.0.2
+  connectivity_plus: ^7.0.0
 
   # UI
   flutter_svg: ^2.0.9
@@ -48,7 +48,7 @@ dependencies:
   url_launcher: ^6.2.2
 
   # Utils
-  intl: ^0.19.0
+  intl: ^0.20.2
   uuid: ^4.3.3
   json_annotation: ^4.8.1
   freezed_annotation: ^2.4.1
@@ -72,19 +72,3 @@ flutter:
     - assets/icons/
 
   generate: true
-
-  fonts:
-    - family: Inter
-      fonts:
-        - asset: assets/fonts/Inter-Regular.ttf
-        - asset: assets/fonts/Inter-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/Inter-SemiBold.ttf
-          weight: 600
-        - asset: assets/fonts/Inter-Bold.ttf
-          weight: 700
-    - family: Nunito
-      fonts:
-        - asset: assets/fonts/Nunito-Regular.ttf
-        - asset: assets/fonts/Nunito-Bold.ttf
-          weight: 700

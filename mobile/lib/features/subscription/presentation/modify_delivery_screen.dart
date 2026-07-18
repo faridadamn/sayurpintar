@@ -279,10 +279,14 @@ class _ModifyDeliveryScreenState extends ConsumerState<ModifyDeliveryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ubah Pesanan'),
-        subtitle: Text(
-          _formatDate(widget.deliveryDate),
-          style: const TextStyle(fontSize: 12, color: Colors.white70),
+        title: Column(
+          children: [
+            const Text('Ubah Pesanan'),
+            Text(
+              _formatDate(widget.deliveryDate),
+              style: const TextStyle(fontSize: 12, color: Colors.white70),
+            ),
+          ],
         ),
       ),
       body: Column(

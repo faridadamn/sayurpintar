@@ -18,13 +18,12 @@ class ConnectivityService {
   Stream<bool> get onConnectivityChanged => _controller.stream;
 
   void _onConnectivityChanged(List<ConnectivityResult> results) {
-    final isConnected = results.any((r) => r != ConnectivityResult.none);
-    _controller.add(isConnected);
+    _controller.add(results.any((result) => result != ConnectivityResult.none));
   }
 
   Future<bool> get isConnected async {
     final results = await _connectivity.checkConnectivity();
-    return results.any((r) => r != ConnectivityResult.none);
+    return results.any((result) => result != ConnectivityResult.none);
   }
 
   void dispose() {

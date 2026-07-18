@@ -349,6 +349,21 @@ class Order {
     }
   }
 
+  bool get isRated => rating != null;
+
+  String get paymentMethodText {
+    switch (paymentMethod) {
+      case 'cash':
+        return 'Tunai';
+      case 'transfer':
+        return 'Transfer';
+      case 'ewallet':
+        return 'E-Wallet';
+      default:
+        return paymentMethod;
+    }
+  }
+
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
       id: json['id'] ?? '',
@@ -721,5 +736,117 @@ class SubscriptionRepository {
     );
     return OrderSummary.fromJson(
         response.data['data'] as Map<String, dynamic>);
+  }
+
+  Future<List<Subscription>> getMyActiveSubscriptions() =>
+      _getMySubscriptions('active');
+
+  Future<List<Subscription>> getMyPausedSubscriptions() =>
+      _getMySubscriptions('paused');
+
+  Future<List<Subscription>> _getMySubscriptions(String status) async {
+    final response = await _dio.get(
+      ApiEndpoints.mySubscriptions,
+      queryParameters: {'status': status},
+    );
+    final data = response.data['data'] as List<dynamic>? ?? [];
+    return data
+        .map((e) => Subscription.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<SubscriptionDetail> getMySubscriptionDetail(String id) async {
+    final response = await _dio.get('${ApiEndpoints.mySubscriptions}/$id');
+    return SubscriptionDetail.fromJson(
+        response.data['data'] as Map<String, dynamic>);
+  }
+
+  Future<List<SubscriptionPackage>> getAvailablePackages({String? query}) async {
+    final response = await _dio.get(
+      ApiEndpoints.packages,
+      queryParameters: {
+        'active_only': true,
+        if (query != null && query.isNotEmpty) 'query': query,
+      },
+    );
+    final data = response.data['data'] as List<dynamic>? ?? [];
+    return data
+        .map((e) => SubscriptionPackage.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<Subscription> subscribeToPackage({
+    required String packageId,
+    required String paymentMethod,
+    required String paymentFrequency,
+  }) async {
+    final response = await _dio.post(ApiEndpoints.subscribe, data: {
+      'package_id': packageId,
+      'payment_method': paymentMethod,
+      'payment_frequency': paymentFrequency,
+    });
+    return Subscription.fromJson(
+        response.data['data'] as Map<String, dynamic>);
+  }
+
+  Future<List<Order>> getOrderHistory({String? status}) async {
+    final response = await _dio.get(
+      ApiEndpoints.orders,
+      queryParameters: {if (status != null) 'status': status},
+    );
+    final data = response.data['data'] as List<dynamic>? ?? [];
+    return data.map((e) => Order.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
+  Future<List<Map<String, dynamic>>> getPaymentHistory(
+      String subscriptionId) async {
+    final response = await _dio.get(
+        '${ApiEndpoints.mySubscriptions}/$subscriptionId/payments');
+    final data = response.data['data'] as List<dynamic>? ?? [];
+    return data.cast<Map<String, dynamic>>();
+  }
+
+  Future<void> pauseSubscription(String id, {String? reason}) async {
+    await _dio.post('${ApiEndpoints.mySubscriptions}/$id/pause',
+        data: {if (reason != null) 'reason': reason});
+  }
+
+  Future<void> resumeSubscription(String id) async {
+    await _dio.post('${ApiEndpoints.mySubscriptions}/$id/resume');
+  }
+
+  Future<void> pelangganCancelSubscription(String id, {String? reason}) async {
+    await _dio.post('${ApiEndpoints.mySubscriptions}/$id/cancel',
+        data: {if (reason != null) 'reason': reason});
+  }
+
+  Future<void> skipDelivery(String id, String deliveryDate) async {
+    await _dio.post('${ApiEndpoints.mySubscriptions}/$id/skip',
+        data: {'delivery_date': deliveryDate});
+  }
+
+  Future<void> modifyDelivery({
+    required String subscriptionId,
+    required String deliveryDate,
+    required List<Map<String, dynamic>> items,
+    required bool skip,
+  }) async {
+    await _dio.patch('${ApiEndpoints.mySubscriptions}/$subscriptionId/delivery',
+        data: {
+          'delivery_date': deliveryDate,
+          'items': items,
+          'skip_delivery': skip,
+        });
+  }
+
+  Future<void> rateDelivery({
+    required String orderId,
+    required int rating,
+    String? comment,
+  }) async {
+    await _dio.post('${ApiEndpoints.orders}/$orderId/rating', data: {
+      'rating': rating,
+      if (comment != null) 'comment': comment,
+    });
   }
 }

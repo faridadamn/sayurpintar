@@ -112,7 +112,6 @@ class _RouteOptimizedScreenState extends ConsumerState<RouteOptimizedScreen> {
         points: points,
         color: AppTheme.primaryGreen.withOpacity(0.8),
         strokeWidth: 4,
-        pattern: StrokePattern.dashed(segments: [12, 6]),
       ),
       // Shadow polyline for depth
       Polyline(

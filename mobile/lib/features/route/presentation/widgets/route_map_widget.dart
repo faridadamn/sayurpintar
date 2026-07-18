@@ -104,7 +104,7 @@ class RouteMapWidget extends StatelessWidget {
                   point: m.position,
                   width: m.isCurrent ? 52 : 40,
                   height: m.isCurrent ? 52 : 40,
-                  builder: (ctx) => _StopMarker(
+                  child: _StopMarker(
                     number: m.order,
                     isCurrent: m.isCurrent,
                     isCompleted: m.isCompleted,
@@ -117,7 +117,7 @@ class RouteMapWidget extends StatelessWidget {
                 point: currentLocation!,
                 width: 24,
                 height: 24,
-                builder: (ctx) => Container(
+                child: Container(
                   decoration: BoxDecoration(
                     color: Colors.blue,
                     shape: BoxShape.circle,

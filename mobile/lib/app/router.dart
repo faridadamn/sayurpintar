@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:go_router/go_router.dart' hide RouteData;
 import 'package:sayurpintar/app/main_shell.dart';
 import 'package:sayurpintar/features/auth/presentation/splash_screen.dart';
 import 'package:sayurpintar/features/auth/presentation/login_screen.dart';
