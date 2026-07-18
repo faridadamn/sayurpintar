@@ -559,14 +559,14 @@ class _StatisticsGrid extends StatelessWidget {
   }
 
   String _formatShort(dynamic value) {
-    final num = value is int ? value : (value as num?)?.toInt() ?? 0;
-    if (num >= 1000000) {
-      return '${(num / 1000000).toStringAsFixed(1)}jt';
+    final amount = value is int ? value : (value as num?)?.toInt() ?? 0;
+    if (amount >= 1000000) {
+      return '${(amount / 1000000).toStringAsFixed(1)}jt';
     }
-    if (num >= 1000) {
-      return '${(num / 1000).toStringAsFixed(0)}rb';
+    if (amount >= 1000) {
+      return '${(amount / 1000).toStringAsFixed(0)}rb';
     }
-    return 'Rp $num';
+    return 'Rp $amount';
   }
 }
 

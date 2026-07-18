@@ -226,7 +226,6 @@ class _MapScreenState extends ConsumerState<MapScreen>
         points: points,
         color: AppTheme.primaryGreen.withOpacity(0.7),
         strokeWidth: 4,
-        pattern: StrokePattern.dashed(segments: [10, 5]),
       ),
     ];
   }
@@ -280,12 +279,13 @@ class _MapScreenState extends ConsumerState<MapScreen>
             ),
           ),
           if (_searchResults.isNotEmpty)
-            Material(
-              elevation: 4,
-              borderRadius:
-                  BorderRadius.circular(AppTheme.radiusMedium),
-              margin: const EdgeInsets.only(top: 4),
-              child: ListView.separated(
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Material(
+                elevation: 4,
+                borderRadius:
+                    BorderRadius.circular(AppTheme.radiusMedium),
+                child: ListView.separated(
                 shrinkWrap: true,
                 itemCount: _searchResults.length,
                 separatorBuilder: (_, __) => const Divider(height: 1),
@@ -308,6 +308,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                     },
                   );
                 },
+                ),
               ),
             ),
         ],

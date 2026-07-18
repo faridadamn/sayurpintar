@@ -603,6 +603,11 @@ class RouteRepository {
     );
   }
 
+  Future<void> completeVisit(
+      String visitId, Map<String, dynamic> data) async {
+    await _dio.patch('${ApiEndpoints.routes}/visits/$visitId', data: data);
+  }
+
   Future<VisitSummary> getVisitSummary(String date) async {
     final response = await _dio.get(
       '${ApiEndpoints.routes}/visits/summary',

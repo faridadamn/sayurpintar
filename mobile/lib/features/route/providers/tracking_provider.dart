@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:sayurpintar/core/utils/connectivity_service.dart';
 import 'package:sayurpintar/core/utils/sync_manager.dart';
 import 'package:sayurpintar/features/route/data/route_repository.dart';
+import 'package:sayurpintar/features/route/providers/route_provider.dart';
 
 // ─── Models ─────────────────────────────────────────
 

@@ -8,7 +8,7 @@ class VisitItem {
   final int quantity;
   final String unit;
   final double pricePerUnit;
-  final double get subtotal => quantity * pricePerUnit;
+  double get subtotal => quantity * pricePerUnit;
 
   const VisitItem({
     this.id,

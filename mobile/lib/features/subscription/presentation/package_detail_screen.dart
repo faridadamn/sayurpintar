@@ -63,7 +63,8 @@ class PackageDetailScreen extends ConsumerWidget {
     for (final item in pkg.items) {
       text.writeln('  • ${item.name} ${item.qty}${item.unit}');
     }
-    text.writeln()
+    text
+      ..writeln()
       ..writeln('Langganan di SayurPintar! 🥬');
 
     Clipboard.setData(ClipboardData(text: text.toString()));
@@ -534,7 +535,8 @@ class _PackageDetailBody extends StatelessWidget {
               text.writeln(
                   '  • ${item.name} ${item.qty}${item.unit}');
             }
-            text.writeln()
+            text
+              ..writeln()
               ..writeln('Langganan di SayurPintar! 🥬');
 
             Clipboard.setData(ClipboardData(text: text.toString()));

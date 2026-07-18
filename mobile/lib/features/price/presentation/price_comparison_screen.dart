@@ -30,8 +30,8 @@ class _PriceComparisonScreenState
 
   String _formatPrice(dynamic price) {
     if (price == null) return 'Rp -';
-    final num = price is int ? price : (price as num).toInt();
-    final str = num.toString();
+    final amount = price is int ? price : (price as num).toInt();
+    final str = amount.toString();
     final buffer = StringBuffer('Rp ');
     for (int i = 0; i < str.length; i++) {
       if (i > 0 && (str.length - i) % 3 == 0) buffer.write('.');

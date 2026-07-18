@@ -241,6 +241,8 @@ class PriceAlert {
         'direction': direction,
         'is_active': isActive,
       };
+
+  dynamic operator [](String key) => toJson()[key];
 }
 
 class Product {
@@ -275,6 +277,8 @@ class Product {
         'default_unit': defaultUnit,
         'image_url': imageUrl,
       };
+
+  dynamic operator [](String key) => toJson()[key];
 }
 
 class AreaPriceStats {
@@ -370,7 +374,7 @@ class PriceRepository {
 
   // ── Current market prices ────────────────────────────────────────────────
 
-  Future<List<AggregatedPrice>> getCurrentPrices(String area) async {
+  Future<List<AggregatedPrice>> getCurrentPrices([String area = '']) async {
     final response = await _dio.get(
       '${ApiEndpoints.prices}/current',
       queryParameters: {'area': area},

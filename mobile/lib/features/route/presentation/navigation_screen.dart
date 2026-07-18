@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:go_router/go_router.dart';
+import 'package:go_router/go_router.dart' hide RouteData;
 import 'package:sayurpintar/app/theme.dart';
 import 'package:sayurpintar/features/route/providers/tracking_provider.dart';
 import 'package:sayurpintar/features/route/presentation/widgets/route_map_widget.dart';
