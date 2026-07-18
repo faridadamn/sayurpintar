@@ -34,7 +34,7 @@ dependencies:
   geolocator: ^11.0.0
 
   # Connectivity
-  connectivity_plus: ^5.0.2
+  connectivity_plus: ^7.0.0
 
   # UI
   flutter_svg: ^2.0.9
